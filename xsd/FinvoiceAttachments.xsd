@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-15"?>
-<!-- Modified 30.8.2012 16:10 -->
+<!-- Modified 26.10.2015 18:11 -->
 <!-- For Finvoice version 2 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	<xs:element name="FinvoiceAttachments">
@@ -48,7 +48,7 @@
 	</xs:complexType>
 	<xs:complexType name="AttachmentDetailsType">
 		<xs:sequence>
-			<xs:element name="AttachmentIdentifier" type="genericStringType55_101"/>
+			<xs:element name="AttachmentIdentifier" type="genericStringType56_103"/>
 			<xs:element name="AttachmentContent" type="xs:base64Binary"/>
 			<xs:element name="AttachmentName" type="genericStringType3_50"/>
 			<xs:element name="AttachmentSecurityClass" type="SecurityClassType" minOccurs="0"/>
@@ -91,10 +91,10 @@
 			<xs:maxLength value="80"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="genericStringType55_101">
+	<xs:simpleType name="genericStringType56_103">
 		<xs:restriction base="xs:string">
-			<xs:minLength value="55"/>
-			<xs:maxLength value="101"/>
+			<xs:minLength value="56"/>
+			<xs:maxLength value="103"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="SecurityClassType">

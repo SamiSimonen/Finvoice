@@ -1,88 +1,45 @@
 #!/usr/bin/env python
 
-###
-# Copyright 2014 Code Master Oy (http://www.codemaster.fi/)
 #
-# This file is part of py-finvoice.
+# Generated  by generateDS.py.
+# Python 3.5.2 (default, Sep 14 2017, 22:51:06)  [GCC 5.4.0 20160609]
 #
-# py-finvoice is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# py-finvoice is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Command line options:
+#   ('-s', 'finvoice/attachment/attachmentsubs.py')
+#   ('-o', 'finvoice/attachment/attachment.py')
+#   ('--super', 'finvoice.attachment.attachment')
+#   ('--external-encoding', 'iso8859-15')
+#   ('--no-dates', '')
+#   ('--no-versions', '')
 #
-# You should have received a copy of the GNU General Public License
-# along with py-finvoice. If not, see <http://www.gnu.org/licenses/>.
-##
+# Command line arguments:
+#   xsd/FinvoiceAttachments.xsd
+#
+# Command line:
+#   /home/aisopuro/.virtualenvs/py-finvoice/bin/generateDS.py -s "finvoice/attachment/attachmentsubs.py" -o "finvoice/attachment/attachment.py" --super="finvoice.attachment.attachment" --external-encoding="iso8859-15" --no-dates --no-versions xsd/FinvoiceAttachments.xsd
+#
+# Current working directory (os.getcwd()):
+#   py-finvoice
+#
 
 import sys
+from lxml import etree as etree_
 
-import finvoice as supermod
+import finvoice.attachment.attachment as supermod
 
-etree_ = None
-Verbose_import_ = False
-(
-    XMLParser_import_none, XMLParser_import_lxml,
-    XMLParser_import_elementtree
-) = range(3)
-XMLParser_import_library = None
-try:
-    # lxml
-    from lxml import etree as etree_
-    XMLParser_import_library = XMLParser_import_lxml
-    if Verbose_import_:
-        print("running with lxml.etree")
-except ImportError:
-    try:
-        # cElementTree from Python 2.5+
-        import xml.etree.cElementTree as etree_
-        XMLParser_import_library = XMLParser_import_elementtree
-        if Verbose_import_:
-            print("running with cElementTree on Python 2.5+")
-    except ImportError:
-        try:
-            # ElementTree from Python 2.5+
-            import xml.etree.ElementTree as etree_
-            XMLParser_import_library = XMLParser_import_elementtree
-            if Verbose_import_:
-                print("running with ElementTree on Python 2.5+")
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree_
-                XMLParser_import_library = XMLParser_import_elementtree
-                if Verbose_import_:
-                    print("running with cElementTree")
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree_
-                    XMLParser_import_library = XMLParser_import_elementtree
-                    if Verbose_import_:
-                        print("running with ElementTree")
-                except ImportError:
-                    raise ImportError(
-                        "Failed to import ElementTree from any known place")
-
-
-def parsexml_(*args, **kwargs):
-    if (XMLParser_import_library == XMLParser_import_lxml and
-            'parser' not in kwargs):
+def parsexml_(infile, parser=None, **kwargs):
+    if parser is None:
         # Use the lxml ElementTree compatible parser so that, e.g.,
         #   we ignore comments.
-        kwargs['parser'] = etree_.ETCompatXMLParser()
-    doc = etree_.parse(*args, **kwargs)
+        parser = etree_.ETCompatXMLParser()
+    doc = etree_.parse(infile, parser=parser, **kwargs)
     return doc
 
 #
 # Globals
 #
 
-ExternalEncoding = 'ascii'
+ExternalEncoding = 'iso8859-15'
 
 #
 # Data representation classes
@@ -141,7 +98,8 @@ def get_root_tag(node):
 
 
 def parse(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -161,7 +119,8 @@ def parse(inFilename, silence=False):
 
 
 def parseEtree(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -185,7 +144,8 @@ def parseEtree(inFilename, silence=False):
 
 def parseString(inString, silence=False):
     from StringIO import StringIO
-    doc = parsexml_(StringIO(inString))
+    parser = None
+    doc = parsexml_(StringIO(inString), parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -204,7 +164,8 @@ def parseString(inString, silence=False):
 
 
 def parseLiteral(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -215,8 +176,8 @@ def parseLiteral(inFilename, silence=False):
     # Enable Python to collect the space used by the DOM.
     doc = None
     if not silence:
-        sys.stdout.write('#from ??? import *\n\n')
-        sys.stdout.write('import ??? as model_\n\n')
+        sys.stdout.write('#from finvoice.attachment.attachment import *\n\n')
+        sys.stdout.write('import finvoice.attachment.attachment as model_\n\n')
         sys.stdout.write('rootObj = model_.rootClass(\n')
         rootObj.exportLiteral(sys.stdout, 0, name_=rootTag)
         sys.stdout.write(')\n')
@@ -229,7 +190,7 @@ Usage: python ???.py <infilename>
 
 
 def usage():
-    print USAGE_TEXT
+    print(USAGE_TEXT)
     sys.exit(1)
 
 

@@ -1,88 +1,87 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-###
-# Copyright 2014 Code Master Oy (http://www.codemaster.fi/)
 #
-# This file is part of py-finvoice.
+# Generated  by generateDS.py.
+# Python 3.5.2 (default, Sep 14 2017, 22:51:06)  [GCC 5.4.0 20160609]
 #
-# py-finvoice is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# py-finvoice is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Command line options:
+#   ('-f', '')
+#   ('-s', 'finvoice/soap/msgheadersubs.py')
+#   ('-o', 'finvoice/soap/msgheader.py')
+#   ('--super', 'finvoice.soap.msgheader')
+#   ('--external-encoding', 'iso8859-15')
+#   ('--no-dates', '')
+#   ('--no-versions', '')
 #
-# You should have received a copy of the GNU General Public License
-# along with py-finvoice. If not, see <http://www.gnu.org/licenses/>.
-##
+# Command line arguments:
+#   xsd/msg-header-2_0.xsd
+#
+# Command line:
+#   /home/aisopuro/.virtualenvs/py-finvoice/bin/generateDS.py -f -s "finvoice/soap/msgheadersubs.py" -o "finvoice/soap/msgheader.py" --super="finvoice.soap.msgheader" --external-encoding="iso8859-15" --no-dates --no-versions xsd/msg-header-2_0.xsd
+#
+# Current working directory (os.getcwd()):
+#   py-finvoice
+#
 
 import sys
-import getopt
 import re as re_
 import base64
 import datetime as datetime_
-
-etree_ = None
-Verbose_import_ = False
-(
-    XMLParser_import_none, XMLParser_import_lxml,
-    XMLParser_import_elementtree
-) = range(3)
-XMLParser_import_library = None
+import warnings as warnings_
 try:
-    # lxml
     from lxml import etree as etree_
-    XMLParser_import_library = XMLParser_import_lxml
-    if Verbose_import_:
-        print("running with lxml.etree")
 except ImportError:
-    try:
-        # cElementTree from Python 2.5+
-        import xml.etree.cElementTree as etree_
-        XMLParser_import_library = XMLParser_import_elementtree
-        if Verbose_import_:
-            print("running with cElementTree on Python 2.5+")
-    except ImportError:
-        try:
-            # ElementTree from Python 2.5+
-            import xml.etree.ElementTree as etree_
-            XMLParser_import_library = XMLParser_import_elementtree
-            if Verbose_import_:
-                print("running with ElementTree on Python 2.5+")
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree_
-                XMLParser_import_library = XMLParser_import_elementtree
-                if Verbose_import_:
-                    print("running with cElementTree")
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree_
-                    XMLParser_import_library = XMLParser_import_elementtree
-                    if Verbose_import_:
-                        print("running with ElementTree")
-                except ImportError:
-                    raise ImportError(
-                        "Failed to import ElementTree from any known place")
+    from xml.etree import ElementTree as etree_
 
 
-def parsexml_(*args, **kwargs):
-    if (XMLParser_import_library == XMLParser_import_lxml and
-            'parser' not in kwargs):
+Validate_simpletypes_ = True
+if sys.version_info.major == 2:
+    BaseStrType_ = basestring
+else:
+    BaseStrType_ = str
+
+
+def parsexml_(infile, parser=None, **kwargs):
+    if parser is None:
         # Use the lxml ElementTree compatible parser so that, e.g.,
         #   we ignore comments.
-        kwargs['parser'] = etree_.ETCompatXMLParser()
-    doc = etree_.parse(*args, **kwargs)
+        try:
+            parser = etree_.ETCompatXMLParser()
+        except AttributeError:
+            # fallback to xml.etree
+            parser = etree_.XMLParser()
+    doc = etree_.parse(infile, parser=parser, **kwargs)
     return doc
 
 #
-# User methods
+# Namespace prefix definition table (and other attributes, too)
+#
+# The module generatedsnamespaces, if it is importable, must contain
+# a dictionary named GeneratedsNamespaceDefs.  This Python dictionary
+# should map element type names (strings) to XML schema namespace prefix
+# definitions.  The export method for any class for which there is
+# a namespace prefix definition, will export that definition in the
+# XML representation of that element.  See the export method of
+# any generated element type class for a example of the use of this
+# table.
+# A sample table is:
+#
+#     # File: generatedsnamespaces.py
+#
+#     GenerateDSNamespaceDefs = {
+#         "ElementtypeA": "http://www.xxx.com/namespaceA",
+#         "ElementtypeB": "http://www.xxx.com/namespaceB",
+#     }
+#
+
+try:
+    from generatedsnamespaces import GenerateDSNamespaceDefs as GenerateDSNamespaceDefs_
+except ImportError:
+    GenerateDSNamespaceDefs_ = {}
+
+#
+# The root super-class for element type classes
 #
 # Calls to the methods in these classes are generated by generateDS.py.
 # You can replace these methods by re-implementing the following class
@@ -90,8 +89,8 @@ def parsexml_(*args, **kwargs):
 
 try:
     from generatedssuper import GeneratedsSuper
-except ImportError, exp:
-
+except ImportError as exp:
+    
     class GeneratedsSuper(object):
         tzoff_pattern = re_.compile(r'(\+|-)((0\d|1[0-3]):[0-5]\d|14:00)$')
         class _FixedOffsetTZ(datetime_.tzinfo):
@@ -106,64 +105,68 @@ except ImportError, exp:
                 return None
         def gds_format_string(self, input_data, input_name=''):
             return input_data
-        def gds_validate_string(self, input_data, node, input_name=''):
+        def gds_validate_string(self, input_data, node=None, input_name=''):
             if not input_data:
                 return ''
             else:
                 return input_data
         def gds_format_base64(self, input_data, input_name=''):
             return base64.b64encode(input_data)
-        def gds_validate_base64(self, input_data, node, input_name=''):
+        def gds_validate_base64(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_integer(self, input_data, input_name=''):
             return '%d' % input_data
-        def gds_validate_integer(self, input_data, node, input_name=''):
+        def gds_validate_integer(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_integer_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_integer_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_integer_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 try:
-                    float(value)
+                    int(value)
                 except (TypeError, ValueError):
                     raise_parse_error(node, 'Requires sequence of integers')
-            return input_data
+            return values
         def gds_format_float(self, input_data, input_name=''):
             return ('%.15f' % input_data).rstrip('0')
-        def gds_validate_float(self, input_data, node, input_name=''):
+        def gds_validate_float(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_float_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_float_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_float_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 try:
                     float(value)
                 except (TypeError, ValueError):
                     raise_parse_error(node, 'Requires sequence of floats')
-            return input_data
+            return values
         def gds_format_double(self, input_data, input_name=''):
             return '%e' % input_data
-        def gds_validate_double(self, input_data, node, input_name=''):
+        def gds_validate_double(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_double_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_double_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_double_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 try:
                     float(value)
                 except (TypeError, ValueError):
                     raise_parse_error(node, 'Requires sequence of doubles')
-            return input_data
+            return values
         def gds_format_boolean(self, input_data, input_name=''):
             return ('%s' % input_data).lower()
-        def gds_validate_boolean(self, input_data, node, input_name=''):
+        def gds_validate_boolean(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_boolean_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_boolean_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_boolean_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 if value not in ('true', '1', 'false', '0', ):
@@ -171,8 +174,8 @@ except ImportError, exp:
                         node,
                         'Requires sequence of booleans '
                         '("true", "1", "false", "0")')
-            return input_data
-        def gds_validate_datetime(self, input_data, node, input_name=''):
+            return values
+        def gds_validate_datetime(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_datetime(self, input_data, input_name=''):
             if input_data.microsecond == 0:
@@ -237,7 +240,7 @@ except ImportError, exp:
                     input_data, '%Y-%m-%dT%H:%M:%S')
             dt = dt.replace(tzinfo=tz)
             return dt
-        def gds_validate_date(self, input_data, node, input_name=''):
+        def gds_validate_date(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_date(self, input_data, input_name=''):
             _svalue = '%04d-%02d-%02d' % (
@@ -260,7 +263,8 @@ except ImportError, exp:
                                 _svalue += '+'
                             hours = total_seconds // 3600
                             minutes = (total_seconds - (hours * 3600)) // 60
-                            _svalue += '{0:02d}:{1:02d}'.format(hours, minutes)
+                            _svalue += '{0:02d}:{1:02d}'.format(
+                                hours, minutes)
             except AttributeError:
                 pass
             return _svalue
@@ -283,7 +287,7 @@ except ImportError, exp:
             dt = datetime_.datetime.strptime(input_data, '%Y-%m-%d')
             dt = dt.replace(tzinfo=tz)
             return dt.date()
-        def gds_validate_time(self, input_data, node, input_name=''):
+        def gds_validate_time(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_time(self, input_data, input_name=''):
             if input_data.microsecond == 0:
@@ -315,6 +319,21 @@ except ImportError, exp:
                         minutes = (total_seconds - (hours * 3600)) // 60
                         _svalue += '{0:02d}:{1:02d}'.format(hours, minutes)
             return _svalue
+        def gds_validate_simple_patterns(self, patterns, target):
+            # pat is a list of lists of strings/patterns.  We should:
+            # - AND the outer elements
+            # - OR the inner elements
+            found1 = True
+            for patterns1 in patterns:
+                found2 = False
+                for patterns2 in patterns1:
+                    if re_.search(patterns2, target) is not None:
+                        found2 = True
+                        break
+                if not found2:
+                    found1 = False
+                    break
+            return found1
         @classmethod
         def gds_parse_time(cls, input_data):
             tz = None
@@ -370,6 +389,35 @@ except ImportError, exp:
         @classmethod
         def gds_reverse_node_mapping(cls, mapping):
             return dict(((v, k) for k, v in mapping.iteritems()))
+        @staticmethod
+        def gds_encode(instring):
+            if sys.version_info.major == 2:
+                return instring.encode(ExternalEncoding)
+            else:
+                return instring
+        @staticmethod
+        def convert_unicode(instring):
+            if isinstance(instring, str):
+                result = quote_xml(instring)
+            elif sys.version_info.major == 2 and isinstance(instring, unicode):
+                result = quote_xml(instring).encode('utf8')
+            else:
+                result = GeneratedsSuper.gds_encode(str(instring))
+            return result
+        def __eq__(self, other):
+            if type(self) != type(other):
+                return False
+            return self.__dict__ == other.__dict__
+        def __ne__(self, other):
+            return not self.__eq__(other)
+    
+    def getSubclassFromModule_(module, class_):
+        '''Get the subclass of a class from a specific module.'''
+        name = class_.__name__ + 'Sub'
+        if hasattr(module, name):
+            return getattr(module, name)
+        else:
+            return None
 
 
 #
@@ -391,10 +439,15 @@ except ImportError, exp:
 # Globals
 #
 
-ExternalEncoding = 'iso-8859-15'
+ExternalEncoding = 'iso8859-15'
 Tag_pattern_ = re_.compile(r'({.*})?(.*)')
 String_cleanup_pat_ = re_.compile(r"[\n\r\s]+")
 Namespace_extract_pat_ = re_.compile(r'{(.*)}(.*)')
+CDATA_pattern_ = re_.compile(r"<!\[CDATA\[.*?\]\]>", re_.DOTALL)
+
+# Change this to redirect the generated superclass module to use a
+# specific subclass module.
+CurrentSubclassModule_ = None
 
 #
 # Support/utility functions.
@@ -408,19 +461,32 @@ def showIndent(outfile, level, pretty_print=True):
 
 
 def quote_xml(inStr):
+    "Escape markup chars, but do not modify CDATA sections."
     if not inStr:
         return ''
-    s1 = (isinstance(inStr, basestring) and inStr or
-          '%s' % inStr)
-    s1 = s1.replace('&', '&amp;')
+    s1 = (isinstance(inStr, BaseStrType_) and inStr or '%s' % inStr)
+    s2 = ''
+    pos = 0
+    matchobjects = CDATA_pattern_.finditer(s1)
+    for mo in matchobjects:
+        s3 = s1[pos:mo.start()]
+        s2 += quote_xml_aux(s3)
+        s2 += s1[mo.start():mo.end()]
+        pos = mo.end()
+    s3 = s1[pos:]
+    s2 += quote_xml_aux(s3)
+    return s2
+
+
+def quote_xml_aux(inStr):
+    s1 = inStr.replace('&', '&amp;')
     s1 = s1.replace('<', '&lt;')
     s1 = s1.replace('>', '&gt;')
     return s1
 
 
 def quote_attrib(inStr):
-    s1 = (isinstance(inStr, basestring) and inStr or
-          '%s' % inStr)
+    s1 = (isinstance(inStr, BaseStrType_) and inStr or '%s' % inStr)
     s1 = s1.replace('&', '&amp;')
     s1 = s1.replace('<', '&lt;')
     s1 = s1.replace('>', '&gt;')
@@ -480,11 +546,7 @@ class GDSParseError(Exception):
 
 
 def raise_parse_error(node, msg):
-    if XMLParser_import_library == XMLParser_import_lxml:
-        msg = '%s (element %s/line %d)' % (
-            msg, node.tag, node.sourceline, )
-    else:
-        msg = '%s (element %s)' % (msg, node.tag, )
+    msg = '%s (element %s/line %d)' % (msg, node.tag, node.sourceline, )
     raise GDSParseError(msg)
 
 
@@ -517,7 +579,8 @@ class MixedContainer:
         return self.value
     def getName(self):
         return self.name
-    def export(self, outfile, level, name, namespace, pretty_print=True):
+    def export(self, outfile, level, name, namespace,
+               pretty_print=True):
         if self.category == MixedContainer.CategoryText:
             # Prevent exporting empty content as empty lines.
             if self.value.strip():
@@ -525,7 +588,9 @@ class MixedContainer:
         elif self.category == MixedContainer.CategorySimple:
             self.exportSimple(outfile, level, name)
         else:    # category == MixedContainer.CategoryComplex
-            self.value.export(outfile, level, namespace, name, pretty_print)
+            self.value.export(
+                outfile, level, namespace, name,
+                pretty_print=pretty_print)
     def exportSimple(self, outfile, level, name):
         if self.content_type == MixedContainer.TypeString:
             outfile.write('<%s>%s</%s>' % (
@@ -543,7 +608,9 @@ class MixedContainer:
                 self.name, self.value, self.name))
         elif self.content_type == MixedContainer.TypeBase64:
             outfile.write('<%s>%s</%s>' % (
-                self.name, base64.b64encode(self.value), self.name))
+                self.name,
+                base64.b64encode(self.value),
+                self.name))
     def to_etree(self, element):
         if self.category == MixedContainer.CategoryText:
             # Prevent exporting empty content as empty lines.
@@ -559,7 +626,8 @@ class MixedContainer:
                     else:
                         element.text += self.value
         elif self.category == MixedContainer.CategorySimple:
-            subelement = etree_.SubElement(element, '%s' % self.name)
+            subelement = etree_.SubElement(
+                element, '%s' % self.name)
             subelement.text = self.to_etree_simple()
         else:    # category == MixedContainer.CategoryComplex
             self.value.to_etree(element)
@@ -582,12 +650,14 @@ class MixedContainer:
             showIndent(outfile, level)
             outfile.write(
                 'model_.MixedContainer(%d, %d, "%s", "%s"),\n' % (
-                    self.category, self.content_type, self.name, self.value))
+                    self.category, self.content_type,
+                    self.name, self.value))
         elif self.category == MixedContainer.CategorySimple:
             showIndent(outfile, level)
             outfile.write(
                 'model_.MixedContainer(%d, %d, "%s", "%s"),\n' % (
-                    self.category, self.content_type, self.name, self.value))
+                    self.category, self.content_type,
+                    self.name, self.value))
         else:    # category == MixedContainer.CategoryComplex
             showIndent(outfile, level)
             outfile.write(
@@ -599,10 +669,14 @@ class MixedContainer:
 
 
 class MemberSpec_(object):
-    def __init__(self, name='', data_type='', container=0):
+    def __init__(self, name='', data_type='', container=0,
+            optional=0, child_attrs=None, choice=None):
         self.name = name
         self.data_type = data_type
         self.container = container
+        self.child_attrs = child_attrs
+        self.choice = choice
+        self.optional = optional
     def set_name(self, name): self.name = name
     def get_name(self): return self.name
     def set_data_type(self, data_type): self.data_type = data_type
@@ -617,6 +691,12 @@ class MemberSpec_(object):
             return self.data_type
     def set_container(self, container): self.container = container
     def get_container(self): return self.container
+    def set_child_attrs(self, child_attrs): self.child_attrs = child_attrs
+    def get_child_attrs(self): return self.child_attrs
+    def set_choice(self, choice): self.choice = choice
+    def get_choice(self): return self.choice
+    def set_optional(self, optional): self.optional = optional
+    def get_optional(self): return self.optional
 
 
 def _cast(typ, value):
@@ -629,403 +709,28 @@ def _cast(typ, value):
 #
 
 
-class Manifest(GeneratedsSuper):
-    subclass = None
-    superclass = None
-    def __init__(self, version=None, id=None, Reference=None, anytypeobjs_=None):
-        self.original_tagname_ = None
-        self.version = _cast(None, version)
-        self.id = _cast(None, id)
-        if Reference is None:
-            self.Reference = []
-        else:
-            self.Reference = Reference
-        if anytypeobjs_ is None:
-            self.anytypeobjs_ = []
-        else:
-            self.anytypeobjs_ = anytypeobjs_
-    def factory(*args_, **kwargs_):
-        if Manifest.subclass:
-            return Manifest.subclass(*args_, **kwargs_)
-        else:
-            return Manifest(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_Reference(self): return self.Reference
-    def set_Reference(self, Reference): self.Reference = Reference
-    def add_Reference(self, value): self.Reference.append(value)
-    def insert_Reference_at(self, index, value): self.Reference.insert(index, value)
-    def replace_Reference_at(self, index, value): self.Reference[index] = value
-    def get_anytypeobjs_(self): return self.anytypeobjs_
-    def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
-    def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
-    def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
-    def get_id(self): return self.id
-    def set_id(self, id): self.id = id
-    def hasContent_(self):
-        if (
-            self.Reference or
-            self.anytypeobjs_
-        ):
-            return True
-        else:
-            return False
-    def export(self, outfile, level, namespace_='eb:', name_='Manifest', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
-        if pretty_print:
-            eol_ = '\n'
-        else:
-            eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
-        showIndent(outfile, level, pretty_print)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        already_processed = set()
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='Manifest')
-        if self.hasContent_():
-            outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Manifest', pretty_print=pretty_print)
-            showIndent(outfile, level, pretty_print)
-            outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
-        else:
-            outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Manifest'):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' eb:version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            outfile.write(' eb:id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Manifest', fromsubclass_=False, pretty_print=True):
-        if pretty_print:
-            eol_ = '\n'
-        else:
-            eol_ = ''
-        for Reference_ in self.Reference:
-            Reference_.export(outfile, level, namespace_='eb:', name_='Reference', pretty_print=pretty_print)
-        for obj_ in self.anytypeobjs_:
-            obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Manifest'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('Reference=[\n')
-        level += 1
-        for Reference_ in self.Reference:
-            showIndent(outfile, level)
-            outfile.write('model_.Reference(\n')
-            Reference_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-    def build(self, node):
-        already_processed = set()
-        self.buildAttributes(node, node.attrib, already_processed)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
-        return self
-    def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
-        value = find_attr_value_('id', node)
-        if value is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            self.id = value
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
-        if nodeName_ == 'Reference':
-            obj_ = ReferenceType.factory()
-            obj_.build(child_)
-            self.Reference.append(obj_)
-            obj_.original_tagname_ = 'Reference'
-        else:
-            obj_ = self.gds_build_any(child_, 'Manifest')
-            if obj_ is not None:
-                self.add_anytypeobjs_(obj_)
-# end class Manifest
-
-
-class Reference(GeneratedsSuper):
-    subclass = None
-    superclass = None
-    def __init__(self, role=None, href=None, type_=None, id=None, Schema=None, Description=None, anytypeobjs_=None):
-        self.original_tagname_ = None
-        self.role = _cast(None, role)
-        self.href = _cast(None, href)
-        self.type_ = _cast(None, type_)
-        self.id = _cast(None, id)
-        if Schema is None:
-            self.Schema = []
-        else:
-            self.Schema = Schema
-        if Description is None:
-            self.Description = []
-        else:
-            self.Description = Description
-        if anytypeobjs_ is None:
-            self.anytypeobjs_ = []
-        else:
-            self.anytypeobjs_ = anytypeobjs_
-        self.anyAttributes_ = {}
-    def factory(*args_, **kwargs_):
-        if Reference.subclass:
-            return Reference.subclass(*args_, **kwargs_)
-        else:
-            return Reference(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_Schema(self): return self.Schema
-    def set_Schema(self, Schema): self.Schema = Schema
-    def add_Schema(self, value): self.Schema.append(value)
-    def insert_Schema_at(self, index, value): self.Schema.insert(index, value)
-    def replace_Schema_at(self, index, value): self.Schema[index] = value
-    def get_Description(self): return self.Description
-    def set_Description(self, Description): self.Description = Description
-    def add_Description(self, value): self.Description.append(value)
-    def insert_Description_at(self, index, value): self.Description.insert(index, value)
-    def replace_Description_at(self, index, value): self.Description[index] = value
-    def get_anytypeobjs_(self): return self.anytypeobjs_
-    def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
-    def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
-    def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_role(self): return self.role
-    def set_role(self, role): self.role = role
-    def get_href(self): return self.href
-    def set_href(self, href): self.href = href
-    def get_type(self): return self.type_
-    def set_type(self, type_): self.type_ = type_
-    def get_id(self): return self.id
-    def set_id(self, id): self.id = id
-    def get_anyAttributes_(self): return self.anyAttributes_
-    def set_anyAttributes_(self, anyAttributes_): self.anyAttributes_ = anyAttributes_
-    def hasContent_(self):
-        if (
-            self.Schema or
-            self.Description or
-            self.anytypeobjs_
-        ):
-            return True
-        else:
-            return False
-    def export(self, outfile, level, namespace_='eb:', name_='Reference', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
-        if pretty_print:
-            eol_ = '\n'
-        else:
-            eol_ = ''
-        if self.original_tagname_ is not None:
-            name_ = self.original_tagname_
-        showIndent(outfile, level, pretty_print)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        already_processed = set()
-        self.exportAttributes(outfile, level, already_processed, namespace_, name_='Reference')
-        if self.hasContent_():
-            outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Reference', pretty_print=pretty_print)
-            showIndent(outfile, level, pretty_print)
-            outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
-        else:
-            outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Reference'):
-        unique_counter = 0
-        for name, value in self.anyAttributes_.items():
-            xsinamespaceprefix = 'xsi'
-            xsinamespace1 = 'http://www.w3.org/2001/XMLSchema-instance'
-            xsinamespace2 = '{%s}' % (xsinamespace1, )
-            if name.startswith(xsinamespace2):
-                name1 = name[len(xsinamespace2):]
-                name2 = '%s:%s' % (xsinamespaceprefix, name1, )
-                if name2 not in already_processed:
-                    already_processed.add(name2)
-                    outfile.write(' %s=%s' % (name2, quote_attrib(value), ))
-            else:
-                mo = re_.match(Namespace_extract_pat_, name)
-                if mo is not None:
-                    namespace, name = mo.group(1, 2)
-                    if name not in already_processed:
-                        already_processed.add(name)
-                        if namespace == 'http://www.w3.org/XML/1998/namespace':
-                            outfile.write(' %s=%s' % (
-                                name, quote_attrib(value), ))
-                        else:
-                            unique_counter += 1
-                            outfile.write(' xmlns:yyy%d="%s"' % (
-                                unique_counter, namespace, ))
-                            outfile.write(' yyy%d:%s=%s' % (
-                                unique_counter, name, quote_attrib(value), ))
-                else:
-                    if name not in already_processed:
-                        already_processed.add(name)
-                        outfile.write(' %s=%s' % (
-                            name, quote_attrib(value), ))
-        if self.role is not None and 'role' not in already_processed:
-            already_processed.add('role')
-            outfile.write(' role=%s' % (self.gds_format_string(quote_attrib(self.role).encode(ExternalEncoding), input_name='role'), ))
-        if self.href is not None and 'href' not in already_processed:
-            already_processed.add('href')
-            outfile.write(' xlink:href=%s' % (self.gds_format_string(quote_attrib(self.href).encode(ExternalEncoding), input_name='href'), ))
-        if self.type_ is not None and 'type_' not in already_processed:
-            already_processed.add('type_')
-            outfile.write(' type=%s' % (self.gds_format_string(quote_attrib(self.type_).encode(ExternalEncoding), input_name='type'), ))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            outfile.write(' eb:id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Reference', fromsubclass_=False, pretty_print=True):
-        if pretty_print:
-            eol_ = '\n'
-        else:
-            eol_ = ''
-        for Schema_ in self.Schema:
-            Schema_.export(outfile, level, namespace_='eb:', name_='Schema', pretty_print=pretty_print)
-        for Description_ in self.Description:
-            Description_.export(outfile, level, namespace_='eb:', name_='Description', pretty_print=pretty_print)
-        for obj_ in self.anytypeobjs_:
-            obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Reference'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.role is not None and 'role' not in already_processed:
-            already_processed.add('role')
-            showIndent(outfile, level)
-            outfile.write('role="%s",\n' % (self.role,))
-        if self.href is not None and 'href' not in already_processed:
-            already_processed.add('href')
-            showIndent(outfile, level)
-            outfile.write('href="%s",\n' % (self.href,))
-        if self.type_ is not None and 'type_' not in already_processed:
-            already_processed.add('type_')
-            showIndent(outfile, level)
-            outfile.write('type_="%s",\n' % (self.type_,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-        for name, value in self.anyAttributes_.items():
-            showIndent(outfile, level)
-            outfile.write('%s="%s",\n' % (name, value,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('Schema=[\n')
-        level += 1
-        for Schema_ in self.Schema:
-            showIndent(outfile, level)
-            outfile.write('model_.Schema(\n')
-            Schema_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('Description=[\n')
-        level += 1
-        for Description_ in self.Description:
-            showIndent(outfile, level)
-            outfile.write('model_.Description(\n')
-            Description_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-    def build(self, node):
-        already_processed = set()
-        self.buildAttributes(node, node.attrib, already_processed)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, node, nodeName_)
-        return self
-    def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('role', node)
-        if value is not None and 'role' not in already_processed:
-            already_processed.add('role')
-            self.role = value
-        value = find_attr_value_('href', node)
-        if value is not None and 'href' not in already_processed:
-            already_processed.add('href')
-            self.href = value
-        value = find_attr_value_('type', node)
-        if value is not None and 'type' not in already_processed:
-            already_processed.add('type')
-            self.type_ = value
-        value = find_attr_value_('id', node)
-        if value is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            self.id = value
-        self.anyAttributes_ = {}
-        for name, value in attrs.items():
-            if name not in already_processed:
-                self.anyAttributes_[name] = value
-    def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
-        if nodeName_ == 'Schema':
-            obj_ = Schema.factory()
-            obj_.build(child_)
-            self.Schema.append(obj_)
-            obj_.original_tagname_ = 'Schema'
-        elif nodeName_ == 'Description':
-            obj_ = Description.factory()
-            obj_.build(child_)
-            self.Description.append(obj_)
-            obj_.original_tagname_ = 'Description'
-        else:
-            obj_ = self.gds_build_any(child_, 'Reference')
-            if obj_ is not None:
-                self.add_anytypeobjs_(obj_)
-# end class Reference
-
-
 class Schema(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, version=None, location=None):
+    def __init__(self, location=None, version=None):
         self.original_tagname_ = None
-        self.version = _cast(None, version)
         self.location = _cast(None, location)
+        self.version = _cast(None, version)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Schema)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Schema.subclass:
             return Schema.subclass(*args_, **kwargs_)
         else:
             return Schema(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_location(self): return self.location
     def set_location(self, location): self.location = location
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
     def hasContent_(self):
         if (
 
@@ -1033,7 +738,10 @@ class Schema(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Schema', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Schema', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Schema')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1046,35 +754,18 @@ class Schema(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Schema')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Schema', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Schema', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Schema'):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' eb:version=%s' % (quote_attrib(self.version), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Schema'):
         if self.location is not None and 'location' not in already_processed:
             already_processed.add('location')
-            outfile.write(' eb:location=%s' % (self.gds_format_string(quote_attrib(self.location).encode(ExternalEncoding), input_name='location'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Schema', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='Schema'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+            outfile.write(' location=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.location), input_name='location')), ))
         if self.version is not None and 'version' not in already_processed:
             already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version=%s,\n' % (self.version,))
-        if self.location is not None and 'location' not in already_processed:
-            already_processed.add('location')
-            showIndent(outfile, level)
-            outfile.write('location="%s",\n' % (self.location,))
-    def exportLiteralChildren(self, outfile, level, name_):
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Schema', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -1084,14 +775,14 @@ class Schema(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('location', node)
         if value is not None and 'location' not in already_processed:
             already_processed.add('location')
             self.location = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
 # end class Schema
@@ -1100,11 +791,11 @@ class Schema(GeneratedsSuper):
 class MessageHeader(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, mustUnderstand=None, version=None, id=None, From=None, To=None, CPAId=None, ConversationId=None, Service=None, Action=None, MessageData=None, DuplicateElimination=None, Description=None, anytypeobjs_=None):
+    def __init__(self, id=None, version=None, mustUnderstand=None, From=None, To=None, CPAId=None, ConversationId=None, Service=None, Action=None, MessageData=None, DuplicateElimination=None, Description=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.mustUnderstand = _cast(None, mustUnderstand)
-        self.version = _cast(None, version)
         self.id = _cast(None, id)
+        self.version = _cast(None, version)
+        self.mustUnderstand = _cast(None, mustUnderstand)
         self.From = From
         self.To = To
         self.CPAId = CPAId
@@ -1122,6 +813,11 @@ class MessageHeader(GeneratedsSuper):
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, MessageHeader)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if MessageHeader.subclass:
             return MessageHeader.subclass(*args_, **kwargs_)
         else:
@@ -1152,12 +848,12 @@ class MessageHeader(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_mustUnderstand(self): return self.mustUnderstand
-    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
+    def get_mustUnderstand(self): return self.mustUnderstand
+    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
     def hasContent_(self):
         if (
             self.From is not None or
@@ -1174,7 +870,10 @@ class MessageHeader(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='MessageHeader', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='MessageHeader', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('MessageHeader')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1187,128 +886,49 @@ class MessageHeader(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='MessageHeader')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='MessageHeader', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='MessageHeader', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='MessageHeader'):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            outfile.write(' SOAP-ENV:mustUnderstand=%s' % (self.gds_format_string(quote_attrib(self.mustUnderstand).encode(ExternalEncoding), input_name='mustUnderstand'), ))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' eb:version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='MessageHeader'):
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' eb:id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='MessageHeader', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            outfile.write(' mustUnderstand=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.mustUnderstand), input_name='mustUnderstand')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='MessageHeader', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.From is not None:
-            self.From.export(outfile, level, namespace_='eb:', name_='From', pretty_print=pretty_print)
+            self.From.export(outfile, level, namespace_='tns:', name_='From', pretty_print=pretty_print)
         if self.To is not None:
-            self.To.export(outfile, level, namespace_='eb:', name_='To', pretty_print=pretty_print)
+            self.To.export(outfile, level, namespace_='tns:', name_='To', pretty_print=pretty_print)
         if self.CPAId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sCPAId>%s</%sCPAId>%s' % ('eb:', self.gds_format_string(quote_xml(self.CPAId).encode(ExternalEncoding), input_name='CPAId'), 'eb:', eol_))
+            outfile.write('<%sCPAId>%s</%sCPAId>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.CPAId), input_name='CPAId')), 'tns:', eol_))
         if self.ConversationId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sConversationId>%s</%sConversationId>%s' % ('eb:', self.gds_format_string(quote_xml(self.ConversationId).encode(ExternalEncoding), input_name='ConversationId'), 'eb:', eol_))
+            outfile.write('<%sConversationId>%s</%sConversationId>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.ConversationId), input_name='ConversationId')), 'tns:', eol_))
         if self.Service is not None:
-            self.Service.export(outfile, level, namespace_='eb:', name_='Service', pretty_print=pretty_print)
+            self.Service.export(outfile, level, namespace_='tns:', name_='Service', pretty_print=pretty_print)
         if self.Action is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sAction>%s</%sAction>%s' % ('eb:', self.gds_format_string(quote_xml(self.Action).encode(ExternalEncoding), input_name='Action'), 'eb:', eol_))
+            outfile.write('<%sAction>%s</%sAction>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.Action), input_name='Action')), 'tns:', eol_))
         if self.MessageData is not None:
-            self.MessageData.export(outfile, level, namespace_='eb:', name_='MessageData', pretty_print=pretty_print)
+            self.MessageData.export(outfile, level, namespace_='tns:', name_='MessageData', pretty_print=pretty_print)
         if self.DuplicateElimination is not None:
-            self.DuplicateElimination.export(outfile, level, namespace_='eb:', name_='DuplicateElimination', pretty_print=pretty_print)
+            self.DuplicateElimination.export(outfile, level, namespace_='tns:', name_='DuplicateElimination', pretty_print=pretty_print)
         for Description_ in self.Description:
-            Description_.export(outfile, level, namespace_='eb:', name_='Description', pretty_print=pretty_print)
+            Description_.export(outfile, level, namespace_='tns:', name_='Description', pretty_print=pretty_print)
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='MessageHeader'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            showIndent(outfile, level)
-            outfile.write('mustUnderstand="%s",\n' % (self.mustUnderstand,))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.From is not None:
-            showIndent(outfile, level)
-            outfile.write('From=model_.From(\n')
-            self.From.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.To is not None:
-            showIndent(outfile, level)
-            outfile.write('To=model_.To(\n')
-            self.To.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.CPAId is not None:
-            showIndent(outfile, level)
-            outfile.write('CPAId=%s,\n' % quote_python(self.CPAId).encode(ExternalEncoding))
-        if self.ConversationId is not None:
-            showIndent(outfile, level)
-            outfile.write('ConversationId=%s,\n' % quote_python(self.ConversationId).encode(ExternalEncoding))
-        if self.Service is not None:
-            showIndent(outfile, level)
-            outfile.write('Service=model_.Service(\n')
-            self.Service.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.Action is not None:
-            showIndent(outfile, level)
-            outfile.write('Action=%s,\n' % quote_python(self.Action).encode(ExternalEncoding))
-        if self.MessageData is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageData=model_.MessageData(\n')
-            self.MessageData.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.DuplicateElimination is not None:
-            showIndent(outfile, level)
-            outfile.write('DuplicateElimination=model_.DuplicateElimination(\n')
-            self.DuplicateElimination.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('Description=[\n')
-        level += 1
-        for Description_ in self.Description:
-            showIndent(outfile, level)
-            outfile.write('model_.Description(\n')
-            Description_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1317,18 +937,18 @@ class MessageHeader(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('mustUnderstand', node)
-        if value is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            self.mustUnderstand = value
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('id', node)
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
+        value = find_attr_value_('mustUnderstand', node)
+        if value is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            self.mustUnderstand = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'From':
             obj_ = From.factory()
@@ -1387,6 +1007,11 @@ class Service(GeneratedsSuper):
         self.type_ = _cast(None, type_)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Service)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Service.subclass:
             return Service.subclass(*args_, **kwargs_)
         else:
@@ -1398,12 +1023,15 @@ class Service(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Service', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Service', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Service')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1416,31 +1044,16 @@ class Service(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Service')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Service', pretty_print=pretty_print)
+            outfile.write(self.convert_unicode(self.valueOf_))
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Service', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Service'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Service'):
         if self.type_ is not None and 'type_' not in already_processed:
             already_processed.add('type_')
             outfile.write(' type=%s' % (quote_attrib(self.type_), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Service', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='Service'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.type_ is not None and 'type_' not in already_processed:
-            already_processed.add('type_')
-            showIndent(outfile, level)
-            outfile.write('type_=%s,\n' % (self.type_,))
-    def exportLiteralChildren(self, outfile, level, name_):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Service', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -1466,18 +1079,23 @@ class MessageData(GeneratedsSuper):
     def __init__(self, MessageId=None, Timestamp=None, RefToMessageId=None, TimeToLive=None):
         self.original_tagname_ = None
         self.MessageId = MessageId
-        if isinstance(Timestamp, basestring):
+        if isinstance(Timestamp, BaseStrType_):
             initvalue_ = datetime_.datetime.strptime(Timestamp, '%Y-%m-%dT%H:%M:%S')
         else:
             initvalue_ = Timestamp
         self.Timestamp = initvalue_
         self.RefToMessageId = RefToMessageId
-        if isinstance(TimeToLive, basestring):
+        if isinstance(TimeToLive, BaseStrType_):
             initvalue_ = datetime_.datetime.strptime(TimeToLive, '%Y-%m-%dT%H:%M:%S')
         else:
             initvalue_ = TimeToLive
         self.TimeToLive = initvalue_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, MessageData)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if MessageData.subclass:
             return MessageData.subclass(*args_, **kwargs_)
         else:
@@ -1501,7 +1119,10 @@ class MessageData(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='MessageData', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='MessageData', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('MessageData')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1514,51 +1135,30 @@ class MessageData(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='MessageData')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='MessageData', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='MessageData', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='MessageData'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='MessageData'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='MessageData', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='MessageData', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.MessageId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sMessageId>%s</%sMessageId>%s' % ('eb:', self.gds_format_string(quote_xml(self.MessageId).encode(ExternalEncoding), input_name='MessageId'), 'eb:', eol_))
+            outfile.write('<%sMessageId>%s</%sMessageId>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.MessageId), input_name='MessageId')), 'tns:', eol_))
         if self.Timestamp is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sTimestamp>%s</%sTimestamp>%s' % (namespace_, self.gds_format_datetime(self.Timestamp, input_name='Timestamp'), namespace_, eol_))
         if self.RefToMessageId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % (namespace_, self.gds_format_string(quote_xml(self.RefToMessageId).encode(ExternalEncoding), input_name='RefToMessageId'), namespace_, eol_))
+            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.RefToMessageId), input_name='RefToMessageId')), namespace_, eol_))
         if self.TimeToLive is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sTimeToLive>%s</%sTimeToLive>%s' % (namespace_, self.gds_format_datetime(self.TimeToLive, input_name='TimeToLive'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='MessageData'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.MessageId is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageId=%s,\n' % quote_python(self.MessageId).encode(ExternalEncoding))
-        if self.Timestamp is not None:
-            showIndent(outfile, level)
-            outfile.write('Timestamp=model_.GeneratedsSuper.gds_parse_datetime("%s"),\n' % self.gds_format_datetime(self.Timestamp, input_name='Timestamp'))
-        if self.RefToMessageId is not None:
-            showIndent(outfile, level)
-            outfile.write('RefToMessageId=%s,\n' % quote_python(self.RefToMessageId).encode(ExternalEncoding))
-        if self.TimeToLive is not None:
-            showIndent(outfile, level)
-            outfile.write('TimeToLive=model_.GeneratedsSuper.gds_parse_datetime("%s"),\n' % self.gds_format_datetime(self.TimeToLive, input_name='TimeToLive'))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1594,6 +1194,11 @@ class DuplicateElimination(GeneratedsSuper):
     def __init__(self):
         self.original_tagname_ = None
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, DuplicateElimination)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if DuplicateElimination.subclass:
             return DuplicateElimination.subclass(*args_, **kwargs_)
         else:
@@ -1606,7 +1211,10 @@ class DuplicateElimination(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='DuplicateElimination', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='DuplicateElimination', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('DuplicateElimination')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1619,23 +1227,13 @@ class DuplicateElimination(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='DuplicateElimination')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='DuplicateElimination', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='DuplicateElimination', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='DuplicateElimination'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='DuplicateElimination'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='DuplicateElimination', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='DuplicateElimination'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='DuplicateElimination', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -1654,17 +1252,22 @@ class DuplicateElimination(GeneratedsSuper):
 class SyncReply(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, mustUnderstand=None, version=None, actor=None, id=None, anytypeobjs_=None):
+    def __init__(self, actor=None, id=None, version=None, mustUnderstand=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.mustUnderstand = _cast(None, mustUnderstand)
-        self.version = _cast(None, version)
         self.actor = _cast(None, actor)
         self.id = _cast(None, id)
+        self.version = _cast(None, version)
+        self.mustUnderstand = _cast(None, mustUnderstand)
         if anytypeobjs_ is None:
             self.anytypeobjs_ = []
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SyncReply)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SyncReply.subclass:
             return SyncReply.subclass(*args_, **kwargs_)
         else:
@@ -1674,14 +1277,14 @@ class SyncReply(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_mustUnderstand(self): return self.mustUnderstand
-    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_actor(self): return self.actor
     def set_actor(self, actor): self.actor = actor
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
+    def get_mustUnderstand(self): return self.mustUnderstand
+    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
     def hasContent_(self):
         if (
             self.anytypeobjs_
@@ -1689,7 +1292,10 @@ class SyncReply(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SyncReply', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SyncReply', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SyncReply')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1702,63 +1308,31 @@ class SyncReply(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SyncReply')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SyncReply', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SyncReply', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SyncReply'):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            outfile.write(' mustUnderstand=%s' % (self.gds_format_string(quote_attrib(self.mustUnderstand).encode(ExternalEncoding), input_name='mustUnderstand'), ))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SyncReply'):
         if self.actor is not None and 'actor' not in already_processed:
             already_processed.add('actor')
-            outfile.write(' actor=%s' % (self.gds_format_string(quote_attrib(self.actor).encode(ExternalEncoding), input_name='actor'), ))
+            outfile.write(' actor=%s' % (quote_attrib(self.actor), ))
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SyncReply', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            outfile.write(' mustUnderstand=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.mustUnderstand), input_name='mustUnderstand')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SyncReply', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SyncReply'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            showIndent(outfile, level)
-            outfile.write('mustUnderstand="%s",\n' % (self.mustUnderstand,))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.actor is not None and 'actor' not in already_processed:
-            already_processed.add('actor')
-            showIndent(outfile, level)
-            outfile.write('actor="%s",\n' % (self.actor,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1767,14 +1341,6 @@ class SyncReply(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('mustUnderstand', node)
-        if value is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            self.mustUnderstand = value
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('actor', node)
         if value is not None and 'actor' not in already_processed:
             already_processed.add('actor')
@@ -1783,6 +1349,14 @@ class SyncReply(GeneratedsSuper):
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
+        value = find_attr_value_('mustUnderstand', node)
+        if value is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            self.mustUnderstand = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         obj_ = self.gds_build_any(child_, 'SyncReply')
         if obj_ is not None:
@@ -1793,17 +1367,22 @@ class SyncReply(GeneratedsSuper):
 class MessageOrder(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, mustUnderstand=None, version=None, id=None, SequenceNumber=None, anytypeobjs_=None):
+    def __init__(self, id=None, version=None, mustUnderstand=None, SequenceNumber=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.mustUnderstand = _cast(None, mustUnderstand)
-        self.version = _cast(None, version)
         self.id = _cast(None, id)
+        self.version = _cast(None, version)
+        self.mustUnderstand = _cast(None, mustUnderstand)
         self.SequenceNumber = SequenceNumber
         if anytypeobjs_ is None:
             self.anytypeobjs_ = []
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, MessageOrder)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if MessageOrder.subclass:
             return MessageOrder.subclass(*args_, **kwargs_)
         else:
@@ -1815,12 +1394,12 @@ class MessageOrder(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_mustUnderstand(self): return self.mustUnderstand
-    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
+    def get_mustUnderstand(self): return self.mustUnderstand
+    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
     def hasContent_(self):
         if (
             self.SequenceNumber is not None or
@@ -1829,7 +1408,10 @@ class MessageOrder(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='MessageOrder', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='MessageOrder', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('MessageOrder')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1842,64 +1424,30 @@ class MessageOrder(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='MessageOrder')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='MessageOrder', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='MessageOrder', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='MessageOrder'):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            outfile.write(' mustUnderstand=%s' % (self.gds_format_string(quote_attrib(self.mustUnderstand).encode(ExternalEncoding), input_name='mustUnderstand'), ))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='MessageOrder'):
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='MessageOrder', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            outfile.write(' mustUnderstand=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.mustUnderstand), input_name='mustUnderstand')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='MessageOrder', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.SequenceNumber is not None:
-            self.SequenceNumber.export(outfile, level, namespace_='eb:', name_='SequenceNumber', pretty_print=pretty_print)
+            self.SequenceNumber.export(outfile, level, namespace_='tns:', name_='SequenceNumber', pretty_print=pretty_print)
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='MessageOrder'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            showIndent(outfile, level)
-            outfile.write('mustUnderstand="%s",\n' % (self.mustUnderstand,))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SequenceNumber is not None:
-            showIndent(outfile, level)
-            outfile.write('SequenceNumber=model_.SequenceNumber(\n')
-            self.SequenceNumber.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1908,18 +1456,18 @@ class MessageOrder(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('mustUnderstand', node)
-        if value is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            self.mustUnderstand = value
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('id', node)
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
+        value = find_attr_value_('mustUnderstand', node)
+        if value is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            self.mustUnderstand = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'SequenceNumber':
             obj_ = sequenceNumber_type.factory()
@@ -1936,18 +1484,23 @@ class MessageOrder(GeneratedsSuper):
 class AckRequested(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, version=None, mustUnderstand=None, signed=None, actor=None, id=None, anytypeobjs_=None):
+    def __init__(self, actor=None, signed=None, id=None, version=None, mustUnderstand=None, anytypeobjs_=None):
         self.original_tagname_ = None
+        self.actor = _cast(None, actor)
+        self.signed = _cast(bool, signed)
+        self.id = _cast(None, id)
         self.version = _cast(None, version)
         self.mustUnderstand = _cast(None, mustUnderstand)
-        self.signed = _cast(bool, signed)
-        self.actor = _cast(None, actor)
-        self.id = _cast(None, id)
         if anytypeobjs_ is None:
             self.anytypeobjs_ = []
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, AckRequested)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if AckRequested.subclass:
             return AckRequested.subclass(*args_, **kwargs_)
         else:
@@ -1957,16 +1510,16 @@ class AckRequested(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
+    def get_actor(self): return self.actor
+    def set_actor(self, actor): self.actor = actor
+    def get_signed(self): return self.signed
+    def set_signed(self, signed): self.signed = signed
+    def get_id(self): return self.id
+    def set_id(self, id): self.id = id
     def get_version(self): return self.version
     def set_version(self, version): self.version = version
     def get_mustUnderstand(self): return self.mustUnderstand
     def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
-    def get_signed(self): return self.signed
-    def set_signed(self, signed): self.signed = signed
-    def get_actor(self): return self.actor
-    def set_actor(self, actor): self.actor = actor
-    def get_id(self): return self.id
-    def set_id(self, id): self.id = id
     def hasContent_(self):
         if (
             self.anytypeobjs_
@@ -1974,7 +1527,10 @@ class AckRequested(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='AckRequested', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='AckRequested', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('AckRequested')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1987,70 +1543,34 @@ class AckRequested(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='AckRequested')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='AckRequested', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='AckRequested', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='AckRequested'):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            outfile.write(' mustUnderstand=%s' % (self.gds_format_string(quote_attrib(self.mustUnderstand).encode(ExternalEncoding), input_name='mustUnderstand'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='AckRequested'):
+        if self.actor is not None and 'actor' not in already_processed:
+            already_processed.add('actor')
+            outfile.write(' actor=%s' % (quote_attrib(self.actor), ))
         if self.signed is not None and 'signed' not in already_processed:
             already_processed.add('signed')
             outfile.write(' signed="%s"' % self.gds_format_boolean(self.signed, input_name='signed'))
-        if self.actor is not None and 'actor' not in already_processed:
-            already_processed.add('actor')
-            outfile.write(' actor=%s' % (self.gds_format_string(quote_attrib(self.actor).encode(ExternalEncoding), input_name='actor'), ))
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='AckRequested', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            outfile.write(' mustUnderstand=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.mustUnderstand), input_name='mustUnderstand')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='AckRequested', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='AckRequested'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            showIndent(outfile, level)
-            outfile.write('mustUnderstand="%s",\n' % (self.mustUnderstand,))
-        if self.signed is not None and 'signed' not in already_processed:
-            already_processed.add('signed')
-            showIndent(outfile, level)
-            outfile.write('signed=%s,\n' % (self.signed,))
-        if self.actor is not None and 'actor' not in already_processed:
-            already_processed.add('actor')
-            showIndent(outfile, level)
-            outfile.write('actor="%s",\n' % (self.actor,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2059,14 +1579,10 @@ class AckRequested(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
-        value = find_attr_value_('mustUnderstand', node)
-        if value is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            self.mustUnderstand = value
+        value = find_attr_value_('actor', node)
+        if value is not None and 'actor' not in already_processed:
+            already_processed.add('actor')
+            self.actor = value
         value = find_attr_value_('signed', node)
         if value is not None and 'signed' not in already_processed:
             already_processed.add('signed')
@@ -2076,14 +1592,18 @@ class AckRequested(GeneratedsSuper):
                 self.signed = False
             else:
                 raise_parse_error(node, 'Bad boolean attribute')
-        value = find_attr_value_('actor', node)
-        if value is not None and 'actor' not in already_processed:
-            already_processed.add('actor')
-            self.actor = value
         value = find_attr_value_('id', node)
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
+        value = find_attr_value_('mustUnderstand', node)
+        if value is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            self.mustUnderstand = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         obj_ = self.gds_build_any(child_, 'AckRequested')
         if obj_ is not None:
@@ -2094,13 +1614,13 @@ class AckRequested(GeneratedsSuper):
 class Acknowledgment(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, mustUnderstand=None, version=None, actor=None, id=None, Timestamp=None, RefToMessageId=None, From=None, Reference=None, anytypeobjs_=None):
+    def __init__(self, actor=None, id=None, version=None, mustUnderstand=None, Timestamp=None, RefToMessageId=None, From=None, Reference=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.mustUnderstand = _cast(None, mustUnderstand)
-        self.version = _cast(None, version)
         self.actor = _cast(None, actor)
         self.id = _cast(None, id)
-        if isinstance(Timestamp, basestring):
+        self.version = _cast(None, version)
+        self.mustUnderstand = _cast(None, mustUnderstand)
+        if isinstance(Timestamp, BaseStrType_):
             initvalue_ = datetime_.datetime.strptime(Timestamp, '%Y-%m-%dT%H:%M:%S')
         else:
             initvalue_ = Timestamp
@@ -2116,6 +1636,11 @@ class Acknowledgment(GeneratedsSuper):
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Acknowledgment)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Acknowledgment.subclass:
             return Acknowledgment.subclass(*args_, **kwargs_)
         else:
@@ -2136,14 +1661,14 @@ class Acknowledgment(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_mustUnderstand(self): return self.mustUnderstand
-    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_actor(self): return self.actor
     def set_actor(self, actor): self.actor = actor
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
+    def get_mustUnderstand(self): return self.mustUnderstand
+    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
     def hasContent_(self):
         if (
             self.Timestamp is not None or
@@ -2155,7 +1680,10 @@ class Acknowledgment(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Acknowledgment', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Acknowledgment', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Acknowledgment')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2168,25 +1696,25 @@ class Acknowledgment(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Acknowledgment')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Acknowledgment', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Acknowledgment', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Acknowledgment'):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            outfile.write(' mustUnderstand=%s' % (self.gds_format_string(quote_attrib(self.mustUnderstand).encode(ExternalEncoding), input_name='mustUnderstand'), ))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Acknowledgment'):
         if self.actor is not None and 'actor' not in already_processed:
             already_processed.add('actor')
-            outfile.write(' actor=%s' % (self.gds_format_string(quote_attrib(self.actor).encode(ExternalEncoding), input_name='actor'), ))
+            outfile.write(' actor=%s' % (quote_attrib(self.actor), ))
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Acknowledgment', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            outfile.write(' mustUnderstand=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.mustUnderstand), input_name='mustUnderstand')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Acknowledgment', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2196,69 +1724,13 @@ class Acknowledgment(GeneratedsSuper):
             outfile.write('<%sTimestamp>%s</%sTimestamp>%s' % (namespace_, self.gds_format_datetime(self.Timestamp, input_name='Timestamp'), namespace_, eol_))
         if self.RefToMessageId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % ('eb:', self.gds_format_string(quote_xml(self.RefToMessageId).encode(ExternalEncoding), input_name='RefToMessageId'), 'eb:', eol_))
+            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.RefToMessageId), input_name='RefToMessageId')), 'tns:', eol_))
         if self.From is not None:
-            self.From.export(outfile, level, namespace_='eb:', name_='From', pretty_print=pretty_print)
+            self.From.export(outfile, level, namespace_='tns:', name_='From', pretty_print=pretty_print)
         for Reference_ in self.Reference:
             Reference_.export(outfile, level, namespace_='ds:', name_='Reference', pretty_print=pretty_print)
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Acknowledgment'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            showIndent(outfile, level)
-            outfile.write('mustUnderstand="%s",\n' % (self.mustUnderstand,))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.actor is not None and 'actor' not in already_processed:
-            already_processed.add('actor')
-            showIndent(outfile, level)
-            outfile.write('actor="%s",\n' % (self.actor,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.Timestamp is not None:
-            showIndent(outfile, level)
-            outfile.write('Timestamp=model_.GeneratedsSuper.gds_parse_datetime("%s"),\n' % self.gds_format_datetime(self.Timestamp, input_name='Timestamp'))
-        if self.RefToMessageId is not None:
-            showIndent(outfile, level)
-            outfile.write('RefToMessageId=%s,\n' % quote_python(self.RefToMessageId).encode(ExternalEncoding))
-        if self.From is not None:
-            showIndent(outfile, level)
-            outfile.write('From=model_.From(\n')
-            self.From.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('Reference=[\n')
-        level += 1
-        for Reference_ in self.Reference:
-            showIndent(outfile, level)
-            outfile.write('model_.Reference(\n')
-            Reference_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2267,14 +1739,6 @@ class Acknowledgment(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('mustUnderstand', node)
-        if value is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            self.mustUnderstand = value
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('actor', node)
         if value is not None and 'actor' not in already_processed:
             already_processed.add('actor')
@@ -2283,6 +1747,14 @@ class Acknowledgment(GeneratedsSuper):
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
+        value = find_attr_value_('mustUnderstand', node)
+        if value is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            self.mustUnderstand = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'Timestamp':
             sval_ = child_.text
@@ -2312,12 +1784,12 @@ class Acknowledgment(GeneratedsSuper):
 class ErrorList(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, mustUnderstand=None, version=None, highestSeverity=None, id=None, Error=None, anytypeobjs_=None):
+    def __init__(self, highestSeverity=None, id=None, version=None, mustUnderstand=None, Error=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.mustUnderstand = _cast(None, mustUnderstand)
-        self.version = _cast(None, version)
         self.highestSeverity = _cast(None, highestSeverity)
         self.id = _cast(None, id)
+        self.version = _cast(None, version)
+        self.mustUnderstand = _cast(None, mustUnderstand)
         if Error is None:
             self.Error = []
         else:
@@ -2327,6 +1799,11 @@ class ErrorList(GeneratedsSuper):
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, ErrorList)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if ErrorList.subclass:
             return ErrorList.subclass(*args_, **kwargs_)
         else:
@@ -2341,14 +1818,14 @@ class ErrorList(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_mustUnderstand(self): return self.mustUnderstand
-    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_highestSeverity(self): return self.highestSeverity
     def set_highestSeverity(self, highestSeverity): self.highestSeverity = highestSeverity
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
+    def get_mustUnderstand(self): return self.mustUnderstand
+    def set_mustUnderstand(self, mustUnderstand): self.mustUnderstand = mustUnderstand
     def hasContent_(self):
         if (
             self.Error or
@@ -2357,7 +1834,10 @@ class ErrorList(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='ErrorList', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='ErrorList', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('ErrorList')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2370,77 +1850,33 @@ class ErrorList(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='ErrorList')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='ErrorList', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='ErrorList', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='ErrorList'):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            outfile.write(' mustUnderstand=%s' % (self.gds_format_string(quote_attrib(self.mustUnderstand).encode(ExternalEncoding), input_name='mustUnderstand'), ))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='ErrorList'):
         if self.highestSeverity is not None and 'highestSeverity' not in already_processed:
             already_processed.add('highestSeverity')
             outfile.write(' highestSeverity=%s' % (quote_attrib(self.highestSeverity), ))
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='ErrorList', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            outfile.write(' mustUnderstand=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.mustUnderstand), input_name='mustUnderstand')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='ErrorList', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for Error_ in self.Error:
-            Error_.export(outfile, level, namespace_='eb:', name_='Error', pretty_print=pretty_print)
+            Error_.export(outfile, level, namespace_='tns:', name_='Error', pretty_print=pretty_print)
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='ErrorList'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.mustUnderstand is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            showIndent(outfile, level)
-            outfile.write('mustUnderstand="%s",\n' % (self.mustUnderstand,))
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.highestSeverity is not None and 'highestSeverity' not in already_processed:
-            already_processed.add('highestSeverity')
-            showIndent(outfile, level)
-            outfile.write('highestSeverity=%s,\n' % (self.highestSeverity,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('Error=[\n')
-        level += 1
-        for Error_ in self.Error:
-            showIndent(outfile, level)
-            outfile.write('model_.Error(\n')
-            Error_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2449,14 +1885,6 @@ class ErrorList(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('mustUnderstand', node)
-        if value is not None and 'mustUnderstand' not in already_processed:
-            already_processed.add('mustUnderstand')
-            self.mustUnderstand = value
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('highestSeverity', node)
         if value is not None and 'highestSeverity' not in already_processed:
             already_processed.add('highestSeverity')
@@ -2465,6 +1893,14 @@ class ErrorList(GeneratedsSuper):
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
+        value = find_attr_value_('mustUnderstand', node)
+        if value is not None and 'mustUnderstand' not in already_processed:
+            already_processed.add('mustUnderstand')
+            self.mustUnderstand = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'Error':
             obj_ = Error.factory()
@@ -2481,13 +1917,13 @@ class ErrorList(GeneratedsSuper):
 class Error(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, errorCode=None, severity=None, location=None, id=None, codeContext='urn:oasis:names:tc:ebxml-msg:service:errors', Description=None, anytypeobjs_=None):
+    def __init__(self, id=None, codeContext='urn:oasis:names:tc:ebxml-msg:service:errors', errorCode=None, severity=None, location=None, Description=None, anytypeobjs_=None):
         self.original_tagname_ = None
+        self.id = _cast(None, id)
+        self.codeContext = _cast(None, codeContext)
         self.errorCode = _cast(None, errorCode)
         self.severity = _cast(None, severity)
         self.location = _cast(None, location)
-        self.id = _cast(None, id)
-        self.codeContext = _cast(None, codeContext)
         self.Description = Description
         if anytypeobjs_ is None:
             self.anytypeobjs_ = []
@@ -2495,6 +1931,11 @@ class Error(GeneratedsSuper):
             self.anytypeobjs_ = anytypeobjs_
         self.anyAttributes_ = {}
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Error)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Error.subclass:
             return Error.subclass(*args_, **kwargs_)
         else:
@@ -2506,16 +1947,16 @@ class Error(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
+    def get_id(self): return self.id
+    def set_id(self, id): self.id = id
+    def get_codeContext(self): return self.codeContext
+    def set_codeContext(self, codeContext): self.codeContext = codeContext
     def get_errorCode(self): return self.errorCode
     def set_errorCode(self, errorCode): self.errorCode = errorCode
     def get_severity(self): return self.severity
     def set_severity(self, severity): self.severity = severity
     def get_location(self): return self.location
     def set_location(self, location): self.location = location
-    def get_id(self): return self.id
-    def set_id(self, id): self.id = id
-    def get_codeContext(self): return self.codeContext
-    def set_codeContext(self, codeContext): self.codeContext = codeContext
     def get_anyAttributes_(self): return self.anyAttributes_
     def set_anyAttributes_(self, anyAttributes_): self.anyAttributes_ = anyAttributes_
     def hasContent_(self):
@@ -2526,7 +1967,10 @@ class Error(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Error', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Error', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Error')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2539,12 +1983,12 @@ class Error(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Error')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Error', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Error', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Error'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Error'):
         unique_counter = 0
         for name, value in self.anyAttributes_.items():
             xsinamespaceprefix = 'xsi'
@@ -2567,15 +2011,21 @@ class Error(GeneratedsSuper):
                                 name, quote_attrib(value), ))
                         else:
                             unique_counter += 1
-                            outfile.write(' xmlns:yyy%d="%s"' % (
+                            outfile.write(' xmlns:%d="%s"' % (
                                 unique_counter, namespace, ))
-                            outfile.write(' yyy%d:%s=%s' % (
+                            outfile.write(' %d:%s=%s' % (
                                 unique_counter, name, quote_attrib(value), ))
                 else:
                     if name not in already_processed:
                         already_processed.add(name)
                         outfile.write(' %s=%s' % (
                             name, quote_attrib(value), ))
+        if self.id is not None and 'id' not in already_processed:
+            already_processed.add('id')
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.codeContext != "urn:oasis:names:tc:ebxml-msg:service:errors" and 'codeContext' not in already_processed:
+            already_processed.add('codeContext')
+            outfile.write(' codeContext=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.codeContext), input_name='codeContext')), ))
         if self.errorCode is not None and 'errorCode' not in already_processed:
             already_processed.add('errorCode')
             outfile.write(' errorCode=%s' % (quote_attrib(self.errorCode), ))
@@ -2585,66 +2035,15 @@ class Error(GeneratedsSuper):
         if self.location is not None and 'location' not in already_processed:
             already_processed.add('location')
             outfile.write(' location=%s' % (quote_attrib(self.location), ))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-        if self.codeContext is not None and 'codeContext' not in already_processed:
-            already_processed.add('codeContext')
-            outfile.write(' codeContext=%s' % (self.gds_format_string(quote_attrib(self.codeContext).encode(ExternalEncoding), input_name='codeContext'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Error', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Error', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.Description is not None:
-            self.Description.export(outfile, level, namespace_='eb:', name_='Description', pretty_print=pretty_print)
+            self.Description.export(outfile, level, namespace_='tns:', name_='Description', pretty_print=pretty_print)
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Error'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.errorCode is not None and 'errorCode' not in already_processed:
-            already_processed.add('errorCode')
-            showIndent(outfile, level)
-            outfile.write('errorCode=%s,\n' % (self.errorCode,))
-        if self.severity is not None and 'severity' not in already_processed:
-            already_processed.add('severity')
-            showIndent(outfile, level)
-            outfile.write('severity=%s,\n' % (self.severity,))
-        if self.location is not None and 'location' not in already_processed:
-            already_processed.add('location')
-            showIndent(outfile, level)
-            outfile.write('location=%s,\n' % (self.location,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-        if self.codeContext is not None and 'codeContext' not in already_processed:
-            already_processed.add('codeContext')
-            showIndent(outfile, level)
-            outfile.write('codeContext="%s",\n' % (self.codeContext,))
-        for name, value in self.anyAttributes_.items():
-            showIndent(outfile, level)
-            outfile.write('%s="%s",\n' % (name, value,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.Description is not None:
-            showIndent(outfile, level)
-            outfile.write('Description=model_.Description(\n')
-            self.Description.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2653,6 +2052,14 @@ class Error(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
+        value = find_attr_value_('id', node)
+        if value is not None and 'id' not in already_processed:
+            already_processed.add('id')
+            self.id = value
+        value = find_attr_value_('codeContext', node)
+        if value is not None and 'codeContext' not in already_processed:
+            already_processed.add('codeContext')
+            self.codeContext = value
         value = find_attr_value_('errorCode', node)
         if value is not None and 'errorCode' not in already_processed:
             already_processed.add('errorCode')
@@ -2665,14 +2072,6 @@ class Error(GeneratedsSuper):
         if value is not None and 'location' not in already_processed:
             already_processed.add('location')
             self.location = value
-        value = find_attr_value_('id', node)
-        if value is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            self.id = value
-        value = find_attr_value_('codeContext', node)
-        if value is not None and 'codeContext' not in already_processed:
-            already_processed.add('codeContext')
-            self.codeContext = value
         self.anyAttributes_ = {}
         for name, value in attrs.items():
             if name not in already_processed:
@@ -2693,13 +2092,13 @@ class Error(GeneratedsSuper):
 class StatusResponse(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, version=None, id=None, messageStatus=None, RefToMessageId=None, Timestamp=None, anytypeobjs_=None):
+    def __init__(self, messageStatus=None, id=None, version=None, RefToMessageId=None, Timestamp=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.version = _cast(None, version)
-        self.id = _cast(None, id)
         self.messageStatus = _cast(None, messageStatus)
+        self.id = _cast(None, id)
+        self.version = _cast(None, version)
         self.RefToMessageId = RefToMessageId
-        if isinstance(Timestamp, basestring):
+        if isinstance(Timestamp, BaseStrType_):
             initvalue_ = datetime_.datetime.strptime(Timestamp, '%Y-%m-%dT%H:%M:%S')
         else:
             initvalue_ = Timestamp
@@ -2709,6 +2108,11 @@ class StatusResponse(GeneratedsSuper):
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, StatusResponse)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if StatusResponse.subclass:
             return StatusResponse.subclass(*args_, **kwargs_)
         else:
@@ -2722,12 +2126,12 @@ class StatusResponse(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
-    def get_id(self): return self.id
-    def set_id(self, id): self.id = id
     def get_messageStatus(self): return self.messageStatus
     def set_messageStatus(self, messageStatus): self.messageStatus = messageStatus
+    def get_id(self): return self.id
+    def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
     def hasContent_(self):
         if (
             self.RefToMessageId is not None or
@@ -2737,7 +2141,10 @@ class StatusResponse(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='StatusResponse', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='StatusResponse', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('StatusResponse')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2750,68 +2157,34 @@ class StatusResponse(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='StatusResponse')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='StatusResponse', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='StatusResponse', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='StatusResponse'):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='StatusResponse'):
         if self.messageStatus is not None and 'messageStatus' not in already_processed:
             already_processed.add('messageStatus')
             outfile.write(' messageStatus=%s' % (quote_attrib(self.messageStatus), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='StatusResponse', fromsubclass_=False, pretty_print=True):
+        if self.id is not None and 'id' not in already_processed:
+            already_processed.add('id')
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='StatusResponse', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.RefToMessageId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % ('eb:', self.gds_format_string(quote_xml(self.RefToMessageId).encode(ExternalEncoding), input_name='RefToMessageId'), 'eb:', eol_))
+            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.RefToMessageId), input_name='RefToMessageId')), 'tns:', eol_))
         if self.Timestamp is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sTimestamp>%s</%sTimestamp>%s' % (namespace_, self.gds_format_datetime(self.Timestamp, input_name='Timestamp'), namespace_, eol_))
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='StatusResponse'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-        if self.messageStatus is not None and 'messageStatus' not in already_processed:
-            already_processed.add('messageStatus')
-            showIndent(outfile, level)
-            outfile.write('messageStatus=%s,\n' % (self.messageStatus,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.RefToMessageId is not None:
-            showIndent(outfile, level)
-            outfile.write('RefToMessageId=%s,\n' % quote_python(self.RefToMessageId).encode(ExternalEncoding))
-        if self.Timestamp is not None:
-            showIndent(outfile, level)
-            outfile.write('Timestamp=model_.GeneratedsSuper.gds_parse_datetime("%s"),\n' % self.gds_format_datetime(self.Timestamp, input_name='Timestamp'))
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2820,18 +2193,18 @@ class StatusResponse(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
-        value = find_attr_value_('id', node)
-        if value is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            self.id = value
         value = find_attr_value_('messageStatus', node)
         if value is not None and 'messageStatus' not in already_processed:
             already_processed.add('messageStatus')
             self.messageStatus = value
+        value = find_attr_value_('id', node)
+        if value is not None and 'id' not in already_processed:
+            already_processed.add('id')
+            self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'RefToMessageId':
             RefToMessageId_ = child_.text
@@ -2851,16 +2224,21 @@ class StatusResponse(GeneratedsSuper):
 class StatusRequest(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, version=None, id=None, RefToMessageId=None, anytypeobjs_=None):
+    def __init__(self, id=None, version=None, RefToMessageId=None, anytypeobjs_=None):
         self.original_tagname_ = None
-        self.version = _cast(None, version)
         self.id = _cast(None, id)
+        self.version = _cast(None, version)
         self.RefToMessageId = RefToMessageId
         if anytypeobjs_ is None:
             self.anytypeobjs_ = []
         else:
             self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, StatusRequest)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if StatusRequest.subclass:
             return StatusRequest.subclass(*args_, **kwargs_)
         else:
@@ -2872,10 +2250,10 @@ class StatusRequest(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_version(self): return self.version
-    def set_version(self, version): self.version = version
     def get_id(self): return self.id
     def set_id(self, id): self.id = id
+    def get_version(self): return self.version
+    def set_version(self, version): self.version = version
     def hasContent_(self):
         if (
             self.RefToMessageId is not None or
@@ -2884,7 +2262,10 @@ class StatusRequest(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='StatusRequest', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='StatusRequest', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('StatusRequest')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2897,55 +2278,28 @@ class StatusRequest(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='StatusRequest')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='StatusRequest', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='StatusRequest', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='StatusRequest'):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='StatusRequest'):
         if self.id is not None and 'id' not in already_processed:
             already_processed.add('id')
-            outfile.write(' id=%s' % (self.gds_format_string(quote_attrib(self.id).encode(ExternalEncoding), input_name='id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='StatusRequest', fromsubclass_=False, pretty_print=True):
+            outfile.write(' id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.id), input_name='id')), ))
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            outfile.write(' version=%s' % (quote_attrib(self.version), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='StatusRequest', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.RefToMessageId is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % ('eb:', self.gds_format_string(quote_xml(self.RefToMessageId).encode(ExternalEncoding), input_name='RefToMessageId'), 'eb:', eol_))
+            outfile.write('<%sRefToMessageId>%s</%sRefToMessageId>%s' % ('tns:', self.gds_encode(self.gds_format_string(quote_xml(self.RefToMessageId), input_name='RefToMessageId')), 'tns:', eol_))
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='StatusRequest'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.version is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            showIndent(outfile, level)
-            outfile.write('version="%s",\n' % (self.version,))
-        if self.id is not None and 'id' not in already_processed:
-            already_processed.add('id')
-            showIndent(outfile, level)
-            outfile.write('id="%s",\n' % (self.id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.RefToMessageId is not None:
-            showIndent(outfile, level)
-            outfile.write('RefToMessageId=%s,\n' % quote_python(self.RefToMessageId).encode(ExternalEncoding))
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2954,14 +2308,14 @@ class StatusRequest(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('version', node)
-        if value is not None and 'version' not in already_processed:
-            already_processed.add('version')
-            self.version = value
         value = find_attr_value_('id', node)
         if value is not None and 'id' not in already_processed:
             already_processed.add('id')
             self.id = value
+        value = find_attr_value_('version', node)
+        if value is not None and 'version' not in already_processed:
+            already_processed.add('version')
+            self.version = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'RefToMessageId':
             RefToMessageId_ = child_.text
@@ -2982,6 +2336,11 @@ class sequenceNumber_type(GeneratedsSuper):
         self.status = _cast(None, status)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, sequenceNumber_type)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if sequenceNumber_type.subclass:
             return sequenceNumber_type.subclass(*args_, **kwargs_)
         else:
@@ -2993,12 +2352,15 @@ class sequenceNumber_type(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='sequenceNumber.type', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='sequenceNumber.type', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('sequenceNumber.type')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3011,31 +2373,16 @@ class sequenceNumber_type(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='sequenceNumber.type')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='sequenceNumber.type', pretty_print=pretty_print)
+            outfile.write(self.convert_unicode(self.valueOf_))
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='sequenceNumber.type', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='sequenceNumber.type'):
-        if self.status is not None and 'status' not in already_processed:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='sequenceNumber.type'):
+        if self.status != "Continue" and 'status' not in already_processed:
             already_processed.add('status')
             outfile.write(' status=%s' % (quote_attrib(self.status), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='sequenceNumber.type', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='sequenceNumber.type'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.status is not None and 'status' not in already_processed:
-            already_processed.add('status')
-            showIndent(outfile, level)
-            outfile.write('status=%s,\n' % (self.status,))
-    def exportLiteralChildren(self, outfile, level, name_):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='sequenceNumber.type', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -3063,6 +2410,11 @@ class PartyId(GeneratedsSuper):
         self.type_ = _cast(None, type_)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, PartyId)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if PartyId.subclass:
             return PartyId.subclass(*args_, **kwargs_)
         else:
@@ -3074,12 +2426,15 @@ class PartyId(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='PartyId', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='PartyId', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('PartyId')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3092,31 +2447,16 @@ class PartyId(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='PartyId')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='PartyId', pretty_print=pretty_print)
+            outfile.write(self.convert_unicode(self.valueOf_))
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='PartyId', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='PartyId'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='PartyId'):
         if self.type_ is not None and 'type_' not in already_processed:
             already_processed.add('type_')
             outfile.write(' type=%s' % (quote_attrib(self.type_), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='PartyId', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='PartyId'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.type_ is not None and 'type_' not in already_processed:
-            already_processed.add('type_')
-            showIndent(outfile, level)
-            outfile.write('type_=%s,\n' % (self.type_,))
-    def exportLiteralChildren(self, outfile, level, name_):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='PartyId', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -3146,7 +2486,13 @@ class To(GeneratedsSuper):
         else:
             self.PartyId = PartyId
         self.Role = Role
+        self.validate_non_empty_string(self.Role)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, To)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if To.subclass:
             return To.subclass(*args_, **kwargs_)
         else:
@@ -3159,6 +2505,11 @@ class To(GeneratedsSuper):
     def replace_PartyId_at(self, index, value): self.PartyId[index] = value
     def get_Role(self): return self.Role
     def set_Role(self, Role): self.Role = Role
+    def validate_non_empty_string(self, value):
+        # Validate type non-empty-string, a restriction on string.
+        if value is not None and Validate_simpletypes_:
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on non-empty-string' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.PartyId or
@@ -3167,7 +2518,10 @@ class To(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='To', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='To', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('To')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3180,47 +2534,23 @@ class To(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='To')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='To', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='To', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='To'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='To'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='To', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='To', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for PartyId_ in self.PartyId:
-            PartyId_.export(outfile, level, namespace_='eb:', name_='PartyId', pretty_print=pretty_print)
+            PartyId_.export(outfile, level, namespace_='tns:', name_='PartyId', pretty_print=pretty_print)
         if self.Role is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sRole>%s</%sRole>%s' % (namespace_, self.gds_format_string(quote_xml(self.Role).encode(ExternalEncoding), input_name='Role'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='To'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('PartyId=[\n')
-        level += 1
-        for PartyId_ in self.PartyId:
-            showIndent(outfile, level)
-            outfile.write('model_.PartyId(\n')
-            PartyId_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.Role is not None:
-            showIndent(outfile, level)
-            outfile.write('Role=%s,\n' % quote_python(self.Role).encode(ExternalEncoding))
+            outfile.write('<%sRole>%s</%sRole>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.Role), input_name='Role')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -3240,6 +2570,8 @@ class To(GeneratedsSuper):
             Role_ = child_.text
             Role_ = self.gds_validate_string(Role_, node, 'Role')
             self.Role = Role_
+            # validate type non-empty-string
+            self.validate_non_empty_string(self.Role)
 # end class To
 
 
@@ -3253,7 +2585,13 @@ class From(GeneratedsSuper):
         else:
             self.PartyId = PartyId
         self.Role = Role
+        self.validate_non_empty_string(self.Role)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, From)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if From.subclass:
             return From.subclass(*args_, **kwargs_)
         else:
@@ -3266,6 +2604,11 @@ class From(GeneratedsSuper):
     def replace_PartyId_at(self, index, value): self.PartyId[index] = value
     def get_Role(self): return self.Role
     def set_Role(self, Role): self.Role = Role
+    def validate_non_empty_string(self, value):
+        # Validate type non-empty-string, a restriction on string.
+        if value is not None and Validate_simpletypes_:
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on non-empty-string' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.PartyId or
@@ -3274,7 +2617,10 @@ class From(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='From', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='From', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('From')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3287,47 +2633,23 @@ class From(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='From')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='From', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='From', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='From'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='From'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='From', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='From', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for PartyId_ in self.PartyId:
-            PartyId_.export(outfile, level, namespace_='eb:', name_='PartyId', pretty_print=pretty_print)
+            PartyId_.export(outfile, level, namespace_='tns:', name_='PartyId', pretty_print=pretty_print)
         if self.Role is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sRole>%s</%sRole>%s' % (namespace_, self.gds_format_string(quote_xml(self.Role).encode(ExternalEncoding), input_name='Role'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='From'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('PartyId=[\n')
-        level += 1
-        for PartyId_ in self.PartyId:
-            showIndent(outfile, level)
-            outfile.write('model_.PartyId(\n')
-            PartyId_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.Role is not None:
-            showIndent(outfile, level)
-            outfile.write('Role=%s,\n' % quote_python(self.Role).encode(ExternalEncoding))
+            outfile.write('<%sRole>%s</%sRole>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.Role), input_name='Role')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -3347,6 +2669,8 @@ class From(GeneratedsSuper):
             Role_ = child_.text
             Role_ = self.gds_validate_string(Role_, node, 'Role')
             self.Role = Role_
+            # validate type non-empty-string
+            self.validate_non_empty_string(self.Role)
 # end class From
 
 
@@ -3358,6 +2682,11 @@ class Description(GeneratedsSuper):
         self.lang = _cast(None, lang)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Description)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Description.subclass:
             return Description.subclass(*args_, **kwargs_)
         else:
@@ -3369,12 +2698,15 @@ class Description(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Description', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Description', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Description')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3387,31 +2719,16 @@ class Description(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Description')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Description', pretty_print=pretty_print)
+            outfile.write(self.convert_unicode(self.valueOf_))
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Description', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Description'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Description'):
         if self.lang is not None and 'lang' not in already_processed:
             already_processed.add('lang')
-            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Description', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='Description'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.lang is not None and 'lang' not in already_processed:
-            already_processed.add('lang')
-            showIndent(outfile, level)
-            outfile.write('lang="%s",\n' % (self.lang,))
-    def exportLiteralChildren(self, outfile, level, name_):
+            outfile.write(' lang=%s' % (quote_attrib(self.lang), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Description', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -3445,6 +2762,11 @@ class SignatureType(GeneratedsSuper):
         else:
             self.Object = Object
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SignatureType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SignatureType.subclass:
             return SignatureType.subclass(*args_, **kwargs_)
         else:
@@ -3473,7 +2795,10 @@ class SignatureType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SignatureType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SignatureType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SignatureType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3486,16 +2811,16 @@ class SignatureType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SignatureType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SignatureType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SignatureType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SignatureType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SignatureType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SignatureType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SignatureType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3508,48 +2833,6 @@ class SignatureType(GeneratedsSuper):
             self.KeyInfo.export(outfile, level, namespace_='ds:', name_='KeyInfo', pretty_print=pretty_print)
         for Object_ in self.Object:
             Object_.export(outfile, level, namespace_='ds:', name_='Object', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SignatureType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SignedInfo is not None:
-            showIndent(outfile, level)
-            outfile.write('SignedInfo=model_.SignedInfo(\n')
-            self.SignedInfo.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.SignatureValue is not None:
-            showIndent(outfile, level)
-            outfile.write('SignatureValue=model_.SignatureValue(\n')
-            self.SignatureValue.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.KeyInfo is not None:
-            showIndent(outfile, level)
-            outfile.write('KeyInfo=model_.KeyInfo(\n')
-            self.KeyInfo.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('Object=[\n')
-        level += 1
-        for Object_ in self.Object:
-            showIndent(outfile, level)
-            outfile.write('model_.Object(\n')
-            Object_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -3594,6 +2877,11 @@ class SignatureValueType(GeneratedsSuper):
         self.Id = _cast(None, Id)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SignatureValueType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SignatureValueType.subclass:
             return SignatureValueType.subclass(*args_, **kwargs_)
         else:
@@ -3605,12 +2893,15 @@ class SignatureValueType(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SignatureValueType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SignatureValueType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SignatureValueType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3623,31 +2914,16 @@ class SignatureValueType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SignatureValueType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SignatureValueType', pretty_print=pretty_print)
+            outfile.write(self.convert_unicode(self.valueOf_))
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SignatureValueType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SignatureValueType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SignatureValueType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SignatureValueType', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='SignatureValueType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SignatureValueType', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -3680,6 +2956,11 @@ class SignedInfoType(GeneratedsSuper):
         else:
             self.Reference = Reference
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SignedInfoType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SignedInfoType.subclass:
             return SignedInfoType.subclass(*args_, **kwargs_)
         else:
@@ -3705,7 +2986,10 @@ class SignedInfoType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SignedInfoType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SignedInfoType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SignedInfoType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3718,16 +3002,16 @@ class SignedInfoType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SignedInfoType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SignedInfoType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SignedInfoType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SignedInfoType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SignedInfoType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SignedInfoType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SignedInfoType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3738,42 +3022,6 @@ class SignedInfoType(GeneratedsSuper):
             self.SignatureMethod.export(outfile, level, namespace_='ds:', name_='SignatureMethod', pretty_print=pretty_print)
         for Reference_ in self.Reference:
             Reference_.export(outfile, level, namespace_='ds:', name_='Reference', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SignedInfoType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.CanonicalizationMethod is not None:
-            showIndent(outfile, level)
-            outfile.write('CanonicalizationMethod=model_.CanonicalizationMethod(\n')
-            self.CanonicalizationMethod.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.SignatureMethod is not None:
-            showIndent(outfile, level)
-            outfile.write('SignatureMethod=model_.SignatureMethod(\n')
-            self.SignatureMethod.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('Reference=[\n')
-        level += 1
-        for Reference_ in self.Reference:
-            showIndent(outfile, level)
-            outfile.write('model_.Reference(\n')
-            Reference_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -3826,6 +3074,11 @@ class CanonicalizationMethodType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, CanonicalizationMethodType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if CanonicalizationMethodType.subclass:
             return CanonicalizationMethodType.subclass(*args_, **kwargs_)
         else:
@@ -3842,12 +3095,15 @@ class CanonicalizationMethodType(GeneratedsSuper):
     def hasContent_(self):
         if (
             self.anytypeobjs_ or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='CanonicalizationMethodType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='CanonicalizationMethodType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('CanonicalizationMethodType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3860,40 +3116,25 @@ class CanonicalizationMethodType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='CanonicalizationMethodType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='CanonicalizationMethodType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='CanonicalizationMethodType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='CanonicalizationMethodType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='CanonicalizationMethodType'):
         if self.Algorithm is not None and 'Algorithm' not in already_processed:
             already_processed.add('Algorithm')
-            outfile.write(' Algorithm=%s' % (self.gds_format_string(quote_attrib(self.Algorithm).encode(ExternalEncoding), input_name='Algorithm'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='CanonicalizationMethodType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Algorithm=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Algorithm), input_name='Algorithm')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='CanonicalizationMethodType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='CanonicalizationMethodType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Algorithm is not None and 'Algorithm' not in already_processed:
-            already_processed.add('Algorithm')
-            showIndent(outfile, level)
-            outfile.write('Algorithm="%s",\n' % (self.Algorithm,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        for obj_ in self.anytypeobjs_:
+            obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -3936,6 +3177,7 @@ class SignatureMethodType(GeneratedsSuper):
         self.original_tagname_ = None
         self.Algorithm = _cast(None, Algorithm)
         self.HMACOutputLength = HMACOutputLength
+        self.validate_HMACOutputLengthType(self.HMACOutputLength)
         if anytypeobjs_ is None:
             self.anytypeobjs_ = []
         else:
@@ -3951,6 +3193,11 @@ class SignatureMethodType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SignatureMethodType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SignatureMethodType.subclass:
             return SignatureMethodType.subclass(*args_, **kwargs_)
         else:
@@ -3968,17 +3215,21 @@ class SignatureMethodType(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def validate_HMACOutputLengthType(self, value):
         # Validate type HMACOutputLengthType, a restriction on integer.
-        pass
+        if value is not None and Validate_simpletypes_:
+            pass
     def hasContent_(self):
         if (
             self.HMACOutputLength is not None or
             self.anytypeobjs_ or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SignatureMethodType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SignatureMethodType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SignatureMethodType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3991,46 +3242,28 @@ class SignatureMethodType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SignatureMethodType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SignatureMethodType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SignatureMethodType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SignatureMethodType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SignatureMethodType'):
         if self.Algorithm is not None and 'Algorithm' not in already_processed:
             already_processed.add('Algorithm')
-            outfile.write(' Algorithm=%s' % (self.gds_format_string(quote_attrib(self.Algorithm).encode(ExternalEncoding), input_name='Algorithm'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SignatureMethodType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Algorithm=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Algorithm), input_name='Algorithm')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SignatureMethodType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SignatureMethodType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Algorithm is not None and 'Algorithm' not in already_processed:
-            already_processed.add('Algorithm')
-            showIndent(outfile, level)
-            outfile.write('Algorithm="%s",\n' % (self.Algorithm,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        if self.HMACOutputLength is not None:
+            showIndent(outfile, level, pretty_print)
+            outfile.write('<%sHMACOutputLength>%s</%sHMACOutputLength>%s' % (namespace_, self.gds_format_integer(self.HMACOutputLength, input_name='HMACOutputLength'), namespace_, eol_))
+        for obj_ in self.anytypeobjs_:
+            obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4053,7 +3286,7 @@ class SignatureMethodType(GeneratedsSuper):
             sval_ = child_.text
             try:
                 ival_ = int(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires integer: %s' % exp)
             obj_ = self.mixedclass_(MixedContainer.CategorySimple,
                 MixedContainer.TypeInteger, 'HMACOutputLength', ival_)
@@ -4078,15 +3311,20 @@ class SignatureMethodType(GeneratedsSuper):
 class ReferenceType(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, Type=None, Id=None, URI=None, Transforms=None, DigestMethod=None, DigestValue=None):
+    def __init__(self, Id=None, URI=None, Type=None, Transforms=None, DigestMethod=None, DigestValue=None):
         self.original_tagname_ = None
-        self.Type = _cast(None, Type)
         self.Id = _cast(None, Id)
         self.URI = _cast(None, URI)
+        self.Type = _cast(None, Type)
         self.Transforms = Transforms
         self.DigestMethod = DigestMethod
         self.DigestValue = DigestValue
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, ReferenceType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if ReferenceType.subclass:
             return ReferenceType.subclass(*args_, **kwargs_)
         else:
@@ -4098,12 +3336,12 @@ class ReferenceType(GeneratedsSuper):
     def set_DigestMethod(self, DigestMethod): self.DigestMethod = DigestMethod
     def get_DigestValue(self): return self.DigestValue
     def set_DigestValue(self, DigestValue): self.DigestValue = DigestValue
-    def get_Type(self): return self.Type
-    def set_Type(self, Type): self.Type = Type
     def get_Id(self): return self.Id
     def set_Id(self, Id): self.Id = Id
     def get_URI(self): return self.URI
     def set_URI(self, URI): self.URI = URI
+    def get_Type(self): return self.Type
+    def set_Type(self, Type): self.Type = Type
     def hasContent_(self):
         if (
             self.Transforms is not None or
@@ -4113,7 +3351,10 @@ class ReferenceType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='ReferenceType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='ReferenceType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('ReferenceType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4126,22 +3367,22 @@ class ReferenceType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='ReferenceType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='ReferenceType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='ReferenceType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='ReferenceType'):
-        if self.Type is not None and 'Type' not in already_processed:
-            already_processed.add('Type')
-            outfile.write(' Type=%s' % (self.gds_format_string(quote_attrib(self.Type).encode(ExternalEncoding), input_name='Type'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='ReferenceType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
         if self.URI is not None and 'URI' not in already_processed:
             already_processed.add('URI')
-            outfile.write(' URI=%s' % (self.gds_format_string(quote_attrib(self.URI).encode(ExternalEncoding), input_name='URI'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='ReferenceType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' URI=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.URI), input_name='URI')), ))
+        if self.Type is not None and 'Type' not in already_processed:
+            already_processed.add('Type')
+            outfile.write(' Type=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Type), input_name='Type')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='ReferenceType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4153,44 +3394,6 @@ class ReferenceType(GeneratedsSuper):
         if self.DigestValue is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sDigestValue>%s</%sDigestValue>%s' % (namespace_, self.gds_format_base64(self.DigestValue, input_name='DigestValue'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='ReferenceType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Type is not None and 'Type' not in already_processed:
-            already_processed.add('Type')
-            showIndent(outfile, level)
-            outfile.write('Type="%s",\n' % (self.Type,))
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-        if self.URI is not None and 'URI' not in already_processed:
-            already_processed.add('URI')
-            showIndent(outfile, level)
-            outfile.write('URI="%s",\n' % (self.URI,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.Transforms is not None:
-            showIndent(outfile, level)
-            outfile.write('Transforms=model_.Transforms(\n')
-            self.Transforms.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.DigestMethod is not None:
-            showIndent(outfile, level)
-            outfile.write('DigestMethod=model_.DigestMethod(\n')
-            self.DigestMethod.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.DigestValue is not None:
-            showIndent(outfile, level)
-            outfile.write('DigestValue=model_.base64Binary(\n')
-            self.DigestValue.exportLiteral(outfile, level, name_='DigestValue')
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4199,10 +3402,6 @@ class ReferenceType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('Type', node)
-        if value is not None and 'Type' not in already_processed:
-            already_processed.add('Type')
-            self.Type = value
         value = find_attr_value_('Id', node)
         if value is not None and 'Id' not in already_processed:
             already_processed.add('Id')
@@ -4211,6 +3410,10 @@ class ReferenceType(GeneratedsSuper):
         if value is not None and 'URI' not in already_processed:
             already_processed.add('URI')
             self.URI = value
+        value = find_attr_value_('Type', node)
+        if value is not None and 'Type' not in already_processed:
+            already_processed.add('Type')
+            self.Type = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'Transforms':
             obj_ = TransformsType.factory()
@@ -4227,7 +3430,7 @@ class ReferenceType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'DigestValue')
             else:
@@ -4246,6 +3449,11 @@ class TransformsType(GeneratedsSuper):
         else:
             self.Transform = Transform
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, TransformsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if TransformsType.subclass:
             return TransformsType.subclass(*args_, **kwargs_)
         else:
@@ -4263,7 +3471,10 @@ class TransformsType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='TransformsType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='TransformsType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('TransformsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4276,41 +3487,20 @@ class TransformsType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='TransformsType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='TransformsType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='TransformsType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='TransformsType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='TransformsType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='TransformsType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='TransformsType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for Transform_ in self.Transform:
             Transform_.export(outfile, level, namespace_='ds:', name_='Transform', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='TransformsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('Transform=[\n')
-        level += 1
-        for Transform_ in self.Transform:
-            showIndent(outfile, level)
-            outfile.write('model_.Transform(\n')
-            Transform_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4351,6 +3541,11 @@ class TransformType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, TransformType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if TransformType.subclass:
             return TransformType.subclass(*args_, **kwargs_)
         else:
@@ -4371,12 +3566,15 @@ class TransformType(GeneratedsSuper):
         if (
             self.anytypeobjs_ is not None or
             self.XPath or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='TransformType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='TransformType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('TransformType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4389,46 +3587,28 @@ class TransformType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='TransformType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='TransformType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='TransformType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='TransformType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='TransformType'):
         if self.Algorithm is not None and 'Algorithm' not in already_processed:
             already_processed.add('Algorithm')
-            outfile.write(' Algorithm=%s' % (self.gds_format_string(quote_attrib(self.Algorithm).encode(ExternalEncoding), input_name='Algorithm'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='TransformType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Algorithm=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Algorithm), input_name='Algorithm')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='TransformType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='TransformType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Algorithm is not None and 'Algorithm' not in already_processed:
-            already_processed.add('Algorithm')
-            showIndent(outfile, level)
-            outfile.write('Algorithm="%s",\n' % (self.Algorithm,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        for XPath_ in self.XPath:
+            showIndent(outfile, level, pretty_print)
+            outfile.write('<%sXPath>%s</%sXPath>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(XPath_), input_name='XPath')), namespace_, eol_))
+        if self.anytypeobjs_ is not None:
+            self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4490,6 +3670,11 @@ class DigestMethodType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, DigestMethodType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if DigestMethodType.subclass:
             return DigestMethodType.subclass(*args_, **kwargs_)
         else:
@@ -4506,12 +3691,15 @@ class DigestMethodType(GeneratedsSuper):
     def hasContent_(self):
         if (
             self.anytypeobjs_ or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='DigestMethodType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='DigestMethodType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('DigestMethodType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4524,40 +3712,25 @@ class DigestMethodType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='DigestMethodType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='DigestMethodType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='DigestMethodType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='DigestMethodType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='DigestMethodType'):
         if self.Algorithm is not None and 'Algorithm' not in already_processed:
             already_processed.add('Algorithm')
-            outfile.write(' Algorithm=%s' % (self.gds_format_string(quote_attrib(self.Algorithm).encode(ExternalEncoding), input_name='Algorithm'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='DigestMethodType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Algorithm=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Algorithm), input_name='Algorithm')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='DigestMethodType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='DigestMethodType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Algorithm is not None and 'Algorithm' not in already_processed:
-            already_processed.add('Algorithm')
-            showIndent(outfile, level)
-            outfile.write('Algorithm="%s",\n' % (self.Algorithm,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        for obj_ in self.anytypeobjs_:
+            obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4639,6 +3812,11 @@ class KeyInfoType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, KeyInfoType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if KeyInfoType.subclass:
             return KeyInfoType.subclass(*args_, **kwargs_)
         else:
@@ -4695,12 +3873,15 @@ class KeyInfoType(GeneratedsSuper):
             self.SPKIData or
             self.MgmtData or
             self.anytypeobjs_ is not None or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='KeyInfoType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='KeyInfoType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('KeyInfoType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4713,82 +3894,41 @@ class KeyInfoType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='KeyInfoType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='KeyInfoType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='KeyInfoType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='KeyInfoType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='KeyInfoType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='KeyInfoType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='KeyInfoType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='KeyInfoType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        for KeyName_ in self.KeyName:
+            showIndent(outfile, level, pretty_print)
+            outfile.write('<%sKeyName>%s</%sKeyName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(KeyName_), input_name='KeyName')), namespace_, eol_))
+        for KeyValue_ in self.KeyValue:
+            KeyValue_.export(outfile, level, namespace_='ds:', name_='KeyValue', pretty_print=pretty_print)
+        for RetrievalMethod_ in self.RetrievalMethod:
+            RetrievalMethod_.export(outfile, level, namespace_='ds:', name_='RetrievalMethod', pretty_print=pretty_print)
+        for X509Data_ in self.X509Data:
+            X509Data_.export(outfile, level, namespace_='ds:', name_='X509Data', pretty_print=pretty_print)
+        for PGPData_ in self.PGPData:
+            PGPData_.export(outfile, level, namespace_='ds:', name_='PGPData', pretty_print=pretty_print)
+        for SPKIData_ in self.SPKIData:
+            SPKIData_.export(outfile, level, namespace_='ds:', name_='SPKIData', pretty_print=pretty_print)
+        for MgmtData_ in self.MgmtData:
+            showIndent(outfile, level, pretty_print)
+            outfile.write('<%sMgmtData>%s</%sMgmtData>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(MgmtData_), input_name='MgmtData')), namespace_, eol_))
+        if self.anytypeobjs_ is not None:
+            self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4813,7 +3953,7 @@ class KeyInfoType(GeneratedsSuper):
                 MixedContainer.TypeString, 'KeyName', valuestr_)
             self.content_.append(obj_)
         elif nodeName_ == 'KeyValue':
-            obj_ = KeyValue.factory()
+            obj_ = KeyValueType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'KeyValue', obj_)
@@ -4823,7 +3963,7 @@ class KeyInfoType(GeneratedsSuper):
             elif hasattr(self, 'set_KeyValue'):
               self.set_KeyValue(obj_.value)
         elif nodeName_ == 'RetrievalMethod':
-            obj_ = RetrievalMethod.factory()
+            obj_ = RetrievalMethodType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'RetrievalMethod', obj_)
@@ -4833,7 +3973,7 @@ class KeyInfoType(GeneratedsSuper):
             elif hasattr(self, 'set_RetrievalMethod'):
               self.set_RetrievalMethod(obj_.value)
         elif nodeName_ == 'X509Data':
-            obj_ = X509Data.factory()
+            obj_ = X509DataType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'X509Data', obj_)
@@ -4843,7 +3983,7 @@ class KeyInfoType(GeneratedsSuper):
             elif hasattr(self, 'set_X509Data'):
               self.set_X509Data(obj_.value)
         elif nodeName_ == 'PGPData':
-            obj_ = PGPData.factory()
+            obj_ = PGPDataType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'PGPData', obj_)
@@ -4853,7 +3993,7 @@ class KeyInfoType(GeneratedsSuper):
             elif hasattr(self, 'set_PGPData'):
               self.set_PGPData(obj_.value)
         elif nodeName_ == 'SPKIData':
-            obj_ = SPKIData.factory()
+            obj_ = SPKIDataType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'SPKIData', obj_)
@@ -4903,6 +4043,11 @@ class KeyValueType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, KeyValueType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if KeyValueType.subclass:
             return KeyValueType.subclass(*args_, **kwargs_)
         else:
@@ -4921,12 +4066,15 @@ class KeyValueType(GeneratedsSuper):
             self.DSAKeyValue is not None or
             self.RSAKeyValue is not None or
             self.anytypeobjs_ is not None or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='KeyValueType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='KeyValueType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('KeyValueType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -4939,47 +4087,27 @@ class KeyValueType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='KeyValueType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='KeyValueType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='KeyValueType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='KeyValueType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='KeyValueType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='KeyValueType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='KeyValueType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='KeyValueType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        if self.DSAKeyValue is not None:
+            self.DSAKeyValue.export(outfile, level, namespace_='ds:', name_='DSAKeyValue', pretty_print=pretty_print)
+        if self.RSAKeyValue is not None:
+            self.RSAKeyValue.export(outfile, level, namespace_='ds:', name_='RSAKeyValue', pretty_print=pretty_print)
+        if self.anytypeobjs_ is not None:
+            self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4996,7 +4124,7 @@ class KeyValueType(GeneratedsSuper):
         pass
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'DSAKeyValue':
-            obj_ = DSAKeyValue.factory()
+            obj_ = DSAKeyValueType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'DSAKeyValue', obj_)
@@ -5006,7 +4134,7 @@ class KeyValueType(GeneratedsSuper):
             elif hasattr(self, 'set_DSAKeyValue'):
               self.set_DSAKeyValue(obj_.value)
         elif nodeName_ == 'RSAKeyValue':
-            obj_ = RSAKeyValue.factory()
+            obj_ = RSAKeyValueType.factory()
             obj_.build(child_)
             obj_ = self.mixedclass_(MixedContainer.CategoryComplex,
                 MixedContainer.TypeNone, 'RSAKeyValue', obj_)
@@ -5035,12 +4163,17 @@ class KeyValueType(GeneratedsSuper):
 class RetrievalMethodType(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, Type=None, URI=None, Transforms=None):
+    def __init__(self, URI=None, Type=None, Transforms=None):
         self.original_tagname_ = None
-        self.Type = _cast(None, Type)
         self.URI = _cast(None, URI)
+        self.Type = _cast(None, Type)
         self.Transforms = Transforms
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, RetrievalMethodType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if RetrievalMethodType.subclass:
             return RetrievalMethodType.subclass(*args_, **kwargs_)
         else:
@@ -5048,10 +4181,10 @@ class RetrievalMethodType(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_Transforms(self): return self.Transforms
     def set_Transforms(self, Transforms): self.Transforms = Transforms
-    def get_Type(self): return self.Type
-    def set_Type(self, Type): self.Type = Type
     def get_URI(self): return self.URI
     def set_URI(self, URI): self.URI = URI
+    def get_Type(self): return self.Type
+    def set_Type(self, Type): self.Type = Type
     def hasContent_(self):
         if (
             self.Transforms is not None
@@ -5059,7 +4192,10 @@ class RetrievalMethodType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='RetrievalMethodType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='RetrievalMethodType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('RetrievalMethodType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5072,47 +4208,25 @@ class RetrievalMethodType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='RetrievalMethodType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='RetrievalMethodType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='RetrievalMethodType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='RetrievalMethodType'):
-        if self.Type is not None and 'Type' not in already_processed:
-            already_processed.add('Type')
-            outfile.write(' Type=%s' % (self.gds_format_string(quote_attrib(self.Type).encode(ExternalEncoding), input_name='Type'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='RetrievalMethodType'):
         if self.URI is not None and 'URI' not in already_processed:
             already_processed.add('URI')
-            outfile.write(' URI=%s' % (self.gds_format_string(quote_attrib(self.URI).encode(ExternalEncoding), input_name='URI'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='RetrievalMethodType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' URI=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.URI), input_name='URI')), ))
+        if self.Type is not None and 'Type' not in already_processed:
+            already_processed.add('Type')
+            outfile.write(' Type=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Type), input_name='Type')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='RetrievalMethodType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.Transforms is not None:
             self.Transforms.export(outfile, level, namespace_='ds:', name_='Transforms', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='RetrievalMethodType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Type is not None and 'Type' not in already_processed:
-            already_processed.add('Type')
-            showIndent(outfile, level)
-            outfile.write('Type="%s",\n' % (self.Type,))
-        if self.URI is not None and 'URI' not in already_processed:
-            already_processed.add('URI')
-            showIndent(outfile, level)
-            outfile.write('URI="%s",\n' % (self.URI,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.Transforms is not None:
-            showIndent(outfile, level)
-            outfile.write('Transforms=model_.Transforms(\n')
-            self.Transforms.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -5121,14 +4235,14 @@ class RetrievalMethodType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('Type', node)
-        if value is not None and 'Type' not in already_processed:
-            already_processed.add('Type')
-            self.Type = value
         value = find_attr_value_('URI', node)
         if value is not None and 'URI' not in already_processed:
             already_processed.add('URI')
             self.URI = value
+        value = find_attr_value_('Type', node)
+        if value is not None and 'Type' not in already_processed:
+            already_processed.add('Type')
+            self.Type = value
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         if nodeName_ == 'Transforms':
             obj_ = TransformsType.factory()
@@ -5165,6 +4279,11 @@ class X509DataType(GeneratedsSuper):
             self.X509CRL = X509CRL
         self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, X509DataType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if X509DataType.subclass:
             return X509DataType.subclass(*args_, **kwargs_)
         else:
@@ -5209,7 +4328,10 @@ class X509DataType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='X509DataType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='X509DataType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('X509DataType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5222,14 +4344,14 @@ class X509DataType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='X509DataType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='X509DataType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='X509DataType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='X509DataType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='X509DataType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='X509DataType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='X509DataType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5241,7 +4363,7 @@ class X509DataType(GeneratedsSuper):
             outfile.write('<%sX509SKI>%s</%sX509SKI>%s' % (namespace_, self.gds_format_base64(X509SKI_, input_name='X509SKI'), namespace_, eol_))
         for X509SubjectName_ in self.X509SubjectName:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sX509SubjectName>%s</%sX509SubjectName>%s' % (namespace_, self.gds_format_string(quote_xml(X509SubjectName_).encode(ExternalEncoding), input_name='X509SubjectName'), namespace_, eol_))
+            outfile.write('<%sX509SubjectName>%s</%sX509SubjectName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(X509SubjectName_), input_name='X509SubjectName')), namespace_, eol_))
         for X509Certificate_ in self.X509Certificate:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sX509Certificate>%s</%sX509Certificate>%s' % (namespace_, self.gds_format_base64(X509Certificate_, input_name='X509Certificate'), namespace_, eol_))
@@ -5250,78 +4372,6 @@ class X509DataType(GeneratedsSuper):
             outfile.write('<%sX509CRL>%s</%sX509CRL>%s' % (namespace_, self.gds_format_base64(X509CRL_, input_name='X509CRL'), namespace_, eol_))
         if self.anytypeobjs_ is not None:
             self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='X509DataType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('X509IssuerSerial=[\n')
-        level += 1
-        for X509IssuerSerial_ in self.X509IssuerSerial:
-            showIndent(outfile, level)
-            outfile.write('model_.X509IssuerSerialType(\n')
-            X509IssuerSerial_.exportLiteral(outfile, level, name_='X509IssuerSerialType')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('X509SKI=[\n')
-        level += 1
-        for X509SKI_ in self.X509SKI:
-            showIndent(outfile, level)
-            outfile.write('model_.base64Binary(\n')
-            X509SKI_.exportLiteral(outfile, level, name_='base64Binary')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('X509SubjectName=[\n')
-        level += 1
-        for X509SubjectName_ in self.X509SubjectName:
-            showIndent(outfile, level)
-            outfile.write('%s,\n' % quote_python(X509SubjectName_).encode(ExternalEncoding))
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('X509Certificate=[\n')
-        level += 1
-        for X509Certificate_ in self.X509Certificate:
-            showIndent(outfile, level)
-            outfile.write('model_.base64Binary(\n')
-            X509Certificate_.exportLiteral(outfile, level, name_='base64Binary')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('X509CRL=[\n')
-        level += 1
-        for X509CRL_ in self.X509CRL:
-            showIndent(outfile, level)
-            outfile.write('model_.base64Binary(\n')
-            X509CRL_.exportLiteral(outfile, level, name_='base64Binary')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.anytypeobjs_ is not None:
-            showIndent(outfile, level)
-            outfile.write('anytypeobjs_=model_.anytypeobjs_(\n')
-            self.anytypeobjs_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -5342,7 +4392,7 @@ class X509DataType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'X509SKI')
             else:
@@ -5357,7 +4407,7 @@ class X509DataType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'X509Certificate')
             else:
@@ -5368,7 +4418,7 @@ class X509DataType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'X509CRL')
             else:
@@ -5389,6 +4439,11 @@ class X509IssuerSerialType(GeneratedsSuper):
         self.X509IssuerName = X509IssuerName
         self.X509SerialNumber = X509SerialNumber
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, X509IssuerSerialType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if X509IssuerSerialType.subclass:
             return X509IssuerSerialType.subclass(*args_, **kwargs_)
         else:
@@ -5406,7 +4461,10 @@ class X509IssuerSerialType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='X509IssuerSerialType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='X509IssuerSerialType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('X509IssuerSerialType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5419,39 +4477,24 @@ class X509IssuerSerialType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='X509IssuerSerialType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='X509IssuerSerialType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='X509IssuerSerialType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='X509IssuerSerialType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='X509IssuerSerialType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='X509IssuerSerialType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='X509IssuerSerialType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.X509IssuerName is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sX509IssuerName>%s</%sX509IssuerName>%s' % (namespace_, self.gds_format_string(quote_xml(self.X509IssuerName).encode(ExternalEncoding), input_name='X509IssuerName'), namespace_, eol_))
+            outfile.write('<%sX509IssuerName>%s</%sX509IssuerName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.X509IssuerName), input_name='X509IssuerName')), namespace_, eol_))
         if self.X509SerialNumber is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sX509SerialNumber>%s</%sX509SerialNumber>%s' % (namespace_, self.gds_format_integer(self.X509SerialNumber, input_name='X509SerialNumber'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='X509IssuerSerialType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.X509IssuerName is not None:
-            showIndent(outfile, level)
-            outfile.write('X509IssuerName=%s,\n' % quote_python(self.X509IssuerName).encode(ExternalEncoding))
-        if self.X509SerialNumber is not None:
-            showIndent(outfile, level)
-            outfile.write('X509SerialNumber=%d,\n' % self.X509SerialNumber)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -5470,7 +4513,7 @@ class X509IssuerSerialType(GeneratedsSuper):
             sval_ = child_.text
             try:
                 ival_ = int(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires integer: %s' % exp)
             ival_ = self.gds_validate_integer(ival_, node, 'X509SerialNumber')
             self.X509SerialNumber = ival_
@@ -5488,12 +4531,12 @@ class PGPDataType(GeneratedsSuper):
             self.anytypeobjs_ = []
         else:
             self.anytypeobjs_ = anytypeobjs_
-        self.PGPKeyPacket = PGPKeyPacket
-        if anytypeobjs_ is None:
-            self.anytypeobjs_ = []
-        else:
-            self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, PGPDataType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if PGPDataType.subclass:
             return PGPDataType.subclass(*args_, **kwargs_)
         else:
@@ -5507,24 +4550,19 @@ class PGPDataType(GeneratedsSuper):
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
     def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
     def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
-    def get_PGPKeyPacket(self): return self.PGPKeyPacket
-    def set_PGPKeyPacket(self, PGPKeyPacket): self.PGPKeyPacket = PGPKeyPacket
-    def get_anytypeobjs_(self): return self.anytypeobjs_
-    def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
-    def add_anytypeobjs_(self, value): self.anytypeobjs_.append(value)
-    def insert_anytypeobjs_(self, index, value): self._anytypeobjs_[index] = value
     def hasContent_(self):
         if (
             self.PGPKeyID is not None or
-            self.PGPKeyPacket is not None or
-            self.anytypeobjs_ or
             self.PGPKeyPacket is not None or
             self.anytypeobjs_
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='PGPDataType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='PGPDataType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('PGPDataType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5537,14 +4575,14 @@ class PGPDataType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='PGPDataType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='PGPDataType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='PGPDataType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='PGPDataType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='PGPDataType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='PGPDataType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='PGPDataType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5555,54 +4593,8 @@ class PGPDataType(GeneratedsSuper):
         if self.PGPKeyPacket is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sPGPKeyPacket>%s</%sPGPKeyPacket>%s' % (namespace_, self.gds_format_base64(self.PGPKeyPacket, input_name='PGPKeyPacket'), namespace_, eol_))
-        if self.PGPKeyPacket is not None:
-            showIndent(outfile, level, pretty_print)
-            outfile.write('<%sPGPKeyPacket>%s</%sPGPKeyPacket>%s' % (namespace_, self.gds_format_base64(self.PGPKeyPacket, input_name='PGPKeyPacket'), namespace_, eol_))
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='PGPDataType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.PGPKeyID is not None:
-            showIndent(outfile, level)
-            outfile.write('PGPKeyID=model_.base64Binary(\n')
-            self.PGPKeyID.exportLiteral(outfile, level, name_='PGPKeyID')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.PGPKeyPacket is not None:
-            showIndent(outfile, level)
-            outfile.write('PGPKeyPacket=model_.base64Binary(\n')
-            self.PGPKeyPacket.exportLiteral(outfile, level, name_='PGPKeyPacket')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.PGPKeyPacket is not None:
-            showIndent(outfile, level)
-            outfile.write('PGPKeyPacket=model_.base64Binary(\n')
-            self.PGPKeyPacket.exportLiteral(outfile, level, name_='PGPKeyPacket')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -5618,7 +4610,7 @@ class PGPDataType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'PGPKeyID')
             else:
@@ -5629,18 +4621,7 @@ class PGPDataType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
-                    raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
-                bval_ = self.gds_validate_base64(bval_, node, 'PGPKeyPacket')
-            else:
-                bval_ = None
-            self.PGPKeyPacket = bval_
-        elif nodeName_ == 'PGPKeyPacket':
-            sval_ = child_.text
-            if sval_ is not None:
-                try:
-                    bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'PGPKeyPacket')
             else:
@@ -5664,6 +4645,11 @@ class SPKIDataType(GeneratedsSuper):
             self.SPKISexp = SPKISexp
         self.anytypeobjs_ = anytypeobjs_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SPKIDataType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SPKIDataType.subclass:
             return SPKIDataType.subclass(*args_, **kwargs_)
         else:
@@ -5684,7 +4670,10 @@ class SPKIDataType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SPKIDataType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SPKIDataType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SPKIDataType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5697,14 +4686,14 @@ class SPKIDataType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SPKIDataType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SPKIDataType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SPKIDataType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SPKIDataType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SPKIDataType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SPKIDataType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SPKIDataType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5714,33 +4703,6 @@ class SPKIDataType(GeneratedsSuper):
             outfile.write('<%sSPKISexp>%s</%sSPKISexp>%s' % (namespace_, self.gds_format_base64(SPKISexp_, input_name='SPKISexp'), namespace_, eol_))
         if self.anytypeobjs_ is not None:
             self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SPKIDataType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('SPKISexp=[\n')
-        level += 1
-        for SPKISexp_ in self.SPKISexp:
-            showIndent(outfile, level)
-            outfile.write('model_.base64Binary(\n')
-            SPKISexp_.exportLiteral(outfile, level, name_='base64Binary')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.anytypeobjs_ is not None:
-            showIndent(outfile, level)
-            outfile.write('anytypeobjs_=model_.anytypeobjs_(\n')
-            self.anytypeobjs_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -5756,7 +4718,7 @@ class SPKIDataType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'SPKISexp')
             else:
@@ -5772,10 +4734,10 @@ class SPKIDataType(GeneratedsSuper):
 class ObjectType(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, MimeType=None, Id=None, Encoding=None, anytypeobjs_=None, valueOf_=None, mixedclass_=None, content_=None):
+    def __init__(self, Id=None, MimeType=None, Encoding=None, anytypeobjs_=None, valueOf_=None, mixedclass_=None, content_=None):
         self.original_tagname_ = None
-        self.MimeType = _cast(None, MimeType)
         self.Id = _cast(None, Id)
+        self.MimeType = _cast(None, MimeType)
         self.Encoding = _cast(None, Encoding)
         self.anytypeobjs_ = anytypeobjs_
         self.valueOf_ = valueOf_
@@ -5789,6 +4751,11 @@ class ObjectType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, ObjectType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if ObjectType.subclass:
             return ObjectType.subclass(*args_, **kwargs_)
         else:
@@ -5796,10 +4763,10 @@ class ObjectType(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_anytypeobjs_(self): return self.anytypeobjs_
     def set_anytypeobjs_(self, anytypeobjs_): self.anytypeobjs_ = anytypeobjs_
-    def get_MimeType(self): return self.MimeType
-    def set_MimeType(self, MimeType): self.MimeType = MimeType
     def get_Id(self): return self.Id
     def set_Id(self, Id): self.Id = Id
+    def get_MimeType(self): return self.MimeType
+    def set_MimeType(self, MimeType): self.MimeType = MimeType
     def get_Encoding(self): return self.Encoding
     def set_Encoding(self, Encoding): self.Encoding = Encoding
     def get_valueOf_(self): return self.valueOf_
@@ -5807,12 +4774,15 @@ class ObjectType(GeneratedsSuper):
     def hasContent_(self):
         if (
             self.anytypeobjs_ is not None or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='ObjectType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='ObjectType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('ObjectType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5825,54 +4795,31 @@ class ObjectType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='ObjectType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='ObjectType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='ObjectType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='ObjectType'):
-        if self.MimeType is not None and 'MimeType' not in already_processed:
-            already_processed.add('MimeType')
-            outfile.write(' MimeType=%s' % (self.gds_format_string(quote_attrib(self.MimeType).encode(ExternalEncoding), input_name='MimeType'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='ObjectType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+        if self.MimeType is not None and 'MimeType' not in already_processed:
+            already_processed.add('MimeType')
+            outfile.write(' MimeType=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.MimeType), input_name='MimeType')), ))
         if self.Encoding is not None and 'Encoding' not in already_processed:
             already_processed.add('Encoding')
-            outfile.write(' Encoding=%s' % (self.gds_format_string(quote_attrib(self.Encoding).encode(ExternalEncoding), input_name='Encoding'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='ObjectType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Encoding=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Encoding), input_name='Encoding')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='ObjectType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='ObjectType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.MimeType is not None and 'MimeType' not in already_processed:
-            already_processed.add('MimeType')
-            showIndent(outfile, level)
-            outfile.write('MimeType="%s",\n' % (self.MimeType,))
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-        if self.Encoding is not None and 'Encoding' not in already_processed:
-            already_processed.add('Encoding')
-            showIndent(outfile, level)
-            outfile.write('Encoding="%s",\n' % (self.Encoding,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        if self.anytypeobjs_ is not None:
+            self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -5886,14 +4833,14 @@ class ObjectType(GeneratedsSuper):
             self.buildChildren(child, node, nodeName_)
         return self
     def buildAttributes(self, node, attrs, already_processed):
-        value = find_attr_value_('MimeType', node)
-        if value is not None and 'MimeType' not in already_processed:
-            already_processed.add('MimeType')
-            self.MimeType = value
         value = find_attr_value_('Id', node)
         if value is not None and 'Id' not in already_processed:
             already_processed.add('Id')
             self.Id = value
+        value = find_attr_value_('MimeType', node)
+        if value is not None and 'MimeType' not in already_processed:
+            already_processed.add('MimeType')
+            self.MimeType = value
         value = find_attr_value_('Encoding', node)
         if value is not None and 'Encoding' not in already_processed:
             already_processed.add('Encoding')
@@ -5927,6 +4874,11 @@ class ManifestType(GeneratedsSuper):
         else:
             self.Reference = Reference
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, ManifestType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if ManifestType.subclass:
             return ManifestType.subclass(*args_, **kwargs_)
         else:
@@ -5946,7 +4898,10 @@ class ManifestType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='ManifestType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='ManifestType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('ManifestType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -5959,46 +4914,22 @@ class ManifestType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='ManifestType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='ManifestType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='ManifestType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='ManifestType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='ManifestType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='ManifestType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='ManifestType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for Reference_ in self.Reference:
             Reference_.export(outfile, level, namespace_='ds:', name_='Reference', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='ManifestType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('Reference=[\n')
-        level += 1
-        for Reference_ in self.Reference:
-            showIndent(outfile, level)
-            outfile.write('model_.Reference(\n')
-            Reference_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6031,6 +4962,11 @@ class SignaturePropertiesType(GeneratedsSuper):
         else:
             self.SignatureProperty = SignatureProperty
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SignaturePropertiesType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SignaturePropertiesType.subclass:
             return SignaturePropertiesType.subclass(*args_, **kwargs_)
         else:
@@ -6050,7 +4986,10 @@ class SignaturePropertiesType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SignaturePropertiesType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SignaturePropertiesType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SignaturePropertiesType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6063,46 +5002,22 @@ class SignaturePropertiesType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SignaturePropertiesType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SignaturePropertiesType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SignaturePropertiesType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SignaturePropertiesType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SignaturePropertiesType'):
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SignaturePropertiesType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SignaturePropertiesType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for SignatureProperty_ in self.SignatureProperty:
             SignatureProperty_.export(outfile, level, namespace_='ds:', name_='SignatureProperty', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SignaturePropertiesType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('SignatureProperty=[\n')
-        level += 1
-        for SignatureProperty_ in self.SignatureProperty:
-            showIndent(outfile, level)
-            outfile.write('model_.SignatureProperty(\n')
-            SignatureProperty_.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6143,6 +5058,11 @@ class SignaturePropertyType(GeneratedsSuper):
             self.content_ = content_
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SignaturePropertyType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SignaturePropertyType.subclass:
             return SignaturePropertyType.subclass(*args_, **kwargs_)
         else:
@@ -6159,12 +5079,15 @@ class SignaturePropertyType(GeneratedsSuper):
     def hasContent_(self):
         if (
             self.anytypeobjs_ is not None or
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='SignaturePropertyType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='SignaturePropertyType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SignaturePropertyType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6177,47 +5100,28 @@ class SignaturePropertyType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SignaturePropertyType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='SignaturePropertyType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='SignaturePropertyType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='SignaturePropertyType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='SignaturePropertyType'):
         if self.Target is not None and 'Target' not in already_processed:
             already_processed.add('Target')
-            outfile.write(' Target=%s' % (self.gds_format_string(quote_attrib(self.Target).encode(ExternalEncoding), input_name='Target'), ))
+            outfile.write(' Target=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Target), input_name='Target')), ))
         if self.Id is not None and 'Id' not in already_processed:
             already_processed.add('Id')
-            outfile.write(' Id=%s' % (self.gds_format_string(quote_attrib(self.Id).encode(ExternalEncoding), input_name='Id'), ))
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='SignaturePropertyType', fromsubclass_=False, pretty_print=True):
+            outfile.write(' Id=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Id), input_name='Id')), ))
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='SignaturePropertyType', fromsubclass_=False, pretty_print=True):
         if not fromsubclass_:
             for item_ in self.content_:
                 item_.export(outfile, level, item_.name, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SignaturePropertyType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Target is not None and 'Target' not in already_processed:
-            already_processed.add('Target')
-            showIndent(outfile, level)
-            outfile.write('Target="%s",\n' % (self.Target,))
-        if self.Id is not None and 'Id' not in already_processed:
-            already_processed.add('Id')
-            showIndent(outfile, level)
-            outfile.write('Id="%s",\n' % (self.Id,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('content_ = [\n')
-        for item_ in self.content_:
-            item_.exportLiteral(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        pass
+        if pretty_print:
+            eol_ = '\n'
+        else:
+            eol_ = ''
+        if self.anytypeobjs_ is not None:
+            self.anytypeobjs_.export(outfile, level, namespace_, pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6263,13 +5167,25 @@ class DSAKeyValueType(GeneratedsSuper):
     def __init__(self, P=None, Q=None, G=None, Y=None, J=None, Seed=None, PgenCounter=None):
         self.original_tagname_ = None
         self.P = P
+        self.validate_CryptoBinary(self.P)
         self.Q = Q
+        self.validate_CryptoBinary(self.Q)
         self.G = G
+        self.validate_CryptoBinary(self.G)
         self.Y = Y
+        self.validate_CryptoBinary(self.Y)
         self.J = J
+        self.validate_CryptoBinary(self.J)
         self.Seed = Seed
+        self.validate_CryptoBinary(self.Seed)
         self.PgenCounter = PgenCounter
+        self.validate_CryptoBinary(self.PgenCounter)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, DSAKeyValueType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if DSAKeyValueType.subclass:
             return DSAKeyValueType.subclass(*args_, **kwargs_)
         else:
@@ -6291,7 +5207,8 @@ class DSAKeyValueType(GeneratedsSuper):
     def set_PgenCounter(self, PgenCounter): self.PgenCounter = PgenCounter
     def validate_CryptoBinary(self, value):
         # Validate type CryptoBinary, a restriction on base64Binary.
-        pass
+        if value is not None and Validate_simpletypes_:
+            pass
     def hasContent_(self):
         if (
             self.P is not None or
@@ -6305,7 +5222,10 @@ class DSAKeyValueType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='DSAKeyValueType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='DSAKeyValueType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('DSAKeyValueType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6318,14 +5238,14 @@ class DSAKeyValueType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='DSAKeyValueType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='DSAKeyValueType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='DSAKeyValueType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='DSAKeyValueType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='DSAKeyValueType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='DSAKeyValueType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='DSAKeyValueType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6351,57 +5271,6 @@ class DSAKeyValueType(GeneratedsSuper):
         if self.PgenCounter is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sPgenCounter>%s</%sPgenCounter>%s' % (namespace_, self.gds_format_base64(self.PgenCounter, input_name='PgenCounter'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='DSAKeyValueType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.P is not None:
-            showIndent(outfile, level)
-            outfile.write('P=model_.base64Binary(\n')
-            self.P.exportLiteral(outfile, level, name_='P')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.Q is not None:
-            showIndent(outfile, level)
-            outfile.write('Q=model_.base64Binary(\n')
-            self.Q.exportLiteral(outfile, level, name_='Q')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.G is not None:
-            showIndent(outfile, level)
-            outfile.write('G=model_.base64Binary(\n')
-            self.G.exportLiteral(outfile, level, name_='G')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.Y is not None:
-            showIndent(outfile, level)
-            outfile.write('Y=model_.base64Binary(\n')
-            self.Y.exportLiteral(outfile, level, name_='Y')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.J is not None:
-            showIndent(outfile, level)
-            outfile.write('J=model_.base64Binary(\n')
-            self.J.exportLiteral(outfile, level, name_='J')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.Seed is not None:
-            showIndent(outfile, level)
-            outfile.write('Seed=model_.base64Binary(\n')
-            self.Seed.exportLiteral(outfile, level, name_='Seed')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.PgenCounter is not None:
-            showIndent(outfile, level)
-            outfile.write('PgenCounter=model_.base64Binary(\n')
-            self.PgenCounter.exportLiteral(outfile, level, name_='PgenCounter')
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6417,85 +5286,92 @@ class DSAKeyValueType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'P')
             else:
                 bval_ = None
             self.P = bval_
-            self.validate_CryptoBinary(self.P)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.P)
         elif nodeName_ == 'Q':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'Q')
             else:
                 bval_ = None
             self.Q = bval_
-            self.validate_CryptoBinary(self.Q)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.Q)
         elif nodeName_ == 'G':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'G')
             else:
                 bval_ = None
             self.G = bval_
-            self.validate_CryptoBinary(self.G)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.G)
         elif nodeName_ == 'Y':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'Y')
             else:
                 bval_ = None
             self.Y = bval_
-            self.validate_CryptoBinary(self.Y)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.Y)
         elif nodeName_ == 'J':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'J')
             else:
                 bval_ = None
             self.J = bval_
-            self.validate_CryptoBinary(self.J)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.J)
         elif nodeName_ == 'Seed':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'Seed')
             else:
                 bval_ = None
             self.Seed = bval_
-            self.validate_CryptoBinary(self.Seed)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.Seed)
         elif nodeName_ == 'PgenCounter':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'PgenCounter')
             else:
                 bval_ = None
             self.PgenCounter = bval_
-            self.validate_CryptoBinary(self.PgenCounter)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.PgenCounter)
 # end class DSAKeyValueType
 
 
@@ -6505,8 +5381,15 @@ class RSAKeyValueType(GeneratedsSuper):
     def __init__(self, Modulus=None, Exponent=None):
         self.original_tagname_ = None
         self.Modulus = Modulus
+        self.validate_CryptoBinary(self.Modulus)
         self.Exponent = Exponent
+        self.validate_CryptoBinary(self.Exponent)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, RSAKeyValueType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if RSAKeyValueType.subclass:
             return RSAKeyValueType.subclass(*args_, **kwargs_)
         else:
@@ -6518,7 +5401,8 @@ class RSAKeyValueType(GeneratedsSuper):
     def set_Exponent(self, Exponent): self.Exponent = Exponent
     def validate_CryptoBinary(self, value):
         # Validate type CryptoBinary, a restriction on base64Binary.
-        pass
+        if value is not None and Validate_simpletypes_:
+            pass
     def hasContent_(self):
         if (
             self.Modulus is not None or
@@ -6527,7 +5411,10 @@ class RSAKeyValueType(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='RSAKeyValueType', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='RSAKeyValueType', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" ', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('RSAKeyValueType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6540,14 +5427,14 @@ class RSAKeyValueType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='RSAKeyValueType')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='RSAKeyValueType', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='RSAKeyValueType', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='RSAKeyValueType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='RSAKeyValueType'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='RSAKeyValueType', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='RSAKeyValueType', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6558,27 +5445,6 @@ class RSAKeyValueType(GeneratedsSuper):
         if self.Exponent is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%sExponent>%s</%sExponent>%s' % (namespace_, self.gds_format_base64(self.Exponent, input_name='Exponent'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='RSAKeyValueType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.Modulus is not None:
-            showIndent(outfile, level)
-            outfile.write('Modulus=model_.base64Binary(\n')
-            self.Modulus.exportLiteral(outfile, level, name_='Modulus')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.Exponent is not None:
-            showIndent(outfile, level)
-            outfile.write('Exponent=model_.base64Binary(\n')
-            self.Exponent.exportLiteral(outfile, level, name_='Exponent')
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6594,25 +5460,27 @@ class RSAKeyValueType(GeneratedsSuper):
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'Modulus')
             else:
                 bval_ = None
             self.Modulus = bval_
-            self.validate_CryptoBinary(self.Modulus)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.Modulus)
         elif nodeName_ == 'Exponent':
             sval_ = child_.text
             if sval_ is not None:
                 try:
                     bval_ = base64.b64decode(sval_)
-                except (TypeError, ValueError), exp:
+                except (TypeError, ValueError) as exp:
                     raise_parse_error(child_, 'requires base64 encoded string: %s' % exp)
                 bval_ = self.gds_validate_base64(bval_, node, 'Exponent')
             else:
                 bval_ = None
             self.Exponent = bval_
-            self.validate_CryptoBinary(self.Exponent)    # validate type CryptoBinary
+            # validate type CryptoBinary
+            self.validate_CryptoBinary(self.Exponent)
 # end class RSAKeyValueType
 
 
@@ -6623,6 +5491,11 @@ class root(GeneratedsSuper):
     def __init__(self):
         self.original_tagname_ = None
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, root)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if root.subclass:
             return root.subclass(*args_, **kwargs_)
         else:
@@ -6635,7 +5508,10 @@ class root(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='root', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='root', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('root')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6648,23 +5524,13 @@ class root(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='root')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='root', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='root', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='root'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='root'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='root', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='root'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='root', fromsubclass_=False, pretty_print=True):
         pass
     def build(self, node):
         already_processed = set()
@@ -6693,6 +5559,11 @@ class Envelope(GeneratedsSuper):
             self.anytypeobjs_ = anytypeobjs_
         self.anyAttributes_ = {}
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Envelope)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Envelope.subclass:
             return Envelope.subclass(*args_, **kwargs_)
         else:
@@ -6717,7 +5588,10 @@ class Envelope(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Envelope', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Envelope', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Envelope')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6730,12 +5604,12 @@ class Envelope(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Envelope')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Envelope', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Envelope', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Envelope'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Envelope'):
         unique_counter = 0
         for name, value in self.anyAttributes_.items():
             xsinamespaceprefix = 'xsi'
@@ -6758,9 +5632,9 @@ class Envelope(GeneratedsSuper):
                                 name, quote_attrib(value), ))
                         else:
                             unique_counter += 1
-                            outfile.write(' xmlns:yyy%d="%s"' % (
+                            outfile.write(' xmlns:%d="%s"' % (
                                 unique_counter, namespace, ))
-                            outfile.write(' yyy%d:%s=%s' % (
+                            outfile.write(' %d:%s=%s' % (
                                 unique_counter, name, quote_attrib(value), ))
                 else:
                     if name not in already_processed:
@@ -6768,48 +5642,17 @@ class Envelope(GeneratedsSuper):
                         outfile.write(' %s=%s' % (
                             name, quote_attrib(value), ))
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Envelope', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Envelope', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         if self.Header is not None:
-            self.Header.export(outfile, level, namespace_='eb:', name_='Header', pretty_print=pretty_print)
+            self.Header.export(outfile, level, namespace_='tns:', name_='Header', pretty_print=pretty_print)
         if self.Body is not None:
-            self.Body.export(outfile, level, namespace_='eb:', name_='Body', pretty_print=pretty_print)
+            self.Body.export(outfile, level, namespace_='tns:', name_='Body', pretty_print=pretty_print)
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Envelope'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        for name, value in self.anyAttributes_.items():
-            showIndent(outfile, level)
-            outfile.write('%s="%s",\n' % (name, value,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.Header is not None:
-            showIndent(outfile, level)
-            outfile.write('Header=model_.Header(\n')
-            self.Header.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.Body is not None:
-            showIndent(outfile, level)
-            outfile.write('Body=model_.Body(\n')
-            self.Body.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6851,6 +5694,11 @@ class Header(GeneratedsSuper):
             self.anytypeobjs_ = anytypeobjs_
         self.anyAttributes_ = {}
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Header)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Header.subclass:
             return Header.subclass(*args_, **kwargs_)
         else:
@@ -6869,7 +5717,10 @@ class Header(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Header', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Header', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Header')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -6882,12 +5733,12 @@ class Header(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Header')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Header', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Header', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Header'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Header'):
         unique_counter = 0
         for name, value in self.anyAttributes_.items():
             xsinamespaceprefix = 'xsi'
@@ -6910,9 +5761,9 @@ class Header(GeneratedsSuper):
                                 name, quote_attrib(value), ))
                         else:
                             unique_counter += 1
-                            outfile.write(' xmlns:yyy%d="%s"' % (
+                            outfile.write(' xmlns:%d="%s"' % (
                                 unique_counter, namespace, ))
-                            outfile.write(' yyy%d:%s=%s' % (
+                            outfile.write(' %d:%s=%s' % (
                                 unique_counter, name, quote_attrib(value), ))
                 else:
                     if name not in already_processed:
@@ -6920,32 +5771,13 @@ class Header(GeneratedsSuper):
                         outfile.write(' %s=%s' % (
                             name, quote_attrib(value), ))
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Header', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Header', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Header'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        for name, value in self.anyAttributes_.items():
-            showIndent(outfile, level)
-            outfile.write('%s="%s",\n' % (name, value,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -6978,6 +5810,11 @@ class Body(GeneratedsSuper):
             self.anytypeobjs_ = anytypeobjs_
         self.anyAttributes_ = {}
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Body)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Body.subclass:
             return Body.subclass(*args_, **kwargs_)
         else:
@@ -6996,7 +5833,10 @@ class Body(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Body', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Body', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Body')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -7009,12 +5849,12 @@ class Body(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Body')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Body', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Body', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Body'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Body'):
         unique_counter = 0
         for name, value in self.anyAttributes_.items():
             xsinamespaceprefix = 'xsi'
@@ -7037,9 +5877,9 @@ class Body(GeneratedsSuper):
                                 name, quote_attrib(value), ))
                         else:
                             unique_counter += 1
-                            outfile.write(' xmlns:yyy%d="%s"' % (
+                            outfile.write(' xmlns:%d="%s"' % (
                                 unique_counter, namespace, ))
-                            outfile.write(' yyy%d:%s=%s' % (
+                            outfile.write(' %d:%s=%s' % (
                                 unique_counter, name, quote_attrib(value), ))
                 else:
                     if name not in already_processed:
@@ -7047,32 +5887,13 @@ class Body(GeneratedsSuper):
                         outfile.write(' %s=%s' % (
                             name, quote_attrib(value), ))
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Body', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Body', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Body'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        for name, value in self.anyAttributes_.items():
-            showIndent(outfile, level)
-            outfile.write('%s="%s",\n' % (name, value,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -7103,6 +5924,11 @@ class Fault(GeneratedsSuper):
         self.faultactor = faultactor
         self.detail = detail
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, Fault)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if Fault.subclass:
             return Fault.subclass(*args_, **kwargs_)
         else:
@@ -7126,7 +5952,10 @@ class Fault(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='Fault', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='Fault', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('Fault')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -7139,14 +5968,14 @@ class Fault(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='Fault')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='Fault', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='Fault', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='Fault'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='Fault'):
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='Fault', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='Fault', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
@@ -7155,39 +5984,12 @@ class Fault(GeneratedsSuper):
             self.faultcode.export(outfile, level, namespace_, name_='faultcode', pretty_print=pretty_print)
         if self.faultstring is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sfaultstring>%s</%sfaultstring>%s' % (namespace_, self.gds_format_string(quote_xml(self.faultstring).encode(ExternalEncoding), input_name='faultstring'), namespace_, eol_))
+            outfile.write('<%sfaultstring>%s</%sfaultstring>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.faultstring), input_name='faultstring')), namespace_, eol_))
         if self.faultactor is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sfaultactor>%s</%sfaultactor>%s' % (namespace_, self.gds_format_string(quote_xml(self.faultactor).encode(ExternalEncoding), input_name='faultactor'), namespace_, eol_))
+            outfile.write('<%sfaultactor>%s</%sfaultactor>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.faultactor), input_name='faultactor')), namespace_, eol_))
         if self.detail is not None:
             self.detail.export(outfile, level, namespace_, name_='detail', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='Fault'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.faultcode is not None:
-            showIndent(outfile, level)
-            outfile.write('faultcode=model_.QName(\n')
-            self.faultcode.exportLiteral(outfile, level, name_='faultcode')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.faultstring is not None:
-            showIndent(outfile, level)
-            outfile.write('faultstring=%s,\n' % quote_python(self.faultstring).encode(ExternalEncoding))
-        if self.faultactor is not None:
-            showIndent(outfile, level)
-            outfile.write('faultactor=%s,\n' % quote_python(self.faultactor).encode(ExternalEncoding))
-        if self.detail is not None:
-            showIndent(outfile, level)
-            outfile.write('detail=model_.detail(\n')
-            self.detail.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -7230,6 +6032,11 @@ class detail(GeneratedsSuper):
             self.anytypeobjs_ = anytypeobjs_
         self.anyAttributes_ = {}
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, detail)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if detail.subclass:
             return detail.subclass(*args_, **kwargs_)
         else:
@@ -7248,7 +6055,10 @@ class detail(GeneratedsSuper):
             return True
         else:
             return False
-    def export(self, outfile, level, namespace_='eb:', name_='detail', namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+    def export(self, outfile, level, namespace_='tns:', name_='detail', namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('detail')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -7261,12 +6071,12 @@ class detail(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='detail')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
-            self.exportChildren(outfile, level + 1, namespace_='eb:', name_='detail', pretty_print=pretty_print)
+            self.exportChildren(outfile, level + 1, namespace_='tns:', name_='detail', pretty_print=pretty_print)
             showIndent(outfile, level, pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
             outfile.write('/>%s' % (eol_, ))
-    def exportAttributes(self, outfile, level, already_processed, namespace_='eb:', name_='detail'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='tns:', name_='detail'):
         unique_counter = 0
         for name, value in self.anyAttributes_.items():
             xsinamespaceprefix = 'xsi'
@@ -7289,9 +6099,9 @@ class detail(GeneratedsSuper):
                                 name, quote_attrib(value), ))
                         else:
                             unique_counter += 1
-                            outfile.write(' xmlns:yyy%d="%s"' % (
+                            outfile.write(' xmlns:%d="%s"' % (
                                 unique_counter, namespace, ))
-                            outfile.write(' yyy%d:%s=%s' % (
+                            outfile.write(' %d:%s=%s' % (
                                 unique_counter, name, quote_attrib(value), ))
                 else:
                     if name not in already_processed:
@@ -7299,32 +6109,13 @@ class detail(GeneratedsSuper):
                         outfile.write(' %s=%s' % (
                             name, quote_attrib(value), ))
         pass
-    def exportChildren(self, outfile, level, namespace_='eb:', name_='detail', fromsubclass_=False, pretty_print=True):
+    def exportChildren(self, outfile, level, namespace_='tns:', name_='detail', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
         else:
             eol_ = ''
         for obj_ in self.anytypeobjs_:
             obj_.export(outfile, level, namespace_, pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='detail'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        for name, value in self.anyAttributes_.items():
-            showIndent(outfile, level)
-            outfile.write('%s="%s",\n' % (name, value,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('anytypeobjs_=[\n')
-        level += 1
-        for anytypeobjs_ in self.anytypeobjs_:
-            anytypeobjs_.exportLiteral(outfile, level)
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -7345,29 +6136,32 @@ class detail(GeneratedsSuper):
 
 
 GDSClassesMapping = {
+    'Body': Body,
+    'CanonicalizationMethod': CanonicalizationMethodType,
+    'DSAKeyValue': DSAKeyValueType,
+    'DigestMethod': DigestMethodType,
+    'Envelope': Envelope,
+    'Fault': Fault,
+    'Header': Header,
+    'KeyInfo': KeyInfoType,
+    'KeyValue': KeyValueType,
+    'Manifest': ManifestType,
+    'Object': ObjectType,
     'PGPData': PGPDataType,
-    'Transform': TransformType,
-    'X509IssuerSerial': X509IssuerSerialType,
-    'SignatureMethod': SignatureMethodType,
+    'RSAKeyValue': RSAKeyValueType,
+    'Reference': ReferenceType,
+    'RetrievalMethod': RetrievalMethodType,
     'SPKIData': SPKIDataType,
     'SequenceNumber': sequenceNumber_type,
-    'Object': ObjectType,
-    'X509Data': X509DataType,
-    'DigestMethod': DigestMethodType,
-    'KeyValue': KeyValueType,
-    'CanonicalizationMethod': CanonicalizationMethodType,
-    'SignatureProperties': SignaturePropertiesType,
-    'KeyInfo': KeyInfoType,
-    'Manifest': ManifestType,
-    'RSAKeyValue': RSAKeyValueType,
     'Signature': SignatureType,
-    'RetrievalMethod': RetrievalMethodType,
+    'SignatureMethod': SignatureMethodType,
+    'SignatureProperties': SignaturePropertiesType,
     'SignatureProperty': SignaturePropertyType,
-    'DSAKeyValue': DSAKeyValueType,
-    'Reference': ReferenceType,
-    'Transforms': TransformsType,
-    'SignedInfo': SignedInfoType,
     'SignatureValue': SignatureValueType,
+    'SignedInfo': SignedInfoType,
+    'Transform': TransformType,
+    'Transforms': TransformsType,
+    'X509Data': X509DataType,
 }
 
 
@@ -7377,7 +6171,7 @@ Usage: python <Parser>.py [ -s ] <in_xml_file>
 
 
 def usage():
-    print USAGE_TEXT
+    print(USAGE_TEXT)
     sys.exit(1)
 
 
@@ -7390,12 +6184,13 @@ def get_root_tag(node):
 
 
 def parse(inFileName, silence=False):
-    doc = parsexml_(inFileName)
+    parser = None
+    doc = parsexml_(inFileName, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = Manifest
+        rootTag = 'Schema'
+        rootClass = Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -7404,18 +6199,19 @@ def parse(inFileName, silence=False):
         sys.stdout.write('<?xml version="1.0" ?>\n')
         rootObj.export(
             sys.stdout, 0, name_=rootTag,
-            namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"',
+            namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"',
             pretty_print=True)
     return rootObj
 
 
 def parseEtree(inFileName, silence=False):
-    doc = parsexml_(inFileName)
+    parser = None
+    doc = parsexml_(inFileName, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = Manifest
+        rootTag = 'Schema'
+        rootClass = Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -7433,13 +6229,17 @@ def parseEtree(inFileName, silence=False):
 
 
 def parseString(inString, silence=False):
-    from StringIO import StringIO
-    doc = parsexml_(StringIO(inString))
+    if sys.version_info.major == 2:
+        from StringIO import StringIO as IOBuffer
+    else:
+        from io import BytesIO as IOBuffer
+    parser = None
+    doc = parsexml_(IOBuffer(inString), parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = Manifest
+        rootTag = 'Schema'
+        rootClass = Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -7448,17 +6248,18 @@ def parseString(inString, silence=False):
         sys.stdout.write('<?xml version="1.0" ?>\n')
         rootObj.export(
             sys.stdout, 0, name_=rootTag,
-            namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"')
+            namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"')
     return rootObj
 
 
 def parseLiteral(inFileName, silence=False):
-    doc = parsexml_(inFileName)
+    parser = None
+    doc = parsexml_(inFileName, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = Manifest
+        rootTag = 'Schema'
+        rootClass = Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -7502,7 +6303,6 @@ __all__ = [
     "Header",
     "KeyInfoType",
     "KeyValueType",
-    "Manifest",
     "ManifestType",
     "MessageData",
     "MessageHeader",
@@ -7511,7 +6311,6 @@ __all__ = [
     "PGPDataType",
     "PartyId",
     "RSAKeyValueType",
-    "Reference",
     "ReferenceType",
     "RetrievalMethodType",
     "SPKIDataType",

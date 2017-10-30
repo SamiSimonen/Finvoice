@@ -34,17 +34,17 @@ _sellerInvoiceTypeDetails = {
 		[
 			{
 				'type': '02',
-				'min': None,
-				'hyphens': None,
-				'spaces': None,
-				'max': None,
+				'min': 1,
+				'hyphens': False,
+				'spaces': 4,
+				'max': 35,
 				'text': 'Viitenumero'
 			},
 			{
 				'type': '09',
 				'min': 10,
 				'hyphens': True,
-				'spaces': None,
+				'spaces': 4,
 				'max': 10,
 				'text': 'Asiakasnumero'
 			},
@@ -56,17 +56,17 @@ _sellerInvoiceTypeDetails = {
 		[
 			{
 				'type': '02',
-				'min': None,
-				'hyphens': None,
-				'spaces': None,
-				'max': None,
+				'min': 1,
+				'hyphens': False,
+				'spaces': 4,
+				'max': 35,
 				'text': 'Referensnummer'
 			},
 			{
 				'type': '09',
 				'min': 10,
 				'hyphens': True,
-				'spaces': None,
+				'spaces': 4,
 				'max': 10,
 				'text': 'Kundnummer'
 			},
@@ -78,17 +78,17 @@ _sellerInvoiceTypeDetails = {
 		[
 			{
 				'type': '02',
-				'min': None,
-				'hyphens': None,
-				'spaces': None,
-				'max': None,
+				'min': 1,
+				'hyphens': False,
+				'spaces': 4,
+				'max': 35,
 				'text': 'Reference number'
 			},
 			{
 				'type': '09',
 				'min': 10,
 				'hyphens': True,
-				'spaces': None,
+				'spaces': 4,
 				'max': 10,
 				'text': 'Customer number'
 			},
@@ -109,9 +109,9 @@ _messageActionCode = 'ADD'
 import sys
 import datetime, time
 
-reload( sys )
+# reload( sys )
 
-sys.setdefaultencoding( 'iso8859-15' )
+# sys.setdefaultencoding( 'iso8859-15' )
 
 from finvoice.sender.senderinfo import ExternalEncoding
 from finvoice.sender.senderinfo import FinvoiceSenderInfo
@@ -131,7 +131,7 @@ from finvoice.sender.senderinfo import date
 
 from finvoice.soap.envelope import Envelope, Header, Body
 from finvoice.soap.msgheader import MessageHeader, From, To, PartyId, Service, MessageData
-from finvoice.soap.msgheader import Manifest, Reference, Schema
+from finvoice.soap.msgheader import Schema, ManifestType, ReferenceType
 
 from pytz import reference
 
@@ -188,7 +188,7 @@ for (_langCode, _type) in _sellerInvoiceTypeDetails.items():
 
 	for _validation in _type['validation']:
 		#LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierHyphens=False, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierMaxLength=35, valueOf_=None, extensiontype_=None
-		sellerInvoiceTypeDetails[_langCode].add_SellerInvoiceIdentifierText( SellerInvoiceIdentifierTextType( _langCode, _validation['type'], _validation['min'], _validation['hyphens'], _validation['spaces'], _validation['max'], _validation['text'] ) )
+		sellerInvoiceTypeDetails[_langCode].add_SellerInvoiceIdentifierText( SellerInvoiceIdentifierTextType( LanguageCode=_langCode, SellerInvoiceIdentifierType=_validation['type'], SellerInvoiceIdentifierMinLength=_validation['min'], SellerInvoiceIdentifierHyphens=_validation['hyphens'], SellerInvoiceIdentifierSpaces=_validation['spaces'], SellerInvoiceIdentifierMaxLength=_validation['max'], valueOf_=_validation['text'] ) )
 
 	sellerInvoiceDetails.add_SellerInvoiceTypeDetails( sellerInvoiceTypeDetails[_langCode] )
 
@@ -282,8 +282,8 @@ for (i, _recepient) in enumerate(_recepients):
 
 	envelope.set_Header( header )
 
-	manifest = Manifest( "2.0", "Manifest" )
-	reference = Reference( None, _messageId, None, "FinvoiceSenderInfo" )
+	manifest = ManifestType( "Manifest" )
+	reference = ReferenceType(Id="FinvoiceSenderInfo", URI=_messageId)
 	manifest.add_Reference( reference )
 	reference.add_Schema( Schema( "2.0", "http://www.pankkiyhdistys.fi/verkkolasku/finvoice/FinvoiceSenderInfo.xsd" ) )
 

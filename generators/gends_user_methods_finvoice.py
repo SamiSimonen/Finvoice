@@ -65,11 +65,11 @@ class MethodSpec(object):
         source = self.source % values_dict
         return source
     def show(self):
-        print 'specification:'
-        print '    name: %s' % (self.name, )
-        print self.source
-        print '    class_names: %s' % (self.class_names, )
-        print '    names pat  : %s' % (self.class_names_compiled.pattern, )
+        print('specification:')
+        print('    name: %s' % (self.name, ))
+        print(self.source)
+        print('    class_names: %s' % (self.class_names, ))
+        print('    names pat  : %s' % (self.class_names_compiled.pattern, ))
 
 
 #
@@ -87,7 +87,7 @@ class MethodSpec(object):
 method10 = MethodSpec(name='validate_valueOf_',
     source='''\
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and value.__len__() <= 35 ):
+        if ( isinstance( value, BaseStrType_ ) and value.__len__() <= 35 ):
             pass
         else:
             raise_value_error( value, 'Expected less than 35 characters' )
@@ -142,7 +142,7 @@ method40 = MethodSpec(name='buildAttributes',
 method50 = MethodSpec(name='validate_valueOf_',
     source='''\
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 8 <= value.__len__() <= 11 ):
+        if ( isinstance( value, BaseStrType_ ) and 8 <= value.__len__() <= 11 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 8..11 characters' )
@@ -255,7 +255,7 @@ method100 = MethodSpec(name='buildChildren',
 method110 = MethodSpec(name='validate_valueOf_',
     source='''\
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 1 <= value.__len__() <= 420 ):
+        if ( isinstance( value, BaseStrType_ ) and 1 <= value.__len__() <= 420 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 1..420 characters' )
@@ -282,7 +282,7 @@ method120 = MethodSpec(name='build',
 method130 = MethodSpec(name='validate_valueOf_',
     source='''\
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and value.__len__() <= 35 ):
+        if ( isinstance( value, BaseStrType_ ) and value.__len__() <= 35 ):
             pass
         else:
             raise_value_error( value, 'Expected value less than 35 characters' )
@@ -309,7 +309,7 @@ method140 = MethodSpec(name='build',
 method150 = MethodSpec(name='validate_valueOf_',
     source='''\
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 4 <= value.__len__() <= 70 ):
+        if ( isinstance( value, BaseStrType_ ) and 4 <= value.__len__() <= 70 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 4..70 characters' )

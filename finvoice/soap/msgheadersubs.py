@@ -1,118 +1,62 @@
 #!/usr/bin/env python
 
-###
-# Copyright 2014 Code Master Oy (http://www.codemaster.fi/)
 #
-# This file is part of py-finvoice.
+# Generated  by generateDS.py.
+# Python 3.5.2 (default, Sep 14 2017, 22:51:06)  [GCC 5.4.0 20160609]
 #
-# py-finvoice is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# py-finvoice is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Command line options:
+#   ('-f', '')
+#   ('-s', 'finvoice/soap/msgheadersubs.py')
+#   ('-o', 'finvoice/soap/msgheader.py')
+#   ('--super', 'finvoice.soap.msgheader')
+#   ('--external-encoding', 'iso8859-15')
+#   ('--no-dates', '')
+#   ('--no-versions', '')
 #
-# You should have received a copy of the GNU General Public License
-# along with py-finvoice. If not, see <http://www.gnu.org/licenses/>.
-##
+# Command line arguments:
+#   xsd/msg-header-2_0.xsd
+#
+# Command line:
+#   /home/aisopuro/.virtualenvs/py-finvoice/bin/generateDS.py -f -s "finvoice/soap/msgheadersubs.py" -o "finvoice/soap/msgheader.py" --super="finvoice.soap.msgheader" --external-encoding="iso8859-15" --no-dates --no-versions xsd/msg-header-2_0.xsd
+#
+# Current working directory (os.getcwd()):
+#   py-finvoice
+#
 
 import sys
+from lxml import etree as etree_
 
-import finvoice as supermod
+import finvoice.soap.msgheader as supermod
 
-etree_ = None
-Verbose_import_ = False
-(
-    XMLParser_import_none, XMLParser_import_lxml,
-    XMLParser_import_elementtree
-) = range(3)
-XMLParser_import_library = None
-try:
-    # lxml
-    from lxml import etree as etree_
-    XMLParser_import_library = XMLParser_import_lxml
-    if Verbose_import_:
-        print("running with lxml.etree")
-except ImportError:
-    try:
-        # cElementTree from Python 2.5+
-        import xml.etree.cElementTree as etree_
-        XMLParser_import_library = XMLParser_import_elementtree
-        if Verbose_import_:
-            print("running with cElementTree on Python 2.5+")
-    except ImportError:
-        try:
-            # ElementTree from Python 2.5+
-            import xml.etree.ElementTree as etree_
-            XMLParser_import_library = XMLParser_import_elementtree
-            if Verbose_import_:
-                print("running with ElementTree on Python 2.5+")
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree_
-                XMLParser_import_library = XMLParser_import_elementtree
-                if Verbose_import_:
-                    print("running with cElementTree")
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree_
-                    XMLParser_import_library = XMLParser_import_elementtree
-                    if Verbose_import_:
-                        print("running with ElementTree")
-                except ImportError:
-                    raise ImportError(
-                        "Failed to import ElementTree from any known place")
-
-
-def parsexml_(*args, **kwargs):
-    if (XMLParser_import_library == XMLParser_import_lxml and
-            'parser' not in kwargs):
+def parsexml_(infile, parser=None, **kwargs):
+    if parser is None:
         # Use the lxml ElementTree compatible parser so that, e.g.,
         #   we ignore comments.
-        kwargs['parser'] = etree_.ETCompatXMLParser()
-    doc = etree_.parse(*args, **kwargs)
+        parser = etree_.ETCompatXMLParser()
+    doc = etree_.parse(infile, parser=parser, **kwargs)
     return doc
 
 #
 # Globals
 #
 
-ExternalEncoding = 'iso-8859-15'
+ExternalEncoding = 'iso8859-15'
 
 #
 # Data representation classes
 #
 
 
-class ManifestSub(supermod.Manifest):
-    def __init__(self, version=None, id=None, Reference=None, anytypeobjs_=None):
-        super(ManifestSub, self).__init__(version, id, Reference, anytypeobjs_, )
-supermod.Manifest.subclass = ManifestSub
-# end class ManifestSub
-
-
-class ReferenceSub(supermod.Reference):
-    def __init__(self, role=None, href=None, type_=None, id=None, Schema=None, Description=None, anytypeobjs_=None):
-        super(ReferenceSub, self).__init__(role, href, type_, id, Schema, Description, anytypeobjs_, )
-supermod.Reference.subclass = ReferenceSub
-# end class ReferenceSub
-
-
 class SchemaSub(supermod.Schema):
-    def __init__(self, version=None, location=None):
-        super(SchemaSub, self).__init__(version, location, )
+    def __init__(self, location=None, version=None):
+        super(SchemaSub, self).__init__(location, version, )
 supermod.Schema.subclass = SchemaSub
 # end class SchemaSub
 
 
 class MessageHeaderSub(supermod.MessageHeader):
-    def __init__(self, mustUnderstand=None, version=None, id=None, From=None, To=None, CPAId=None, ConversationId=None, Service=None, Action=None, MessageData=None, DuplicateElimination=None, Description=None, anytypeobjs_=None):
-        super(MessageHeaderSub, self).__init__(mustUnderstand, version, id, From, To, CPAId, ConversationId, Service, Action, MessageData, DuplicateElimination, Description, anytypeobjs_, )
+    def __init__(self, id=None, version=None, mustUnderstand=None, From=None, To=None, CPAId=None, ConversationId=None, Service=None, Action=None, MessageData=None, DuplicateElimination=None, Description=None, anytypeobjs_=None):
+        super(MessageHeaderSub, self).__init__(id, version, mustUnderstand, From, To, CPAId, ConversationId, Service, Action, MessageData, DuplicateElimination, Description, anytypeobjs_, )
 supermod.MessageHeader.subclass = MessageHeaderSub
 # end class MessageHeaderSub
 
@@ -139,57 +83,57 @@ supermod.DuplicateElimination.subclass = DuplicateEliminationSub
 
 
 class SyncReplySub(supermod.SyncReply):
-    def __init__(self, mustUnderstand=None, version=None, actor=None, id=None, anytypeobjs_=None):
-        super(SyncReplySub, self).__init__(mustUnderstand, version, actor, id, anytypeobjs_, )
+    def __init__(self, actor=None, id=None, version=None, mustUnderstand=None, anytypeobjs_=None):
+        super(SyncReplySub, self).__init__(actor, id, version, mustUnderstand, anytypeobjs_, )
 supermod.SyncReply.subclass = SyncReplySub
 # end class SyncReplySub
 
 
 class MessageOrderSub(supermod.MessageOrder):
-    def __init__(self, mustUnderstand=None, version=None, id=None, SequenceNumber=None, anytypeobjs_=None):
-        super(MessageOrderSub, self).__init__(mustUnderstand, version, id, SequenceNumber, anytypeobjs_, )
+    def __init__(self, id=None, version=None, mustUnderstand=None, SequenceNumber=None, anytypeobjs_=None):
+        super(MessageOrderSub, self).__init__(id, version, mustUnderstand, SequenceNumber, anytypeobjs_, )
 supermod.MessageOrder.subclass = MessageOrderSub
 # end class MessageOrderSub
 
 
 class AckRequestedSub(supermod.AckRequested):
-    def __init__(self, version=None, mustUnderstand=None, signed=None, actor=None, id=None, anytypeobjs_=None):
-        super(AckRequestedSub, self).__init__(version, mustUnderstand, signed, actor, id, anytypeobjs_, )
+    def __init__(self, actor=None, signed=None, id=None, version=None, mustUnderstand=None, anytypeobjs_=None):
+        super(AckRequestedSub, self).__init__(actor, signed, id, version, mustUnderstand, anytypeobjs_, )
 supermod.AckRequested.subclass = AckRequestedSub
 # end class AckRequestedSub
 
 
 class AcknowledgmentSub(supermod.Acknowledgment):
-    def __init__(self, mustUnderstand=None, version=None, actor=None, id=None, Timestamp=None, RefToMessageId=None, From=None, Reference=None, anytypeobjs_=None):
-        super(AcknowledgmentSub, self).__init__(mustUnderstand, version, actor, id, Timestamp, RefToMessageId, From, Reference, anytypeobjs_, )
+    def __init__(self, actor=None, id=None, version=None, mustUnderstand=None, Timestamp=None, RefToMessageId=None, From=None, Reference=None, anytypeobjs_=None):
+        super(AcknowledgmentSub, self).__init__(actor, id, version, mustUnderstand, Timestamp, RefToMessageId, From, Reference, anytypeobjs_, )
 supermod.Acknowledgment.subclass = AcknowledgmentSub
 # end class AcknowledgmentSub
 
 
 class ErrorListSub(supermod.ErrorList):
-    def __init__(self, mustUnderstand=None, version=None, highestSeverity=None, id=None, Error=None, anytypeobjs_=None):
-        super(ErrorListSub, self).__init__(mustUnderstand, version, highestSeverity, id, Error, anytypeobjs_, )
+    def __init__(self, highestSeverity=None, id=None, version=None, mustUnderstand=None, Error=None, anytypeobjs_=None):
+        super(ErrorListSub, self).__init__(highestSeverity, id, version, mustUnderstand, Error, anytypeobjs_, )
 supermod.ErrorList.subclass = ErrorListSub
 # end class ErrorListSub
 
 
 class ErrorSub(supermod.Error):
-    def __init__(self, errorCode=None, severity=None, location=None, id=None, codeContext='urn:oasis:names:tc:ebxml-msg:service:errors', Description=None, anytypeobjs_=None):
-        super(ErrorSub, self).__init__(errorCode, severity, location, id, codeContext, Description, anytypeobjs_, )
+    def __init__(self, id=None, codeContext='urn:oasis:names:tc:ebxml-msg:service:errors', errorCode=None, severity=None, location=None, Description=None, anytypeobjs_=None):
+        super(ErrorSub, self).__init__(id, codeContext, errorCode, severity, location, Description, anytypeobjs_, )
 supermod.Error.subclass = ErrorSub
 # end class ErrorSub
 
 
 class StatusResponseSub(supermod.StatusResponse):
-    def __init__(self, version=None, id=None, messageStatus=None, RefToMessageId=None, Timestamp=None, anytypeobjs_=None):
-        super(StatusResponseSub, self).__init__(version, id, messageStatus, RefToMessageId, Timestamp, anytypeobjs_, )
+    def __init__(self, messageStatus=None, id=None, version=None, RefToMessageId=None, Timestamp=None, anytypeobjs_=None):
+        super(StatusResponseSub, self).__init__(messageStatus, id, version, RefToMessageId, Timestamp, anytypeobjs_, )
 supermod.StatusResponse.subclass = StatusResponseSub
 # end class StatusResponseSub
 
 
 class StatusRequestSub(supermod.StatusRequest):
-    def __init__(self, version=None, id=None, RefToMessageId=None, anytypeobjs_=None):
-        super(StatusRequestSub, self).__init__(version, id, RefToMessageId, anytypeobjs_, )
+    def __init__(self, id=None, version=None, RefToMessageId=None, anytypeobjs_=None):
+        super(StatusRequestSub, self).__init__(id, version, RefToMessageId, anytypeobjs_, )
 supermod.StatusRequest.subclass = StatusRequestSub
 # end class StatusRequestSub
 
@@ -265,8 +209,8 @@ supermod.SignatureMethodType.subclass = SignatureMethodTypeSub
 
 
 class ReferenceTypeSub(supermod.ReferenceType):
-    def __init__(self, Type=None, Id=None, URI=None, Transforms=None, DigestMethod=None, DigestValue=None):
-        super(ReferenceTypeSub, self).__init__(Type, Id, URI, Transforms, DigestMethod, DigestValue, )
+    def __init__(self, Id=None, URI=None, Type=None, Transforms=None, DigestMethod=None, DigestValue=None):
+        super(ReferenceTypeSub, self).__init__(Id, URI, Type, Transforms, DigestMethod, DigestValue, )
 supermod.ReferenceType.subclass = ReferenceTypeSub
 # end class ReferenceTypeSub
 
@@ -307,8 +251,8 @@ supermod.KeyValueType.subclass = KeyValueTypeSub
 
 
 class RetrievalMethodTypeSub(supermod.RetrievalMethodType):
-    def __init__(self, Type=None, URI=None, Transforms=None):
-        super(RetrievalMethodTypeSub, self).__init__(Type, URI, Transforms, )
+    def __init__(self, URI=None, Type=None, Transforms=None):
+        super(RetrievalMethodTypeSub, self).__init__(URI, Type, Transforms, )
 supermod.RetrievalMethodType.subclass = RetrievalMethodTypeSub
 # end class RetrievalMethodTypeSub
 
@@ -329,7 +273,7 @@ supermod.X509IssuerSerialType.subclass = X509IssuerSerialTypeSub
 
 class PGPDataTypeSub(supermod.PGPDataType):
     def __init__(self, PGPKeyID=None, PGPKeyPacket=None, anytypeobjs_=None):
-        super(PGPDataTypeSub, self).__init__(PGPKeyID, PGPKeyPacket, anytypeobjs_, anytypeobjs_, )
+        super(PGPDataTypeSub, self).__init__(PGPKeyID, PGPKeyPacket, anytypeobjs_, )
 supermod.PGPDataType.subclass = PGPDataTypeSub
 # end class PGPDataTypeSub
 
@@ -342,8 +286,8 @@ supermod.SPKIDataType.subclass = SPKIDataTypeSub
 
 
 class ObjectTypeSub(supermod.ObjectType):
-    def __init__(self, MimeType=None, Id=None, Encoding=None, anytypeobjs_=None, valueOf_=None, mixedclass_=None, content_=None):
-        super(ObjectTypeSub, self).__init__(MimeType, Id, Encoding, anytypeobjs_, valueOf_, mixedclass_, content_, )
+    def __init__(self, Id=None, MimeType=None, Encoding=None, anytypeobjs_=None, valueOf_=None, mixedclass_=None, content_=None):
+        super(ObjectTypeSub, self).__init__(Id, MimeType, Encoding, anytypeobjs_, valueOf_, mixedclass_, content_, )
 supermod.ObjectType.subclass = ObjectTypeSub
 # end class ObjectTypeSub
 
@@ -435,12 +379,13 @@ def get_root_tag(node):
 
 
 def parse(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = supermod.Manifest
+        rootTag = 'Schema'
+        rootClass = supermod.Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -449,18 +394,19 @@ def parse(inFilename, silence=False):
         sys.stdout.write('<?xml version="1.0" ?>\n')
         rootObj.export(
             sys.stdout, 0, name_=rootTag,
-            namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"',
+            namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"',
             pretty_print=True)
     return rootObj
 
 
 def parseEtree(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = supermod.Manifest
+        rootTag = 'Schema'
+        rootClass = supermod.Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -479,12 +425,13 @@ def parseEtree(inFilename, silence=False):
 
 def parseString(inString, silence=False):
     from StringIO import StringIO
-    doc = parsexml_(StringIO(inString))
+    parser = None
+    doc = parsexml_(StringIO(inString), parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = supermod.Manifest
+        rootTag = 'Schema'
+        rootClass = supermod.Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -493,24 +440,25 @@ def parseString(inString, silence=False):
         sys.stdout.write('<?xml version="1.0" ?>\n')
         rootObj.export(
             sys.stdout, 0, name_=rootTag,
-            namespacedef_='xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"')
+            namespacedef_='xmlns:tns="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd"')
     return rootObj
 
 
 def parseLiteral(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
-        rootTag = 'Manifest'
-        rootClass = supermod.Manifest
+        rootTag = 'Schema'
+        rootClass = supermod.Schema
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
     if not silence:
-        sys.stdout.write('#from finvoice import *\n\n')
-        sys.stdout.write('import finvoice as model_\n\n')
+        sys.stdout.write('#from finvoice.soap.msgheader import *\n\n')
+        sys.stdout.write('import finvoice.soap.msgheader as model_\n\n')
         sys.stdout.write('rootObj = model_.rootClass(\n')
         rootObj.exportLiteral(sys.stdout, 0, name_=rootTag)
         sys.stdout.write(')\n')
@@ -523,7 +471,7 @@ Usage: python ???.py <infilename>
 
 
 def usage():
-    print USAGE_TEXT
+    print(USAGE_TEXT)
     sys.exit(1)
 
 

@@ -1,91 +1,88 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-###
-# Copyright 2014 Code Master Oy (http://www.codemaster.fi/)
 #
-# This file is part of py-finvoice.
+# Generated  by generateDS.py.
+# Python 3.5.2 (default, Sep 14 2017, 22:51:06)  [GCC 5.4.0 20160609]
 #
-# py-finvoice is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Command line options:
+#   ('-s', 'finvoice/sender/senderinfosubs.py')
+#   ('-o', 'finvoice/sender/senderinfo.py')
+#   ('--super', 'finvoice.sender.senderinfo')
+#   ('--external-encoding', 'iso8859-15')
+#   ('--no-dates', '')
+#   ('--no-versions', '')
+#   ('--validator-bodies', 'stubs/validator/sender/senderinfo/')
+#   ('--user-methods', 'generators.gends_user_methods_senderinfo')
 #
-# py-finvoice is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Command line arguments:
+#   xsd/FinvoiceSenderInfo.xsd
 #
-# You should have received a copy of the GNU General Public License
-# along with py-finvoice. If not, see <http://www.gnu.org/licenses/>.
-##
-
 # Command line:
-#   /usr/local/bin/generateDS.py -s "finvoice/sender/senderinfosubs.py" -o "finvoice/sender/senderinfo.py" --super="finvoice.sender.senderinfo" --external-encoding="iso8859-15" --no-dates --no-versions --validator-bodies="stubs/validator/sender/senderinfo/" --user-methods="generators.gends_user_methods_senderinfo" xsd/FinvoiceSenderInfo.xsd
+#   /home/aisopuro/.virtualenvs/py-finvoice/bin/generateDS.py -s "finvoice/sender/senderinfosubs.py" -o "finvoice/sender/senderinfo.py" --super="finvoice.sender.senderinfo" --external-encoding="iso8859-15" --no-dates --no-versions --validator-bodies="stubs/validator/sender/senderinfo/" --user-methods="generators.gends_user_methods_senderinfo" xsd/FinvoiceSenderInfo.xsd
+#
+# Current working directory (os.getcwd()):
+#   py-finvoice
+#
 
 import sys
-import getopt
 import re as re_
 import base64
 import datetime as datetime_
-
-etree_ = None
-Verbose_import_ = False
-(
-    XMLParser_import_none, XMLParser_import_lxml,
-    XMLParser_import_elementtree
-) = range(3)
-XMLParser_import_library = None
+import warnings as warnings_
 try:
-    # lxml
     from lxml import etree as etree_
-    XMLParser_import_library = XMLParser_import_lxml
-    if Verbose_import_:
-        print("running with lxml.etree")
 except ImportError:
-    try:
-        # cElementTree from Python 2.5+
-        import xml.etree.cElementTree as etree_
-        XMLParser_import_library = XMLParser_import_elementtree
-        if Verbose_import_:
-            print("running with cElementTree on Python 2.5+")
-    except ImportError:
-        try:
-            # ElementTree from Python 2.5+
-            import xml.etree.ElementTree as etree_
-            XMLParser_import_library = XMLParser_import_elementtree
-            if Verbose_import_:
-                print("running with ElementTree on Python 2.5+")
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree_
-                XMLParser_import_library = XMLParser_import_elementtree
-                if Verbose_import_:
-                    print("running with cElementTree")
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree_
-                    XMLParser_import_library = XMLParser_import_elementtree
-                    if Verbose_import_:
-                        print("running with ElementTree")
-                except ImportError:
-                    raise ImportError(
-                        "Failed to import ElementTree from any known place")
+    from xml.etree import ElementTree as etree_
 
 
-def parsexml_(*args, **kwargs):
-    if (XMLParser_import_library == XMLParser_import_lxml and
-            'parser' not in kwargs):
+Validate_simpletypes_ = True
+if sys.version_info.major == 2:
+    BaseStrType_ = basestring
+else:
+    BaseStrType_ = str
+
+
+def parsexml_(infile, parser=None, **kwargs):
+    if parser is None:
         # Use the lxml ElementTree compatible parser so that, e.g.,
         #   we ignore comments.
-        kwargs['parser'] = etree_.ETCompatXMLParser()
-    doc = etree_.parse(*args, **kwargs)
+        try:
+            parser = etree_.ETCompatXMLParser()
+        except AttributeError:
+            # fallback to xml.etree
+            parser = etree_.XMLParser()
+    doc = etree_.parse(infile, parser=parser, **kwargs)
     return doc
 
 #
-# User methods
+# Namespace prefix definition table (and other attributes, too)
+#
+# The module generatedsnamespaces, if it is importable, must contain
+# a dictionary named GeneratedsNamespaceDefs.  This Python dictionary
+# should map element type names (strings) to XML schema namespace prefix
+# definitions.  The export method for any class for which there is
+# a namespace prefix definition, will export that definition in the
+# XML representation of that element.  See the export method of
+# any generated element type class for a example of the use of this
+# table.
+# A sample table is:
+#
+#     # File: generatedsnamespaces.py
+#
+#     GenerateDSNamespaceDefs = {
+#         "ElementtypeA": "http://www.xxx.com/namespaceA",
+#         "ElementtypeB": "http://www.xxx.com/namespaceB",
+#     }
+#
+
+try:
+    from generatedsnamespaces import GenerateDSNamespaceDefs as GenerateDSNamespaceDefs_
+except ImportError:
+    GenerateDSNamespaceDefs_ = {}
+
+#
+# The root super-class for element type classes
 #
 # Calls to the methods in these classes are generated by generateDS.py.
 # You can replace these methods by re-implementing the following class
@@ -93,8 +90,8 @@ def parsexml_(*args, **kwargs):
 
 try:
     from generatedssuper import GeneratedsSuper
-except ImportError, exp:
-
+except ImportError as exp:
+    
     class GeneratedsSuper(object):
         tzoff_pattern = re_.compile(r'(\+|-)((0\d|1[0-3]):[0-5]\d|14:00)$')
         class _FixedOffsetTZ(datetime_.tzinfo):
@@ -109,64 +106,68 @@ except ImportError, exp:
                 return None
         def gds_format_string(self, input_data, input_name=''):
             return input_data
-        def gds_validate_string(self, input_data, node, input_name=''):
+        def gds_validate_string(self, input_data, node=None, input_name=''):
             if not input_data:
                 return ''
             else:
                 return input_data
         def gds_format_base64(self, input_data, input_name=''):
             return base64.b64encode(input_data)
-        def gds_validate_base64(self, input_data, node, input_name=''):
+        def gds_validate_base64(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_integer(self, input_data, input_name=''):
             return '%d' % input_data
-        def gds_validate_integer(self, input_data, node, input_name=''):
+        def gds_validate_integer(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_integer_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_integer_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_integer_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 try:
-                    float(value)
+                    int(value)
                 except (TypeError, ValueError):
                     raise_parse_error(node, 'Requires sequence of integers')
-            return input_data
+            return values
         def gds_format_float(self, input_data, input_name=''):
             return ('%.15f' % input_data).rstrip('0')
-        def gds_validate_float(self, input_data, node, input_name=''):
+        def gds_validate_float(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_float_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_float_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_float_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 try:
                     float(value)
                 except (TypeError, ValueError):
                     raise_parse_error(node, 'Requires sequence of floats')
-            return input_data
+            return values
         def gds_format_double(self, input_data, input_name=''):
             return '%e' % input_data
-        def gds_validate_double(self, input_data, node, input_name=''):
+        def gds_validate_double(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_double_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_double_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_double_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 try:
                     float(value)
                 except (TypeError, ValueError):
                     raise_parse_error(node, 'Requires sequence of doubles')
-            return input_data
+            return values
         def gds_format_boolean(self, input_data, input_name=''):
             return ('%s' % input_data).lower()
-        def gds_validate_boolean(self, input_data, node, input_name=''):
+        def gds_validate_boolean(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_boolean_list(self, input_data, input_name=''):
-            return '%s' % input_data
-        def gds_validate_boolean_list(self, input_data, node, input_name=''):
+            return '%s' % ' '.join(input_data)
+        def gds_validate_boolean_list(
+                self, input_data, node=None, input_name=''):
             values = input_data.split()
             for value in values:
                 if value not in ('true', '1', 'false', '0', ):
@@ -174,8 +175,8 @@ except ImportError, exp:
                         node,
                         'Requires sequence of booleans '
                         '("true", "1", "false", "0")')
-            return input_data
-        def gds_validate_datetime(self, input_data, node, input_name=''):
+            return values
+        def gds_validate_datetime(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_datetime(self, input_data, input_name=''):
             if input_data.microsecond == 0:
@@ -240,7 +241,7 @@ except ImportError, exp:
                     input_data, '%Y-%m-%dT%H:%M:%S')
             dt = dt.replace(tzinfo=tz)
             return dt
-        def gds_validate_date(self, input_data, node, input_name=''):
+        def gds_validate_date(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_date(self, input_data, input_name=''):
             _svalue = '%04d-%02d-%02d' % (
@@ -263,7 +264,8 @@ except ImportError, exp:
                                 _svalue += '+'
                             hours = total_seconds // 3600
                             minutes = (total_seconds - (hours * 3600)) // 60
-                            _svalue += '{0:02d}:{1:02d}'.format(hours, minutes)
+                            _svalue += '{0:02d}:{1:02d}'.format(
+                                hours, minutes)
             except AttributeError:
                 pass
             return _svalue
@@ -286,7 +288,7 @@ except ImportError, exp:
             dt = datetime_.datetime.strptime(input_data, '%Y-%m-%d')
             dt = dt.replace(tzinfo=tz)
             return dt.date()
-        def gds_validate_time(self, input_data, node, input_name=''):
+        def gds_validate_time(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_time(self, input_data, input_name=''):
             if input_data.microsecond == 0:
@@ -318,6 +320,21 @@ except ImportError, exp:
                         minutes = (total_seconds - (hours * 3600)) // 60
                         _svalue += '{0:02d}:{1:02d}'.format(hours, minutes)
             return _svalue
+        def gds_validate_simple_patterns(self, patterns, target):
+            # pat is a list of lists of strings/patterns.  We should:
+            # - AND the outer elements
+            # - OR the inner elements
+            found1 = True
+            for patterns1 in patterns:
+                found2 = False
+                for patterns2 in patterns1:
+                    if re_.search(patterns2, target) is not None:
+                        found2 = True
+                        break
+                if not found2:
+                    found1 = False
+                    break
+            return found1
         @classmethod
         def gds_parse_time(cls, input_data):
             tz = None
@@ -373,6 +390,35 @@ except ImportError, exp:
         @classmethod
         def gds_reverse_node_mapping(cls, mapping):
             return dict(((v, k) for k, v in mapping.iteritems()))
+        @staticmethod
+        def gds_encode(instring):
+            if sys.version_info.major == 2:
+                return instring.encode(ExternalEncoding)
+            else:
+                return instring
+        @staticmethod
+        def convert_unicode(instring):
+            if isinstance(instring, str):
+                result = quote_xml(instring)
+            elif sys.version_info.major == 2 and isinstance(instring, unicode):
+                result = quote_xml(instring).encode('utf8')
+            else:
+                result = GeneratedsSuper.gds_encode(str(instring))
+            return result
+        def __eq__(self, other):
+            if type(self) != type(other):
+                return False
+            return self.__dict__ == other.__dict__
+        def __ne__(self, other):
+            return not self.__eq__(other)
+    
+    def getSubclassFromModule_(module, class_):
+        '''Get the subclass of a class from a specific module.'''
+        name = class_.__name__ + 'Sub'
+        if hasattr(module, name):
+            return getattr(module, name)
+        else:
+            return None
 
 
 #
@@ -398,6 +444,11 @@ ExternalEncoding = 'iso8859-15'
 Tag_pattern_ = re_.compile(r'({.*})?(.*)')
 String_cleanup_pat_ = re_.compile(r"[\n\r\s]+")
 Namespace_extract_pat_ = re_.compile(r'{(.*)}(.*)')
+CDATA_pattern_ = re_.compile(r"<!\[CDATA\[.*?\]\]>", re_.DOTALL)
+
+# Change this to redirect the generated superclass module to use a
+# specific subclass module.
+CurrentSubclassModule_ = None
 
 #
 # Support/utility functions.
@@ -411,19 +462,32 @@ def showIndent(outfile, level, pretty_print=True):
 
 
 def quote_xml(inStr):
+    "Escape markup chars, but do not modify CDATA sections."
     if not inStr:
         return ''
-    s1 = (isinstance(inStr, basestring) and inStr or
-          '%s' % inStr)
-    s1 = s1.replace('&', '&amp;')
+    s1 = (isinstance(inStr, BaseStrType_) and inStr or '%s' % inStr)
+    s2 = ''
+    pos = 0
+    matchobjects = CDATA_pattern_.finditer(s1)
+    for mo in matchobjects:
+        s3 = s1[pos:mo.start()]
+        s2 += quote_xml_aux(s3)
+        s2 += s1[mo.start():mo.end()]
+        pos = mo.end()
+    s3 = s1[pos:]
+    s2 += quote_xml_aux(s3)
+    return s2
+
+
+def quote_xml_aux(inStr):
+    s1 = inStr.replace('&', '&amp;')
     s1 = s1.replace('<', '&lt;')
     s1 = s1.replace('>', '&gt;')
     return s1
 
 
 def quote_attrib(inStr):
-    s1 = (isinstance(inStr, basestring) and inStr or
-          '%s' % inStr)
+    s1 = (isinstance(inStr, BaseStrType_) and inStr or '%s' % inStr)
     s1 = s1.replace('&', '&amp;')
     s1 = s1.replace('<', '&lt;')
     s1 = s1.replace('>', '&gt;')
@@ -483,15 +547,7 @@ class GDSParseError(Exception):
 
 
 def raise_parse_error(node, msg):
-    if XMLParser_import_library == XMLParser_import_lxml:
-        msg = '%s (element %s/line %d)' % (
-            msg, node.tag, node.sourceline, )
-    else:
-        msg = '%s (element %s)' % (msg, node.tag, )
-    raise GDSParseError(msg)
-
-def raise_value_error(value, msg):
-    msg = '%s (value "%s")' % (msg, value, )
+    msg = '%s (element %s/line %d)' % (msg, node.tag, node.sourceline, )
     raise GDSParseError(msg)
 
 
@@ -524,7 +580,8 @@ class MixedContainer:
         return self.value
     def getName(self):
         return self.name
-    def export(self, outfile, level, name, namespace, pretty_print=True):
+    def export(self, outfile, level, name, namespace,
+               pretty_print=True):
         if self.category == MixedContainer.CategoryText:
             # Prevent exporting empty content as empty lines.
             if self.value.strip():
@@ -532,7 +589,9 @@ class MixedContainer:
         elif self.category == MixedContainer.CategorySimple:
             self.exportSimple(outfile, level, name)
         else:    # category == MixedContainer.CategoryComplex
-            self.value.export(outfile, level, namespace, name, pretty_print)
+            self.value.export(
+                outfile, level, namespace, name,
+                pretty_print=pretty_print)
     def exportSimple(self, outfile, level, name):
         if self.content_type == MixedContainer.TypeString:
             outfile.write('<%s>%s</%s>' % (
@@ -550,7 +609,9 @@ class MixedContainer:
                 self.name, self.value, self.name))
         elif self.content_type == MixedContainer.TypeBase64:
             outfile.write('<%s>%s</%s>' % (
-                self.name, base64.b64encode(self.value), self.name))
+                self.name,
+                base64.b64encode(self.value),
+                self.name))
     def to_etree(self, element):
         if self.category == MixedContainer.CategoryText:
             # Prevent exporting empty content as empty lines.
@@ -566,7 +627,8 @@ class MixedContainer:
                     else:
                         element.text += self.value
         elif self.category == MixedContainer.CategorySimple:
-            subelement = etree_.SubElement(element, '%s' % self.name)
+            subelement = etree_.SubElement(
+                element, '%s' % self.name)
             subelement.text = self.to_etree_simple()
         else:    # category == MixedContainer.CategoryComplex
             self.value.to_etree(element)
@@ -589,12 +651,14 @@ class MixedContainer:
             showIndent(outfile, level)
             outfile.write(
                 'model_.MixedContainer(%d, %d, "%s", "%s"),\n' % (
-                    self.category, self.content_type, self.name, self.value))
+                    self.category, self.content_type,
+                    self.name, self.value))
         elif self.category == MixedContainer.CategorySimple:
             showIndent(outfile, level)
             outfile.write(
                 'model_.MixedContainer(%d, %d, "%s", "%s"),\n' % (
-                    self.category, self.content_type, self.name, self.value))
+                    self.category, self.content_type,
+                    self.name, self.value))
         else:    # category == MixedContainer.CategoryComplex
             showIndent(outfile, level)
             outfile.write(
@@ -606,10 +670,14 @@ class MixedContainer:
 
 
 class MemberSpec_(object):
-    def __init__(self, name='', data_type='', container=0):
+    def __init__(self, name='', data_type='', container=0,
+            optional=0, child_attrs=None, choice=None):
         self.name = name
         self.data_type = data_type
         self.container = container
+        self.child_attrs = child_attrs
+        self.choice = choice
+        self.optional = optional
     def set_name(self, name): self.name = name
     def get_name(self): return self.name
     def set_data_type(self, data_type): self.data_type = data_type
@@ -624,6 +692,12 @@ class MemberSpec_(object):
             return self.data_type
     def set_container(self, container): self.container = container
     def get_container(self): return self.container
+    def set_child_attrs(self, child_attrs): self.child_attrs = child_attrs
+    def get_child_attrs(self): return self.child_attrs
+    def set_choice(self, choice): self.choice = choice
+    def get_choice(self): return self.choice
+    def set_optional(self, optional): self.optional = optional
+    def get_optional(self): return self.optional
 
 
 def _cast(typ, value):
@@ -638,15 +712,15 @@ def _cast(typ, value):
 
 class FinvoiceSenderInfo(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('Version', 'xs:NMTOKEN', 0),
-        MemberSpec_('MessageDetails', 'MessageDetailsType', 0),
-        MemberSpec_('SellerPartyDetails', 'SellerPartyDetailsType', 0),
-        MemberSpec_('SellerOrganisationUnitNumber', ['genericStringType5_35', 'xs:string'], 0),
-        MemberSpec_('InvoiceSenderInformationDetails', 'InvoiceSenderInformationDetailsType', 0),
-        MemberSpec_('SellerAccountDetails', 'SellerAccountDetailsType', 1),
-        MemberSpec_('SellerInvoiceDetails', 'SellerInvoiceDetailsType', 0),
-        MemberSpec_('ProposedDueDateAccepted', ['YesNoType', 'xs:NMTOKEN'], 0),
-        MemberSpec_('ProposedInvoicePeriodAccepted', ['YesNoType', 'xs:NMTOKEN'], 0),
+        MemberSpec_('Version', 'xs:NMTOKEN', 0, 0, {'use': 'required'}),
+        MemberSpec_('MessageDetails', 'MessageDetailsType', 0, 0, {'name': 'MessageDetails', 'type': 'MessageDetailsType'}, None),
+        MemberSpec_('SellerPartyDetails', 'SellerPartyDetailsType', 0, 0, {'name': 'SellerPartyDetails', 'type': 'SellerPartyDetailsType'}, None),
+        MemberSpec_('SellerOrganisationUnitNumber', ['genericStringType5_35', 'xs:string'], 0, 1, {'name': 'SellerOrganisationUnitNumber', 'minOccurs': '0', 'type': 'xs:string'}, None),
+        MemberSpec_('InvoiceSenderInformationDetails', 'InvoiceSenderInformationDetailsType', 0, 0, {'name': 'InvoiceSenderInformationDetails', 'type': 'InvoiceSenderInformationDetailsType'}, None),
+        MemberSpec_('SellerAccountDetails', 'SellerAccountDetailsType', 1, 0, {'name': 'SellerAccountDetails', 'maxOccurs': 'unbounded', 'type': 'SellerAccountDetailsType'}, None),
+        MemberSpec_('SellerInvoiceDetails', 'SellerInvoiceDetailsType', 0, 0, {'name': 'SellerInvoiceDetails', 'type': 'SellerInvoiceDetailsType'}, None),
+        MemberSpec_('ProposedDueDateAccepted', ['YesNoType', 'xs:NMTOKEN'], 0, 1, {'name': 'ProposedDueDateAccepted', 'minOccurs': '0', 'type': 'xs:NMTOKEN'}, None),
+        MemberSpec_('ProposedInvoicePeriodAccepted', ['YesNoType', 'xs:NMTOKEN'], 0, 1, {'name': 'ProposedInvoicePeriodAccepted', 'minOccurs': '0', 'type': 'xs:NMTOKEN'}, None),
     ]
     subclass = None
     superclass = None
@@ -656,6 +730,7 @@ class FinvoiceSenderInfo(GeneratedsSuper):
         self.MessageDetails = MessageDetails
         self.SellerPartyDetails = SellerPartyDetails
         self.SellerOrganisationUnitNumber = SellerOrganisationUnitNumber
+        self.validate_genericStringType5_35(self.SellerOrganisationUnitNumber)
         self.InvoiceSenderInformationDetails = InvoiceSenderInformationDetails
         if SellerAccountDetails is None:
             self.SellerAccountDetails = []
@@ -663,8 +738,15 @@ class FinvoiceSenderInfo(GeneratedsSuper):
             self.SellerAccountDetails = SellerAccountDetails
         self.SellerInvoiceDetails = SellerInvoiceDetails
         self.ProposedDueDateAccepted = ProposedDueDateAccepted
+        self.validate_YesNoType(self.ProposedDueDateAccepted)
         self.ProposedInvoicePeriodAccepted = ProposedInvoicePeriodAccepted
+        self.validate_YesNoType(self.ProposedInvoicePeriodAccepted)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, FinvoiceSenderInfo)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if FinvoiceSenderInfo.subclass:
             return FinvoiceSenderInfo.subclass(*args_, **kwargs_)
         else:
@@ -693,23 +775,23 @@ class FinvoiceSenderInfo(GeneratedsSuper):
     def set_Version(self, Version): self.Version = Version
     def validate_genericStringType5_35(self, value):
         # Validate type genericStringType5_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 5 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 5..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 5 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 5..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType5_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 5:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType5_35' % {"value" : value.encode("utf-8")} )
     def validate_YesNoType(self, value):
         # Validate type YesNoType, a restriction on xs:NMTOKEN.
-		if ( value != "YES" and value != "NO" ):
-			raise_value_error( value, 'Expected "YES" or "NO"' )
-		return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['YES', 'NO']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on YesNoType' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.MessageDetails is not None or
@@ -725,6 +807,9 @@ class FinvoiceSenderInfo(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='FinvoiceSenderInfo', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('FinvoiceSenderInfo')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -745,7 +830,7 @@ class FinvoiceSenderInfo(GeneratedsSuper):
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='FinvoiceSenderInfo'):
         if self.Version is not None and 'Version' not in already_processed:
             already_processed.add('Version')
-            outfile.write(' Version=%s' % (self.gds_format_string(quote_attrib(self.Version).encode(ExternalEncoding), input_name='Version'), ))
+            outfile.write(' Version=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Version), input_name='Version')), ))
     def exportChildren(self, outfile, level, namespace_='', name_='FinvoiceSenderInfo', fromsubclass_=False, pretty_print=True):
         if pretty_print:
             eol_ = '\n'
@@ -757,7 +842,7 @@ class FinvoiceSenderInfo(GeneratedsSuper):
             self.SellerPartyDetails.export(outfile, level, namespace_, name_='SellerPartyDetails', pretty_print=pretty_print)
         if self.SellerOrganisationUnitNumber is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerOrganisationUnitNumber>%s</%sSellerOrganisationUnitNumber>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerOrganisationUnitNumber).encode(ExternalEncoding), input_name='SellerOrganisationUnitNumber'), namespace_, eol_))
+            outfile.write('<%sSellerOrganisationUnitNumber>%s</%sSellerOrganisationUnitNumber>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerOrganisationUnitNumber), input_name='SellerOrganisationUnitNumber')), namespace_, eol_))
         if self.InvoiceSenderInformationDetails is not None:
             self.InvoiceSenderInformationDetails.export(outfile, level, namespace_, name_='InvoiceSenderInformationDetails', pretty_print=pretty_print)
         for SellerAccountDetails_ in self.SellerAccountDetails:
@@ -766,67 +851,10 @@ class FinvoiceSenderInfo(GeneratedsSuper):
             self.SellerInvoiceDetails.export(outfile, level, namespace_, name_='SellerInvoiceDetails', pretty_print=pretty_print)
         if self.ProposedDueDateAccepted is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sProposedDueDateAccepted>%s</%sProposedDueDateAccepted>%s' % (namespace_, self.gds_format_string(quote_xml(self.ProposedDueDateAccepted).encode(ExternalEncoding), input_name='ProposedDueDateAccepted'), namespace_, eol_))
+            outfile.write('<%sProposedDueDateAccepted>%s</%sProposedDueDateAccepted>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.ProposedDueDateAccepted), input_name='ProposedDueDateAccepted')), namespace_, eol_))
         if self.ProposedInvoicePeriodAccepted is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sProposedInvoicePeriodAccepted>%s</%sProposedInvoicePeriodAccepted>%s' % (namespace_, self.gds_format_string(quote_xml(self.ProposedInvoicePeriodAccepted).encode(ExternalEncoding), input_name='ProposedInvoicePeriodAccepted'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='FinvoiceSenderInfo'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Version is not None and 'Version' not in already_processed:
-            already_processed.add('Version')
-            showIndent(outfile, level)
-            outfile.write('Version="%s",\n' % (self.Version,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.MessageDetails is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageDetails=model_.MessageDetailsType(\n')
-            self.MessageDetails.exportLiteral(outfile, level, name_='MessageDetails')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.SellerPartyDetails is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerPartyDetails=model_.SellerPartyDetailsType(\n')
-            self.SellerPartyDetails.exportLiteral(outfile, level, name_='SellerPartyDetails')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.SellerOrganisationUnitNumber is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerOrganisationUnitNumber=%s,\n' % quote_python(self.SellerOrganisationUnitNumber).encode(ExternalEncoding))
-        if self.InvoiceSenderInformationDetails is not None:
-            showIndent(outfile, level)
-            outfile.write('InvoiceSenderInformationDetails=model_.InvoiceSenderInformationDetailsType(\n')
-            self.InvoiceSenderInformationDetails.exportLiteral(outfile, level, name_='InvoiceSenderInformationDetails')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('SellerAccountDetails=[\n')
-        level += 1
-        for SellerAccountDetails_ in self.SellerAccountDetails:
-            showIndent(outfile, level)
-            outfile.write('model_.SellerAccountDetailsType(\n')
-            SellerAccountDetails_.exportLiteral(outfile, level, name_='SellerAccountDetailsType')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.SellerInvoiceDetails is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceDetails=model_.SellerInvoiceDetailsType(\n')
-            self.SellerInvoiceDetails.exportLiteral(outfile, level, name_='SellerInvoiceDetails')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.ProposedDueDateAccepted is not None:
-            showIndent(outfile, level)
-            outfile.write('ProposedDueDateAccepted=%s,\n' % quote_python(self.ProposedDueDateAccepted).encode(ExternalEncoding))
-        if self.ProposedInvoicePeriodAccepted is not None:
-            showIndent(outfile, level)
-            outfile.write('ProposedInvoicePeriodAccepted=%s,\n' % quote_python(self.ProposedInvoicePeriodAccepted).encode(ExternalEncoding))
+            outfile.write('<%sProposedInvoicePeriodAccepted>%s</%sProposedInvoicePeriodAccepted>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.ProposedInvoicePeriodAccepted), input_name='ProposedInvoicePeriodAccepted')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -854,7 +882,8 @@ class FinvoiceSenderInfo(GeneratedsSuper):
             SellerOrganisationUnitNumber_ = child_.text
             SellerOrganisationUnitNumber_ = self.gds_validate_string(SellerOrganisationUnitNumber_, node, 'SellerOrganisationUnitNumber')
             self.SellerOrganisationUnitNumber = SellerOrganisationUnitNumber_
-            self.validate_genericStringType5_35(self.SellerOrganisationUnitNumber)    # validate type genericStringType5_35
+            # validate type genericStringType5_35
+            self.validate_genericStringType5_35(self.SellerOrganisationUnitNumber)
         elif nodeName_ == 'InvoiceSenderInformationDetails':
             obj_ = InvoiceSenderInformationDetailsType.factory()
             obj_.build(child_)
@@ -874,35 +903,48 @@ class FinvoiceSenderInfo(GeneratedsSuper):
             ProposedDueDateAccepted_ = child_.text
             ProposedDueDateAccepted_ = self.gds_validate_string(ProposedDueDateAccepted_, node, 'ProposedDueDateAccepted')
             self.ProposedDueDateAccepted = ProposedDueDateAccepted_
-            self.validate_YesNoType(self.ProposedDueDateAccepted)    # validate type YesNoType
+            # validate type YesNoType
+            self.validate_YesNoType(self.ProposedDueDateAccepted)
         elif nodeName_ == 'ProposedInvoicePeriodAccepted':
             ProposedInvoicePeriodAccepted_ = child_.text
             ProposedInvoicePeriodAccepted_ = self.gds_validate_string(ProposedInvoicePeriodAccepted_, node, 'ProposedInvoicePeriodAccepted')
             self.ProposedInvoicePeriodAccepted = ProposedInvoicePeriodAccepted_
-            self.validate_YesNoType(self.ProposedInvoicePeriodAccepted)    # validate type YesNoType
+            # validate type YesNoType
+            self.validate_YesNoType(self.ProposedInvoicePeriodAccepted)
 # end class FinvoiceSenderInfo
 
 
 class InvoiceSenderInformationDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('SellerWebaddressNameText', ['genericStringType0_70', 'xs:string'], 0),
-        MemberSpec_('SellerWebaddressText', ['genericStringType0_512', 'xs:string'], 0),
-        MemberSpec_('InvoiceSenderAddress', ['genericStringType0_35', 'xs:string'], 0),
-        MemberSpec_('InvoiceSenderIntermediatorAddress', ['genericNMtokenType8_11', 'genericNMtokenType', 'xs:token'], 0),
-        MemberSpec_('NewInvoiceSenderAddress', ['genericStringType0_35', 'xs:string'], 0),
-        MemberSpec_('NewInvoiceSenderIntermediatorAddress', ['genericNMtokenType8_11', 'genericNMtokenType', 'xs:token'], 0),
+        MemberSpec_('SellerWebaddressNameText', ['genericStringType0_70', 'xs:string'], 0, 1, {'name': 'SellerWebaddressNameText', 'minOccurs': '0', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerWebaddressText', ['genericStringType0_512', 'xs:string'], 0, 1, {'name': 'SellerWebaddressText', 'minOccurs': '0', 'type': 'xs:string'}, None),
+        MemberSpec_('InvoiceSenderAddress', ['genericStringType0_35', 'xs:string'], 0, 0, {'name': 'InvoiceSenderAddress', 'type': 'xs:string'}, None),
+        MemberSpec_('InvoiceSenderIntermediatorAddress', ['genericNMtokenType8_11', 'genericNMtokenType', 'xs:token'], 0, 0, {'name': 'InvoiceSenderIntermediatorAddress', 'type': 'xs:token'}, None),
+        MemberSpec_('NewInvoiceSenderAddress', ['genericStringType0_35', 'xs:string'], 0, 1, {'name': 'NewInvoiceSenderAddress', 'minOccurs': '0', 'type': 'xs:string'}, None),
+        MemberSpec_('NewInvoiceSenderIntermediatorAddress', ['genericNMtokenType8_11', 'genericNMtokenType', 'xs:token'], 0, 1, {'name': 'NewInvoiceSenderIntermediatorAddress', 'minOccurs': '0', 'type': 'xs:token'}, None),
     ]
     subclass = None
     superclass = None
     def __init__(self, SellerWebaddressNameText=None, SellerWebaddressText=None, InvoiceSenderAddress=None, InvoiceSenderIntermediatorAddress=None, NewInvoiceSenderAddress=None, NewInvoiceSenderIntermediatorAddress=None):
         self.original_tagname_ = None
         self.SellerWebaddressNameText = SellerWebaddressNameText
+        self.validate_genericStringType0_70(self.SellerWebaddressNameText)
         self.SellerWebaddressText = SellerWebaddressText
+        self.validate_genericStringType0_512(self.SellerWebaddressText)
         self.InvoiceSenderAddress = InvoiceSenderAddress
+        self.validate_genericStringType0_35(self.InvoiceSenderAddress)
         self.InvoiceSenderIntermediatorAddress = InvoiceSenderIntermediatorAddress
+        self.validate_genericNMtokenType8_11(self.InvoiceSenderIntermediatorAddress)
         self.NewInvoiceSenderAddress = NewInvoiceSenderAddress
+        self.validate_genericStringType0_35(self.NewInvoiceSenderAddress)
         self.NewInvoiceSenderIntermediatorAddress = NewInvoiceSenderIntermediatorAddress
+        self.validate_genericNMtokenType8_11(self.NewInvoiceSenderIntermediatorAddress)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, InvoiceSenderInformationDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if InvoiceSenderInformationDetailsType.subclass:
             return InvoiceSenderInformationDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -922,60 +964,36 @@ class InvoiceSenderInformationDetailsType(GeneratedsSuper):
     def set_NewInvoiceSenderIntermediatorAddress(self, NewInvoiceSenderIntermediatorAddress): self.NewInvoiceSenderIntermediatorAddress = NewInvoiceSenderIntermediatorAddress
     def validate_genericStringType0_70(self, value):
         # Validate type genericStringType0_70, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 0 <= value.__len__() <= 70 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 0..70 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 0 <= v.__len__() <= 70 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 0..70 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 70:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType0_70' % {"value" : value.encode("utf-8")} )
+            if len(value) < 0:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType0_70' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType0_512(self, value):
         # Validate type genericStringType0_512, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 0 <= value.__len__() <= 512 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 0..512 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 0 <= v.__len__() <= 512 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 0..512 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 512:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType0_512' % {"value" : value.encode("utf-8")} )
+            if len(value) < 0:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType0_512' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType0_35(self, value):
         # Validate type genericStringType0_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 0 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 0..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 0 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 0..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType0_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 0:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType0_35' % {"value" : value.encode("utf-8")} )
     def validate_genericNMtokenType8_11(self, value):
         # Validate type genericNMtokenType8_11, a restriction on genericNMtokenType.
-        if ( isinstance( value, basestring ) ):
-            if ( 8 <= value.__len__() <= 11 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 8..11 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 8 <= v.__len__() <= 11 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 8..11 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(str(value)) > 11:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericNMtokenType8_11' % {"value" : value} )
+            if len(str(value)) < 8:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericNMtokenType8_11' % {"value" : value} )
+            if not self.gds_validate_simple_patterns(
+                    self.validate_genericNMtokenType8_11_patterns_, value):
+                warnings_.warn('Value "%s" does not match xsd pattern restrictions: %s' % (value.encode('utf-8'), self.validate_genericNMtokenType8_11_patterns_, ))
+    validate_genericNMtokenType8_11_patterns_ = [['^\\c*$']]
     def hasContent_(self):
         if (
             self.SellerWebaddressNameText is not None or
@@ -989,6 +1007,9 @@ class InvoiceSenderInformationDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='InvoiceSenderInformationDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('InvoiceSenderInformationDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1015,49 +1036,22 @@ class InvoiceSenderInformationDetailsType(GeneratedsSuper):
             eol_ = ''
         if self.SellerWebaddressNameText is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerWebaddressNameText>%s</%sSellerWebaddressNameText>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerWebaddressNameText).encode(ExternalEncoding), input_name='SellerWebaddressNameText'), namespace_, eol_))
+            outfile.write('<%sSellerWebaddressNameText>%s</%sSellerWebaddressNameText>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerWebaddressNameText), input_name='SellerWebaddressNameText')), namespace_, eol_))
         if self.SellerWebaddressText is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerWebaddressText>%s</%sSellerWebaddressText>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerWebaddressText).encode(ExternalEncoding), input_name='SellerWebaddressText'), namespace_, eol_))
+            outfile.write('<%sSellerWebaddressText>%s</%sSellerWebaddressText>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerWebaddressText), input_name='SellerWebaddressText')), namespace_, eol_))
         if self.InvoiceSenderAddress is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sInvoiceSenderAddress>%s</%sInvoiceSenderAddress>%s' % (namespace_, self.gds_format_string(quote_xml(self.InvoiceSenderAddress).encode(ExternalEncoding), input_name='InvoiceSenderAddress'), namespace_, eol_))
+            outfile.write('<%sInvoiceSenderAddress>%s</%sInvoiceSenderAddress>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.InvoiceSenderAddress), input_name='InvoiceSenderAddress')), namespace_, eol_))
         if self.InvoiceSenderIntermediatorAddress is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sInvoiceSenderIntermediatorAddress>%s</%sInvoiceSenderIntermediatorAddress>%s' % (namespace_, self.gds_format_string(quote_xml(self.InvoiceSenderIntermediatorAddress).encode(ExternalEncoding), input_name='InvoiceSenderIntermediatorAddress'), namespace_, eol_))
+            outfile.write('<%sInvoiceSenderIntermediatorAddress>%s</%sInvoiceSenderIntermediatorAddress>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.InvoiceSenderIntermediatorAddress), input_name='InvoiceSenderIntermediatorAddress')), namespace_, eol_))
         if self.NewInvoiceSenderAddress is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sNewInvoiceSenderAddress>%s</%sNewInvoiceSenderAddress>%s' % (namespace_, self.gds_format_string(quote_xml(self.NewInvoiceSenderAddress).encode(ExternalEncoding), input_name='NewInvoiceSenderAddress'), namespace_, eol_))
+            outfile.write('<%sNewInvoiceSenderAddress>%s</%sNewInvoiceSenderAddress>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.NewInvoiceSenderAddress), input_name='NewInvoiceSenderAddress')), namespace_, eol_))
         if self.NewInvoiceSenderIntermediatorAddress is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sNewInvoiceSenderIntermediatorAddress>%s</%sNewInvoiceSenderIntermediatorAddress>%s' % (namespace_, self.gds_format_string(quote_xml(self.NewInvoiceSenderIntermediatorAddress).encode(ExternalEncoding), input_name='NewInvoiceSenderIntermediatorAddress'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='InvoiceSenderInformationDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SellerWebaddressNameText is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerWebaddressNameText=%s,\n' % quote_python(self.SellerWebaddressNameText).encode(ExternalEncoding))
-        if self.SellerWebaddressText is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerWebaddressText=%s,\n' % quote_python(self.SellerWebaddressText).encode(ExternalEncoding))
-        if self.InvoiceSenderAddress is not None:
-            showIndent(outfile, level)
-            outfile.write('InvoiceSenderAddress=%s,\n' % quote_python(self.InvoiceSenderAddress).encode(ExternalEncoding))
-        if self.InvoiceSenderIntermediatorAddress is not None:
-            showIndent(outfile, level)
-            outfile.write('InvoiceSenderIntermediatorAddress=%s,\n' % quote_python(self.InvoiceSenderIntermediatorAddress).encode(ExternalEncoding))
-        if self.NewInvoiceSenderAddress is not None:
-            showIndent(outfile, level)
-            outfile.write('NewInvoiceSenderAddress=%s,\n' % quote_python(self.NewInvoiceSenderAddress).encode(ExternalEncoding))
-        if self.NewInvoiceSenderIntermediatorAddress is not None:
-            showIndent(outfile, level)
-            outfile.write('NewInvoiceSenderIntermediatorAddress=%s,\n' % quote_python(self.NewInvoiceSenderIntermediatorAddress).encode(ExternalEncoding))
+            outfile.write('<%sNewInvoiceSenderIntermediatorAddress>%s</%sNewInvoiceSenderIntermediatorAddress>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.NewInvoiceSenderIntermediatorAddress), input_name='NewInvoiceSenderIntermediatorAddress')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1072,45 +1066,57 @@ class InvoiceSenderInformationDetailsType(GeneratedsSuper):
             SellerWebaddressNameText_ = child_.text
             SellerWebaddressNameText_ = self.gds_validate_string(SellerWebaddressNameText_, node, 'SellerWebaddressNameText')
             self.SellerWebaddressNameText = SellerWebaddressNameText_
-            self.validate_genericStringType0_70(self.SellerWebaddressNameText)    # validate type genericStringType0_70
+            # validate type genericStringType0_70
+            self.validate_genericStringType0_70(self.SellerWebaddressNameText)
         elif nodeName_ == 'SellerWebaddressText':
             SellerWebaddressText_ = child_.text
             SellerWebaddressText_ = self.gds_validate_string(SellerWebaddressText_, node, 'SellerWebaddressText')
             self.SellerWebaddressText = SellerWebaddressText_
-            self.validate_genericStringType0_512(self.SellerWebaddressText)    # validate type genericStringType0_512
+            # validate type genericStringType0_512
+            self.validate_genericStringType0_512(self.SellerWebaddressText)
         elif nodeName_ == 'InvoiceSenderAddress':
             InvoiceSenderAddress_ = child_.text
             InvoiceSenderAddress_ = self.gds_validate_string(InvoiceSenderAddress_, node, 'InvoiceSenderAddress')
             self.InvoiceSenderAddress = InvoiceSenderAddress_
-            self.validate_genericStringType0_35(self.InvoiceSenderAddress)    # validate type genericStringType0_35
+            # validate type genericStringType0_35
+            self.validate_genericStringType0_35(self.InvoiceSenderAddress)
         elif nodeName_ == 'InvoiceSenderIntermediatorAddress':
             InvoiceSenderIntermediatorAddress_ = child_.text
-            InvoiceSenderIntermediatorAddress_ = re_.sub(String_cleanup_pat_, " ", InvoiceSenderIntermediatorAddress_).strip()
+            if InvoiceSenderIntermediatorAddress_:
+                InvoiceSenderIntermediatorAddress_ = re_.sub(String_cleanup_pat_, " ", InvoiceSenderIntermediatorAddress_).strip()
+            else:
+                InvoiceSenderIntermediatorAddress_ = ""
             InvoiceSenderIntermediatorAddress_ = self.gds_validate_string(InvoiceSenderIntermediatorAddress_, node, 'InvoiceSenderIntermediatorAddress')
             self.InvoiceSenderIntermediatorAddress = InvoiceSenderIntermediatorAddress_
-            self.validate_genericNMtokenType8_11(self.InvoiceSenderIntermediatorAddress)    # validate type genericNMtokenType8_11
+            # validate type genericNMtokenType8_11
+            self.validate_genericNMtokenType8_11(self.InvoiceSenderIntermediatorAddress)
         elif nodeName_ == 'NewInvoiceSenderAddress':
             NewInvoiceSenderAddress_ = child_.text
             NewInvoiceSenderAddress_ = self.gds_validate_string(NewInvoiceSenderAddress_, node, 'NewInvoiceSenderAddress')
             self.NewInvoiceSenderAddress = NewInvoiceSenderAddress_
-            self.validate_genericStringType0_35(self.NewInvoiceSenderAddress)    # validate type genericStringType0_35
+            # validate type genericStringType0_35
+            self.validate_genericStringType0_35(self.NewInvoiceSenderAddress)
         elif nodeName_ == 'NewInvoiceSenderIntermediatorAddress':
             NewInvoiceSenderIntermediatorAddress_ = child_.text
-            NewInvoiceSenderIntermediatorAddress_ = re_.sub(String_cleanup_pat_, " ", NewInvoiceSenderIntermediatorAddress_).strip()
+            if NewInvoiceSenderIntermediatorAddress_:
+                NewInvoiceSenderIntermediatorAddress_ = re_.sub(String_cleanup_pat_, " ", NewInvoiceSenderIntermediatorAddress_).strip()
+            else:
+                NewInvoiceSenderIntermediatorAddress_ = ""
             NewInvoiceSenderIntermediatorAddress_ = self.gds_validate_string(NewInvoiceSenderIntermediatorAddress_, node, 'NewInvoiceSenderIntermediatorAddress')
             self.NewInvoiceSenderIntermediatorAddress = NewInvoiceSenderIntermediatorAddress_
-            self.validate_genericNMtokenType8_11(self.NewInvoiceSenderIntermediatorAddress)    # validate type genericNMtokenType8_11
+            # validate type genericNMtokenType8_11
+            self.validate_genericNMtokenType8_11(self.NewInvoiceSenderIntermediatorAddress)
 # end class InvoiceSenderInformationDetailsType
 
 
 class MessageDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('MessageTypeCode', 'xs:string', 0),
-        MemberSpec_('MessageTypeText', ['genericStringType0_35', 'xs:string'], 0),
-        MemberSpec_('MessageActionCode', ['MessageActionCodeType', 'xs:string'], 0),
-        MemberSpec_('MessageActionCodeIdentifier', ['MessageActionCodeIdentifierType', 'xs:NMTOKEN'], 0),
-        MemberSpec_('MessageDate', 'date', 0),
-        MemberSpec_('SenderInfoIdentifier', ['genericStringType1_48', 'xs:string'], 0),
+        MemberSpec_('MessageTypeCode', 'xs:string', 0, 0, {'type': 'xs:string', 'name': 'MessageTypeCode', 'fixed': 'SENDERINFO'}, None),
+        MemberSpec_('MessageTypeText', ['genericStringType0_35', 'xs:string'], 0, 0, {'name': 'MessageTypeText', 'type': 'xs:string'}, None),
+        MemberSpec_('MessageActionCode', ['MessageActionCodeType', 'xs:string'], 0, 0, {'name': 'MessageActionCode', 'type': 'xs:string'}, None),
+        MemberSpec_('MessageActionCodeIdentifier', ['MessageActionCodeIdentifierType', 'xs:NMTOKEN'], 0, 1, {'name': 'MessageActionCodeIdentifier', 'minOccurs': '0', 'type': 'xs:NMTOKEN'}, None),
+        MemberSpec_('MessageDate', 'date', 0, 0, {'name': 'MessageDate', 'type': 'date'}, None),
+        MemberSpec_('SenderInfoIdentifier', ['genericStringType1_48', 'xs:string'], 0, 0, {'name': 'SenderInfoIdentifier', 'type': 'xs:string'}, None),
     ]
     subclass = None
     superclass = None
@@ -1118,11 +1124,20 @@ class MessageDetailsType(GeneratedsSuper):
         self.original_tagname_ = None
         self.MessageTypeCode = MessageTypeCode
         self.MessageTypeText = MessageTypeText
+        self.validate_genericStringType0_35(self.MessageTypeText)
         self.MessageActionCode = MessageActionCode
+        self.validate_MessageActionCodeType(self.MessageActionCode)
         self.MessageActionCodeIdentifier = MessageActionCodeIdentifier
+        self.validate_MessageActionCodeIdentifierType(self.MessageActionCodeIdentifier)
         self.MessageDate = MessageDate
         self.SenderInfoIdentifier = SenderInfoIdentifier
+        self.validate_genericStringType1_48(self.SenderInfoIdentifier)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, MessageDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if MessageDetailsType.subclass:
             return MessageDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -1142,48 +1157,42 @@ class MessageDetailsType(GeneratedsSuper):
     def set_SenderInfoIdentifier(self, SenderInfoIdentifier): self.SenderInfoIdentifier = SenderInfoIdentifier
     def validate_genericStringType0_35(self, value):
         # Validate type genericStringType0_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 0 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 0..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 0 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 0..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType0_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 0:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType0_35' % {"value" : value.encode("utf-8")} )
     def validate_MessageActionCodeType(self, value):
         # Validate type MessageActionCodeType, a restriction on xs:string.
-        actions = [ 'ADD', 'CHANGE', 'DELETE' ]
-        if ( value in actions ):
-            pass
-        else:
-            raise_value_error( value, 'Expected ' + ' or '.join( actions ) )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['ADD', 'CHANGE', 'DELETE']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on MessageActionCodeType' % {"value" : value.encode("utf-8")} )
     def validate_MessageActionCodeIdentifierType(self, value):
         # Validate type MessageActionCodeIdentifierType, a restriction on xs:NMTOKEN.
-        identifiers = [ '00', '02' ]
-        if ( value in identifiers ):
-            pass
-        else:
-            raise_value_error( value, 'Expected "00" or "02"' + ' or '.join( identifiers ) )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['00', '02']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on MessageActionCodeIdentifierType' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType1_48(self, value):
         # Validate type genericStringType1_48, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 1 <= value.__len__() <= 48 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 1..48 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 1 <= v.__len__() <= 48 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 1..48 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 48:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType1_48' % {"value" : value.encode("utf-8")} )
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType1_48' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.MessageTypeCode is not None or
@@ -1197,6 +1206,9 @@ class MessageDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='MessageDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('MessageDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1223,51 +1235,21 @@ class MessageDetailsType(GeneratedsSuper):
             eol_ = ''
         if self.MessageTypeCode is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sMessageTypeCode>%s</%sMessageTypeCode>%s' % (namespace_, self.gds_format_string(quote_xml(self.MessageTypeCode).encode(ExternalEncoding), input_name='MessageTypeCode'), namespace_, eol_))
+            outfile.write('<%sMessageTypeCode>%s</%sMessageTypeCode>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.MessageTypeCode), input_name='MessageTypeCode')), namespace_, eol_))
         if self.MessageTypeText is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sMessageTypeText>%s</%sMessageTypeText>%s' % (namespace_, self.gds_format_string(quote_xml(self.MessageTypeText).encode(ExternalEncoding), input_name='MessageTypeText'), namespace_, eol_))
+            outfile.write('<%sMessageTypeText>%s</%sMessageTypeText>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.MessageTypeText), input_name='MessageTypeText')), namespace_, eol_))
         if self.MessageActionCode is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sMessageActionCode>%s</%sMessageActionCode>%s' % (namespace_, self.gds_format_string(quote_xml(self.MessageActionCode).encode(ExternalEncoding), input_name='MessageActionCode'), namespace_, eol_))
+            outfile.write('<%sMessageActionCode>%s</%sMessageActionCode>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.MessageActionCode), input_name='MessageActionCode')), namespace_, eol_))
         if self.MessageActionCodeIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sMessageActionCodeIdentifier>%s</%sMessageActionCodeIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.MessageActionCodeIdentifier).encode(ExternalEncoding), input_name='MessageActionCodeIdentifier'), namespace_, eol_))
+            outfile.write('<%sMessageActionCodeIdentifier>%s</%sMessageActionCodeIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.MessageActionCodeIdentifier), input_name='MessageActionCodeIdentifier')), namespace_, eol_))
         if self.MessageDate is not None:
             self.MessageDate.export(outfile, level, namespace_, name_='MessageDate', pretty_print=pretty_print)
         if self.SenderInfoIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSenderInfoIdentifier>%s</%sSenderInfoIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.SenderInfoIdentifier).encode(ExternalEncoding), input_name='SenderInfoIdentifier'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='MessageDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.MessageTypeCode is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageTypeCode=%s,\n' % quote_python(self.MessageTypeCode).encode(ExternalEncoding))
-        if self.MessageTypeText is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageTypeText=%s,\n' % quote_python(self.MessageTypeText).encode(ExternalEncoding))
-        if self.MessageActionCode is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageActionCode=%s,\n' % quote_python(self.MessageActionCode).encode(ExternalEncoding))
-        if self.MessageActionCodeIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageActionCodeIdentifier=%s,\n' % quote_python(self.MessageActionCodeIdentifier).encode(ExternalEncoding))
-        if self.MessageDate is not None:
-            showIndent(outfile, level)
-            outfile.write('MessageDate=model_.date(\n')
-            self.MessageDate.exportLiteral(outfile, level, name_='MessageDate')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.SenderInfoIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('SenderInfoIdentifier=%s,\n' % quote_python(self.SenderInfoIdentifier).encode(ExternalEncoding))
+            outfile.write('<%sSenderInfoIdentifier>%s</%sSenderInfoIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SenderInfoIdentifier), input_name='SenderInfoIdentifier')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1286,17 +1268,20 @@ class MessageDetailsType(GeneratedsSuper):
             MessageTypeText_ = child_.text
             MessageTypeText_ = self.gds_validate_string(MessageTypeText_, node, 'MessageTypeText')
             self.MessageTypeText = MessageTypeText_
-            self.validate_genericStringType0_35(self.MessageTypeText)    # validate type genericStringType0_35
+            # validate type genericStringType0_35
+            self.validate_genericStringType0_35(self.MessageTypeText)
         elif nodeName_ == 'MessageActionCode':
             MessageActionCode_ = child_.text
             MessageActionCode_ = self.gds_validate_string(MessageActionCode_, node, 'MessageActionCode')
             self.MessageActionCode = MessageActionCode_
-            self.validate_MessageActionCodeType(self.MessageActionCode)    # validate type MessageActionCodeType
+            # validate type MessageActionCodeType
+            self.validate_MessageActionCodeType(self.MessageActionCode)
         elif nodeName_ == 'MessageActionCodeIdentifier':
             MessageActionCodeIdentifier_ = child_.text
             MessageActionCodeIdentifier_ = self.gds_validate_string(MessageActionCodeIdentifier_, node, 'MessageActionCodeIdentifier')
             self.MessageActionCodeIdentifier = MessageActionCodeIdentifier_
-            self.validate_MessageActionCodeIdentifierType(self.MessageActionCodeIdentifier)    # validate type MessageActionCodeIdentifierType
+            # validate type MessageActionCodeIdentifierType
+            self.validate_MessageActionCodeIdentifierType(self.MessageActionCodeIdentifier)
         elif nodeName_ == 'MessageDate':
             obj_ = date.factory()
             obj_.build(child_)
@@ -1306,16 +1291,17 @@ class MessageDetailsType(GeneratedsSuper):
             SenderInfoIdentifier_ = child_.text
             SenderInfoIdentifier_ = self.gds_validate_string(SenderInfoIdentifier_, node, 'SenderInfoIdentifier')
             self.SenderInfoIdentifier = SenderInfoIdentifier_
-            self.validate_genericStringType1_48(self.SenderInfoIdentifier)    # validate type genericStringType1_48
+            # validate type genericStringType1_48
+            self.validate_genericStringType1_48(self.SenderInfoIdentifier)
 # end class MessageDetailsType
 
 
 class SellerAccountDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('SellerAccountID', 'SellerAccountIDType1', 0),
-        MemberSpec_('SellerBic', 'SellerBicType2', 0),
-        MemberSpec_('NewSellerAccountID', 'NewSellerAccountIDType', 0),
-        MemberSpec_('NewSellerBic', 'NewSellerBicType', 0),
+        MemberSpec_('SellerAccountID', 'SellerAccountIDType1', 0, 0, {'name': 'SellerAccountID', 'type': 'SellerAccountIDType1'}, None),
+        MemberSpec_('SellerBic', 'SellerBicType2', 0, 0, {'name': 'SellerBic', 'type': 'SellerBicType2'}, None),
+        MemberSpec_('NewSellerAccountID', 'NewSellerAccountIDType', 0, 1, {'name': 'NewSellerAccountID', 'minOccurs': '0', 'type': 'NewSellerAccountIDType'}, None),
+        MemberSpec_('NewSellerBic', 'NewSellerBicType', 0, 1, {'name': 'NewSellerBic', 'minOccurs': '0', 'type': 'NewSellerBicType'}, None),
     ]
     subclass = None
     superclass = None
@@ -1326,6 +1312,11 @@ class SellerAccountDetailsType(GeneratedsSuper):
         self.NewSellerAccountID = NewSellerAccountID
         self.NewSellerBic = NewSellerBic
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerAccountDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerAccountDetailsType.subclass:
             return SellerAccountDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -1350,6 +1341,9 @@ class SellerAccountDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerAccountDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerAccountDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1382,39 +1376,6 @@ class SellerAccountDetailsType(GeneratedsSuper):
             self.NewSellerAccountID.export(outfile, level, namespace_, name_='NewSellerAccountID', pretty_print=pretty_print)
         if self.NewSellerBic is not None:
             self.NewSellerBic.export(outfile, level, namespace_, name_='NewSellerBic', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SellerAccountDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SellerAccountID is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerAccountID=model_.SellerAccountIDType1(\n')
-            self.SellerAccountID.exportLiteral(outfile, level, name_='SellerAccountID')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.SellerBic is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerBic=model_.SellerBicType2(\n')
-            self.SellerBic.exportLiteral(outfile, level, name_='SellerBic')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.NewSellerAccountID is not None:
-            showIndent(outfile, level)
-            outfile.write('NewSellerAccountID=model_.NewSellerAccountIDType(\n')
-            self.NewSellerAccountID.exportLiteral(outfile, level, name_='NewSellerAccountID')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.NewSellerBic is not None:
-            showIndent(outfile, level)
-            outfile.write('NewSellerBic=model_.NewSellerBicType(\n')
-            self.NewSellerBic.exportLiteral(outfile, level, name_='NewSellerBic')
-            showIndent(outfile, level)
-            outfile.write('),\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1450,7 +1411,7 @@ class SellerAccountDetailsType(GeneratedsSuper):
 
 class SellerAccountIDType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('IdentificationSchemeName', 'xs:string', 0),
+        MemberSpec_('IdentificationSchemeName', 'xs:string', 0, 0, {'use': 'required'}),
         MemberSpec_('valueOf_', 'xs:string', 0),
     ]
     subclass = None
@@ -1461,6 +1422,11 @@ class SellerAccountIDType(GeneratedsSuper):
         self.valueOf_ = valueOf_
         self.extensiontype_ = extensiontype_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerAccountIDType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerAccountIDType.subclass:
             return SellerAccountIDType.subclass(*args_, **kwargs_)
         else:
@@ -1474,12 +1440,15 @@ class SellerAccountIDType(GeneratedsSuper):
     def set_extensiontype_(self, extensiontype_): self.extensiontype_ = extensiontype_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerAccountIDType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerAccountIDType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1492,7 +1461,7 @@ class SellerAccountIDType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerAccountIDType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerAccountIDType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -1500,27 +1469,12 @@ class SellerAccountIDType(GeneratedsSuper):
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='SellerAccountIDType'):
         if self.IdentificationSchemeName is not None and 'IdentificationSchemeName' not in already_processed:
             already_processed.add('IdentificationSchemeName')
-            outfile.write(' IdentificationSchemeName=%s' % (self.gds_format_string(quote_attrib(self.IdentificationSchemeName).encode(ExternalEncoding), input_name='IdentificationSchemeName'), ))
+            outfile.write(' IdentificationSchemeName=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.IdentificationSchemeName), input_name='IdentificationSchemeName')), ))
         if self.extensiontype_ is not None and 'xsi:type' not in already_processed:
             already_processed.add('xsi:type')
             outfile.write(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
             outfile.write(' xsi:type="%s"' % self.extensiontype_)
     def exportChildren(self, outfile, level, namespace_='', name_='SellerAccountIDType', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerAccountIDType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.IdentificationSchemeName is not None and 'IdentificationSchemeName' not in already_processed:
-            already_processed.add('IdentificationSchemeName')
-            showIndent(outfile, level)
-            outfile.write('IdentificationSchemeName="%s",\n' % (self.IdentificationSchemeName,))
-    def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
         already_processed = set()
@@ -1542,7 +1496,7 @@ class SellerAccountIDType(GeneratedsSuper):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and value.__len__() <= 35 ):
+        if ( isinstance( value, BaseStrType_ ) and value.__len__() <= 35 ):
             pass
         else:
             raise_value_error( value, 'Expected less than 35 characters' )
@@ -1577,7 +1531,7 @@ class SellerAccountIDType(GeneratedsSuper):
 
 class SellerBicType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('IdentificationSchemeName', 'xs:string', 0),
+        MemberSpec_('IdentificationSchemeName', 'xs:string', 0, 0, {'use': 'required'}),
         MemberSpec_('valueOf_', 'xs:string', 0),
     ]
     subclass = None
@@ -1588,6 +1542,11 @@ class SellerBicType(GeneratedsSuper):
         self.valueOf_ = valueOf_
         self.extensiontype_ = extensiontype_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerBicType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerBicType.subclass:
             return SellerBicType.subclass(*args_, **kwargs_)
         else:
@@ -1601,12 +1560,15 @@ class SellerBicType(GeneratedsSuper):
     def set_extensiontype_(self, extensiontype_): self.extensiontype_ = extensiontype_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerBicType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerBicType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1619,7 +1581,7 @@ class SellerBicType(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerBicType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerBicType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -1627,27 +1589,12 @@ class SellerBicType(GeneratedsSuper):
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='SellerBicType'):
         if self.IdentificationSchemeName is not None and 'IdentificationSchemeName' not in already_processed:
             already_processed.add('IdentificationSchemeName')
-            outfile.write(' IdentificationSchemeName=%s' % (self.gds_format_string(quote_attrib(self.IdentificationSchemeName).encode(ExternalEncoding), input_name='IdentificationSchemeName'), ))
+            outfile.write(' IdentificationSchemeName=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.IdentificationSchemeName), input_name='IdentificationSchemeName')), ))
         if self.extensiontype_ is not None and 'xsi:type' not in already_processed:
             already_processed.add('xsi:type')
             outfile.write(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
             outfile.write(' xsi:type="%s"' % self.extensiontype_)
     def exportChildren(self, outfile, level, namespace_='', name_='SellerBicType', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerBicType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.IdentificationSchemeName is not None and 'IdentificationSchemeName' not in already_processed:
-            already_processed.add('IdentificationSchemeName')
-            showIndent(outfile, level)
-            outfile.write('IdentificationSchemeName="%s",\n' % (self.IdentificationSchemeName,))
-    def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
         already_processed = set()
@@ -1669,7 +1616,7 @@ class SellerBicType(GeneratedsSuper):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 8 <= value.__len__() <= 11 ):
+        if ( isinstance( value, BaseStrType_ ) and 8 <= value.__len__() <= 11 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 8..11 characters' )
@@ -1704,18 +1651,20 @@ class SellerBicType(GeneratedsSuper):
 
 class SellerInvoiceDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('SellerDirectDebitIdentifier', ['genericStringType0_35', 'xs:string'], 0),
-        MemberSpec_('PaymentInstructionIdentifier', ['genericStringType1_35', 'xs:string'], 0),
-        MemberSpec_('SellerInstructionFreeText', 'SellerInstructionFreeTextType', 1),
-        MemberSpec_('SellerInvoiceTypeDetails', 'SellerInvoiceTypeDetailsType', 1),
-        MemberSpec_('SellerServiceCode', ['SellerServiceCodeType', 'xs:NMTOKEN'], 0),
+        MemberSpec_('SellerDirectDebitIdentifier', ['genericStringType0_35', 'xs:string'], 0, 1, {'name': 'SellerDirectDebitIdentifier', 'minOccurs': '0', 'type': 'xs:string'}, None),
+        MemberSpec_('PaymentInstructionIdentifier', ['genericStringType1_35', 'xs:string'], 0, 0, {'name': 'PaymentInstructionIdentifier', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerInstructionFreeText', 'SellerInstructionFreeTextType', 1, 1, {'name': 'SellerInstructionFreeText', 'minOccurs': '0', 'maxOccurs': '3', 'type': 'SellerInstructionFreeTextType'}, None),
+        MemberSpec_('SellerInvoiceTypeDetails', 'SellerInvoiceTypeDetailsType', 1, 0, {'name': 'SellerInvoiceTypeDetails', 'maxOccurs': '3', 'type': 'SellerInvoiceTypeDetailsType'}, None),
+        MemberSpec_('SellerServiceCode', ['SellerServiceCodeType', 'xs:NMTOKEN'], 0, 0, {'name': 'SellerServiceCode', 'type': 'xs:NMTOKEN'}, None),
     ]
     subclass = None
     superclass = None
     def __init__(self, SellerDirectDebitIdentifier=None, PaymentInstructionIdentifier=None, SellerInstructionFreeText=None, SellerInvoiceTypeDetails=None, SellerServiceCode=None):
         self.original_tagname_ = None
         self.SellerDirectDebitIdentifier = SellerDirectDebitIdentifier
+        self.validate_genericStringType0_35(self.SellerDirectDebitIdentifier)
         self.PaymentInstructionIdentifier = PaymentInstructionIdentifier
+        self.validate_genericStringType1_35(self.PaymentInstructionIdentifier)
         if SellerInstructionFreeText is None:
             self.SellerInstructionFreeText = []
         else:
@@ -1725,7 +1674,13 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
         else:
             self.SellerInvoiceTypeDetails = SellerInvoiceTypeDetails
         self.SellerServiceCode = SellerServiceCode
+        self.validate_SellerServiceCodeType(self.SellerServiceCode)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerInvoiceDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerInvoiceDetailsType.subclass:
             return SellerInvoiceDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -1749,40 +1704,30 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
     def set_SellerServiceCode(self, SellerServiceCode): self.SellerServiceCode = SellerServiceCode
     def validate_genericStringType0_35(self, value):
         # Validate type genericStringType0_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 0 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 0..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 0 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 0..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType0_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 0:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType0_35' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType1_35(self, value):
         # Validate type genericStringType1_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 1 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 1..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 1 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 1..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType1_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType1_35' % {"value" : value.encode("utf-8")} )
     def validate_SellerServiceCodeType(self, value):
         # Validate type SellerServiceCodeType, a restriction on xs:NMTOKEN.
-        codes = [ '00', '01', '02' ]
-        if ( value in codes ):
-            pass
-        else:
-            raise_value_error( value, 'Expected ' + ' or '.join( codes ) )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['00', '01', '02']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on SellerServiceCodeType' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.SellerDirectDebitIdentifier is not None or
@@ -1795,6 +1740,9 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerInvoiceDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerInvoiceDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -1821,59 +1769,17 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
             eol_ = ''
         if self.SellerDirectDebitIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerDirectDebitIdentifier>%s</%sSellerDirectDebitIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerDirectDebitIdentifier).encode(ExternalEncoding), input_name='SellerDirectDebitIdentifier'), namespace_, eol_))
+            outfile.write('<%sSellerDirectDebitIdentifier>%s</%sSellerDirectDebitIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerDirectDebitIdentifier), input_name='SellerDirectDebitIdentifier')), namespace_, eol_))
         if self.PaymentInstructionIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sPaymentInstructionIdentifier>%s</%sPaymentInstructionIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.PaymentInstructionIdentifier).encode(ExternalEncoding), input_name='PaymentInstructionIdentifier'), namespace_, eol_))
+            outfile.write('<%sPaymentInstructionIdentifier>%s</%sPaymentInstructionIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.PaymentInstructionIdentifier), input_name='PaymentInstructionIdentifier')), namespace_, eol_))
         for SellerInstructionFreeText_ in self.SellerInstructionFreeText:
             SellerInstructionFreeText_.export(outfile, level, namespace_, name_='SellerInstructionFreeText', pretty_print=pretty_print)
         for SellerInvoiceTypeDetails_ in self.SellerInvoiceTypeDetails:
             SellerInvoiceTypeDetails_.export(outfile, level, namespace_, name_='SellerInvoiceTypeDetails', pretty_print=pretty_print)
         if self.SellerServiceCode is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerServiceCode>%s</%sSellerServiceCode>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerServiceCode).encode(ExternalEncoding), input_name='SellerServiceCode'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='SellerInvoiceDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SellerDirectDebitIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerDirectDebitIdentifier=%s,\n' % quote_python(self.SellerDirectDebitIdentifier).encode(ExternalEncoding))
-        if self.PaymentInstructionIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('PaymentInstructionIdentifier=%s,\n' % quote_python(self.PaymentInstructionIdentifier).encode(ExternalEncoding))
-        showIndent(outfile, level)
-        outfile.write('SellerInstructionFreeText=[\n')
-        level += 1
-        for SellerInstructionFreeText_ in self.SellerInstructionFreeText:
-            showIndent(outfile, level)
-            outfile.write('model_.SellerInstructionFreeTextType(\n')
-            SellerInstructionFreeText_.exportLiteral(outfile, level, name_='SellerInstructionFreeTextType')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('SellerInvoiceTypeDetails=[\n')
-        level += 1
-        for SellerInvoiceTypeDetails_ in self.SellerInvoiceTypeDetails:
-            showIndent(outfile, level)
-            outfile.write('model_.SellerInvoiceTypeDetailsType(\n')
-            SellerInvoiceTypeDetails_.exportLiteral(outfile, level, name_='SellerInvoiceTypeDetailsType')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.SellerServiceCode is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerServiceCode=%s,\n' % quote_python(self.SellerServiceCode).encode(ExternalEncoding))
+            outfile.write('<%sSellerServiceCode>%s</%sSellerServiceCode>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerServiceCode), input_name='SellerServiceCode')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -1888,12 +1794,14 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
             SellerDirectDebitIdentifier_ = child_.text
             SellerDirectDebitIdentifier_ = self.gds_validate_string(SellerDirectDebitIdentifier_, node, 'SellerDirectDebitIdentifier')
             self.SellerDirectDebitIdentifier = SellerDirectDebitIdentifier_
-            self.validate_genericStringType0_35(self.SellerDirectDebitIdentifier)    # validate type genericStringType0_35
+            # validate type genericStringType0_35
+            self.validate_genericStringType0_35(self.SellerDirectDebitIdentifier)
         elif nodeName_ == 'PaymentInstructionIdentifier':
             PaymentInstructionIdentifier_ = child_.text
             PaymentInstructionIdentifier_ = self.gds_validate_string(PaymentInstructionIdentifier_, node, 'PaymentInstructionIdentifier')
             self.PaymentInstructionIdentifier = PaymentInstructionIdentifier_
-            self.validate_genericStringType1_35(self.PaymentInstructionIdentifier)    # validate type genericStringType1_35
+            # validate type genericStringType1_35
+            self.validate_genericStringType1_35(self.PaymentInstructionIdentifier)
         elif nodeName_ == 'SellerInstructionFreeText':
             obj_ = SellerInstructionFreeTextType.factory()
             obj_.build(child_)
@@ -1908,7 +1816,8 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
             SellerServiceCode_ = child_.text
             SellerServiceCode_ = self.gds_validate_string(SellerServiceCode_, node, 'SellerServiceCode')
             self.SellerServiceCode = SellerServiceCode_
-            self.validate_SellerServiceCodeType(self.SellerServiceCode)    # validate type SellerServiceCodeType
+            # validate type SellerServiceCodeType
+            self.validate_SellerServiceCodeType(self.SellerServiceCode)
     def validate_SellerInstructionFreeTextType(self, value):
         if ( value.__len__() <= 3 ):
             pass
@@ -1954,17 +1863,18 @@ class SellerInvoiceDetailsType(GeneratedsSuper):
 
 class SellerPartyDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('SellerPartyIdentifier', ['genericStringType1_48', 'xs:string'], 0),
-        MemberSpec_('SellerOrganisationNames', 'SellerOrganisationNamesType', 1),
-        MemberSpec_('SellerOrganisationBankName', ['genericStringType1_35', 'xs:string'], 1),
-        MemberSpec_('SellerPostalAddressDetails', 'SellerPostalAddressDetailsType', 0),
-        MemberSpec_('IndustryCode', ['genericStringType0_6', 'xs:string'], 0),
+        MemberSpec_('SellerPartyIdentifier', ['genericStringType1_48', 'xs:string'], 0, 0, {'name': 'SellerPartyIdentifier', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerOrganisationNames', 'SellerOrganisationNamesType', 1, 0, {'name': 'SellerOrganisationNames', 'maxOccurs': '3', 'type': 'SellerOrganisationNamesType'}, None),
+        MemberSpec_('SellerOrganisationBankName', ['genericStringType1_35', 'xs:string'], 1, 1, {'name': 'SellerOrganisationBankName', 'minOccurs': '0', 'maxOccurs': '2', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerPostalAddressDetails', 'SellerPostalAddressDetailsType', 0, 1, {'name': 'SellerPostalAddressDetails', 'minOccurs': '0', 'type': 'SellerPostalAddressDetailsType'}, None),
+        MemberSpec_('IndustryCode', ['genericStringType0_6', 'xs:string'], 0, 1, {'name': 'IndustryCode', 'minOccurs': '0', 'type': 'xs:string'}, None),
     ]
     subclass = None
     superclass = None
     def __init__(self, SellerPartyIdentifier=None, SellerOrganisationNames=None, SellerOrganisationBankName=None, SellerPostalAddressDetails=None, IndustryCode=None):
         self.original_tagname_ = None
         self.SellerPartyIdentifier = SellerPartyIdentifier
+        self.validate_genericStringType1_48(self.SellerPartyIdentifier)
         if SellerOrganisationNames is None:
             self.SellerOrganisationNames = []
         else:
@@ -1975,7 +1885,13 @@ class SellerPartyDetailsType(GeneratedsSuper):
             self.SellerOrganisationBankName = SellerOrganisationBankName
         self.SellerPostalAddressDetails = SellerPostalAddressDetails
         self.IndustryCode = IndustryCode
+        self.validate_genericStringType0_6(self.IndustryCode)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerPartyDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerPartyDetailsType.subclass:
             return SellerPartyDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -1999,46 +1915,25 @@ class SellerPartyDetailsType(GeneratedsSuper):
     def set_IndustryCode(self, IndustryCode): self.IndustryCode = IndustryCode
     def validate_genericStringType1_48(self, value):
         # Validate type genericStringType1_48, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 1 <= value.__len__() <= 48 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 1..48 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 1 <= v.__len__() <= 48 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 1..48 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 48:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType1_48' % {"value" : value.encode("utf-8")} )
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType1_48' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType1_35(self, value):
         # Validate type genericStringType1_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 1 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 1..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 1 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 1..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType1_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType1_35' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType0_6(self, value):
         # Validate type genericStringType0_6, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 0 <= value.__len__() <= 6 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 0..6 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 0 <= v.__len__() <= 6 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 0..6 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 6:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType0_6' % {"value" : value.encode("utf-8")} )
+            if len(value) < 0:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType0_6' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.SellerPartyIdentifier is not None or
@@ -2051,6 +1946,9 @@ class SellerPartyDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerPartyDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerPartyDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2077,59 +1975,17 @@ class SellerPartyDetailsType(GeneratedsSuper):
             eol_ = ''
         if self.SellerPartyIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerPartyIdentifier>%s</%sSellerPartyIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerPartyIdentifier).encode(ExternalEncoding), input_name='SellerPartyIdentifier'), namespace_, eol_))
+            outfile.write('<%sSellerPartyIdentifier>%s</%sSellerPartyIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerPartyIdentifier), input_name='SellerPartyIdentifier')), namespace_, eol_))
         for SellerOrganisationNames_ in self.SellerOrganisationNames:
             SellerOrganisationNames_.export(outfile, level, namespace_, name_='SellerOrganisationNames', pretty_print=pretty_print)
         for SellerOrganisationBankName_ in self.SellerOrganisationBankName:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerOrganisationBankName>%s</%sSellerOrganisationBankName>%s' % (namespace_, self.gds_format_string(quote_xml(SellerOrganisationBankName_).encode(ExternalEncoding), input_name='SellerOrganisationBankName'), namespace_, eol_))
+            outfile.write('<%sSellerOrganisationBankName>%s</%sSellerOrganisationBankName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(SellerOrganisationBankName_), input_name='SellerOrganisationBankName')), namespace_, eol_))
         if self.SellerPostalAddressDetails is not None:
             self.SellerPostalAddressDetails.export(outfile, level, namespace_, name_='SellerPostalAddressDetails', pretty_print=pretty_print)
         if self.IndustryCode is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sIndustryCode>%s</%sIndustryCode>%s' % (namespace_, self.gds_format_string(quote_xml(self.IndustryCode).encode(ExternalEncoding), input_name='IndustryCode'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='SellerPartyDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SellerPartyIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerPartyIdentifier=%s,\n' % quote_python(self.SellerPartyIdentifier).encode(ExternalEncoding))
-        showIndent(outfile, level)
-        outfile.write('SellerOrganisationNames=[\n')
-        level += 1
-        for SellerOrganisationNames_ in self.SellerOrganisationNames:
-            showIndent(outfile, level)
-            outfile.write('model_.SellerOrganisationNamesType(\n')
-            SellerOrganisationNames_.exportLiteral(outfile, level, name_='SellerOrganisationNamesType')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('SellerOrganisationBankName=[\n')
-        level += 1
-        for SellerOrganisationBankName_ in self.SellerOrganisationBankName:
-            showIndent(outfile, level)
-            outfile.write('%s,\n' % quote_python(SellerOrganisationBankName_).encode(ExternalEncoding))
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        if self.SellerPostalAddressDetails is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerPostalAddressDetails=model_.SellerPostalAddressDetailsType(\n')
-            self.SellerPostalAddressDetails.exportLiteral(outfile, level, name_='SellerPostalAddressDetails')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.IndustryCode is not None:
-            showIndent(outfile, level)
-            outfile.write('IndustryCode=%s,\n' % quote_python(self.IndustryCode).encode(ExternalEncoding))
+            outfile.write('<%sIndustryCode>%s</%sIndustryCode>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.IndustryCode), input_name='IndustryCode')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2144,7 +2000,8 @@ class SellerPartyDetailsType(GeneratedsSuper):
             SellerPartyIdentifier_ = child_.text
             SellerPartyIdentifier_ = self.gds_validate_string(SellerPartyIdentifier_, node, 'SellerPartyIdentifier')
             self.SellerPartyIdentifier = SellerPartyIdentifier_
-            self.validate_genericStringType1_48(self.SellerPartyIdentifier)    # validate type genericStringType1_48
+            # validate type genericStringType1_48
+            self.validate_genericStringType1_48(self.SellerPartyIdentifier)
         elif nodeName_ == 'SellerOrganisationNames':
             obj_ = SellerOrganisationNamesType.factory()
             obj_.build(child_)
@@ -2154,7 +2011,8 @@ class SellerPartyDetailsType(GeneratedsSuper):
             SellerOrganisationBankName_ = child_.text
             SellerOrganisationBankName_ = self.gds_validate_string(SellerOrganisationBankName_, node, 'SellerOrganisationBankName')
             self.SellerOrganisationBankName.append(SellerOrganisationBankName_)
-            self.validate_genericStringType1_35(self.SellerOrganisationBankName)    # validate type genericStringType1_35
+            # validate type genericStringType1_35
+            self.validate_genericStringType1_35(self.SellerOrganisationBankName[-1])
         elif nodeName_ == 'SellerPostalAddressDetails':
             obj_ = SellerPostalAddressDetailsType.factory()
             obj_.build(child_)
@@ -2164,13 +2022,8 @@ class SellerPartyDetailsType(GeneratedsSuper):
             IndustryCode_ = child_.text
             IndustryCode_ = self.gds_validate_string(IndustryCode_, node, 'IndustryCode')
             self.IndustryCode = IndustryCode_
-            self.validate_genericStringType0_6(self.IndustryCode)    # validate type genericStringType0_6
-    def validate_SellerOrganisationNamesType(self, value):
-        if ( value.__len__() <= 3 ):
-            pass
-        else:
-            raise_value_error( value.__len__(), 'Expected maximum of 3 elements' )
-        return value
+            # validate type genericStringType0_6
+            self.validate_genericStringType0_6(self.IndustryCode)
     def validate_SellerOrganisationNamesType(self, value):
         if ( value.__len__() <= 3 ):
             pass
@@ -2216,8 +2069,8 @@ class SellerPartyDetailsType(GeneratedsSuper):
 
 class SellerOrganisationNamesType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('LanguageCode', 'LanguageCodeType', 0),
-        MemberSpec_('SellerOrganisationName', ['genericStringType2_70', 'xs:string'], 1),
+        MemberSpec_('LanguageCode', 'LanguageCodeType', 0, 0, {'use': 'required'}),
+        MemberSpec_('SellerOrganisationName', ['genericStringType2_70', 'xs:string'], 1, 0, {'name': 'SellerOrganisationName', 'maxOccurs': '2', 'type': 'xs:string'}, None),
     ]
     subclass = None
     superclass = None
@@ -2229,6 +2082,11 @@ class SellerOrganisationNamesType(GeneratedsSuper):
         else:
             self.SellerOrganisationName = SellerOrganisationName
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerOrganisationNamesType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerOrganisationNamesType.subclass:
             return SellerOrganisationNamesType.subclass(*args_, **kwargs_)
         else:
@@ -2243,25 +2101,23 @@ class SellerOrganisationNamesType(GeneratedsSuper):
     def set_LanguageCode(self, LanguageCode): self.LanguageCode = LanguageCode
     def validate_genericStringType2_70(self, value):
         # Validate type genericStringType2_70, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 2 <= value.__len__() <= 70 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 2..70 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 2 <= v.__len__() <= 70 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 2..70 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 70:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType2_70' % {"value" : value.encode("utf-8")} )
+            if len(value) < 2:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType2_70' % {"value" : value.encode("utf-8")} )
     def validate_LanguageCodeType(self, value):
         # Validate type LanguageCodeType, a restriction on xs:NMTOKEN.
-        if ( isinstance( value, basestring ) and value.__len__() == 2 and value in [ 'FI', 'SV', 'EN' ]):
-            pass
-        else:
-            raise_value_error( value, 'Expected ISO 639-1' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['FI', 'SV', 'SE', 'EN']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on LanguageCodeType' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
             self.SellerOrganisationName
@@ -2270,6 +2126,9 @@ class SellerOrganisationNamesType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerOrganisationNamesType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerOrganisationNamesType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2298,28 +2157,7 @@ class SellerOrganisationNamesType(GeneratedsSuper):
             eol_ = ''
         for SellerOrganisationName_ in self.SellerOrganisationName:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerOrganisationName>%s</%sSellerOrganisationName>%s' % (namespace_, self.gds_format_string(quote_xml(SellerOrganisationName_).encode(ExternalEncoding), input_name='SellerOrganisationName'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='SellerOrganisationNamesType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.LanguageCode is not None and 'LanguageCode' not in already_processed:
-            already_processed.add('LanguageCode')
-            showIndent(outfile, level)
-            outfile.write('LanguageCode="%s",\n' % (self.LanguageCode,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('SellerOrganisationName=[\n')
-        level += 1
-        for SellerOrganisationName_ in self.SellerOrganisationName:
-            showIndent(outfile, level)
-            outfile.write('%s,\n' % quote_python(SellerOrganisationName_).encode(ExternalEncoding))
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
+            outfile.write('<%sSellerOrganisationName>%s</%sSellerOrganisationName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(SellerOrganisationName_), input_name='SellerOrganisationName')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2338,7 +2176,8 @@ class SellerOrganisationNamesType(GeneratedsSuper):
             SellerOrganisationName_ = child_.text
             SellerOrganisationName_ = self.gds_validate_string(SellerOrganisationName_, node, 'SellerOrganisationName')
             self.SellerOrganisationName.append(SellerOrganisationName_)
-            self.validate_genericStringType2_70(self.SellerOrganisationName)    # validate type genericStringType2_70
+            # validate type genericStringType2_70
+            self.validate_genericStringType2_70(self.SellerOrganisationName[-1])
     def validate_SellerOrganisationName(self, value):
         if ( value.__len__() <= 2 ):
             pass
@@ -2357,24 +2196,35 @@ class SellerOrganisationNamesType(GeneratedsSuper):
 
 class SellerPostalAddressDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('SellerStreetName', ['genericStringType2_35', 'xs:string'], 0),
-        MemberSpec_('SellerTownName', ['genericStringType2_35', 'xs:string'], 0),
-        MemberSpec_('SellerPostCodeIdentifier', ['genericStringType1_48', 'xs:string'], 0),
-        MemberSpec_('CountryCode', ['CountryCodeType', 'xs:NMTOKEN'], 0),
-        MemberSpec_('CountryName', ['genericStringType2_35', 'xs:string'], 0),
-        MemberSpec_('SellerPostOfficeBoxIdentifier', ['genericStringType1_48', 'xs:string'], 0),
+        MemberSpec_('SellerStreetName', ['genericStringType2_35', 'xs:string'], 0, 0, {'name': 'SellerStreetName', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerTownName', ['genericStringType2_35', 'xs:string'], 0, 0, {'name': 'SellerTownName', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerPostCodeIdentifier', ['genericStringType1_48', 'xs:string'], 0, 0, {'name': 'SellerPostCodeIdentifier', 'type': 'xs:string'}, None),
+        MemberSpec_('CountryCode', ['CountryCodeType', 'xs:NMTOKEN'], 0, 1, {'name': 'CountryCode', 'minOccurs': '0', 'type': 'xs:NMTOKEN'}, None),
+        MemberSpec_('CountryName', ['genericStringType2_35', 'xs:string'], 0, 1, {'name': 'CountryName', 'minOccurs': '0', 'type': 'xs:string'}, None),
+        MemberSpec_('SellerPostOfficeBoxIdentifier', ['genericStringType1_48', 'xs:string'], 0, 1, {'name': 'SellerPostOfficeBoxIdentifier', 'minOccurs': '0', 'type': 'xs:string'}, None),
     ]
     subclass = None
     superclass = None
     def __init__(self, SellerStreetName=None, SellerTownName=None, SellerPostCodeIdentifier=None, CountryCode=None, CountryName=None, SellerPostOfficeBoxIdentifier=None):
         self.original_tagname_ = None
         self.SellerStreetName = SellerStreetName
+        self.validate_genericStringType2_35(self.SellerStreetName)
         self.SellerTownName = SellerTownName
+        self.validate_genericStringType2_35(self.SellerTownName)
         self.SellerPostCodeIdentifier = SellerPostCodeIdentifier
+        self.validate_genericStringType1_48(self.SellerPostCodeIdentifier)
         self.CountryCode = CountryCode
+        self.validate_CountryCodeType(self.CountryCode)
         self.CountryName = CountryName
+        self.validate_genericStringType2_35(self.CountryName)
         self.SellerPostOfficeBoxIdentifier = SellerPostOfficeBoxIdentifier
+        self.validate_genericStringType1_48(self.SellerPostOfficeBoxIdentifier)
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerPostalAddressDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerPostalAddressDetailsType.subclass:
             return SellerPostalAddressDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -2394,39 +2244,23 @@ class SellerPostalAddressDetailsType(GeneratedsSuper):
     def set_SellerPostOfficeBoxIdentifier(self, SellerPostOfficeBoxIdentifier): self.SellerPostOfficeBoxIdentifier = SellerPostOfficeBoxIdentifier
     def validate_genericStringType2_35(self, value):
         # Validate type genericStringType2_35, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 2 <= value.__len__() <= 35 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 2..35 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 2 <= v.__len__() <= 35 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 2..35 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 35:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType2_35' % {"value" : value.encode("utf-8")} )
+            if len(value) < 2:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType2_35' % {"value" : value.encode("utf-8")} )
     def validate_genericStringType1_48(self, value):
         # Validate type genericStringType1_48, a restriction on xs:string.
-        if ( isinstance( value, basestring ) ):
-            if ( 1 <= value.__len__() <= 48 ):
-                pass
-            else:
-                raise_value_error( value, 'Expected value between 1..48 characters' )
-        else:
-            for v in value:
-                if ( isinstance( v, basestring ) and 1 <= v.__len__() <= 48 ):
-                    pass
-                else:
-                    raise_value_error( v, 'Expected value between 1..48 characters' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(value) > 48:
+                warnings_.warn('Value "%(value)s" does not match xsd maxLength restriction on genericStringType1_48' % {"value" : value.encode("utf-8")} )
+            if len(value) < 1:
+                warnings_.warn('Value "%(value)s" does not match xsd minLength restriction on genericStringType1_48' % {"value" : value.encode("utf-8")} )
     def validate_CountryCodeType(self, value):
         # Validate type CountryCodeType, a restriction on xs:NMTOKEN.
-        if ( isinstance( value, basestring ) and value.__len__() == 2 ):
-            pass
-        else:
-            raise_value_error( value, 'Expected ISO 3166-1 alpha-2' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            if len(str(value)) != 2:
+                warnings_.warn('Value "%(value)s" does not match xsd length restriction on CountryCodeType' % {"value" : value} )
     def hasContent_(self):
         if (
             self.SellerStreetName is not None or
@@ -2440,6 +2274,9 @@ class SellerPostalAddressDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerPostalAddressDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerPostalAddressDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2466,49 +2303,22 @@ class SellerPostalAddressDetailsType(GeneratedsSuper):
             eol_ = ''
         if self.SellerStreetName is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerStreetName>%s</%sSellerStreetName>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerStreetName).encode(ExternalEncoding), input_name='SellerStreetName'), namespace_, eol_))
+            outfile.write('<%sSellerStreetName>%s</%sSellerStreetName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerStreetName), input_name='SellerStreetName')), namespace_, eol_))
         if self.SellerTownName is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerTownName>%s</%sSellerTownName>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerTownName).encode(ExternalEncoding), input_name='SellerTownName'), namespace_, eol_))
+            outfile.write('<%sSellerTownName>%s</%sSellerTownName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerTownName), input_name='SellerTownName')), namespace_, eol_))
         if self.SellerPostCodeIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerPostCodeIdentifier>%s</%sSellerPostCodeIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerPostCodeIdentifier).encode(ExternalEncoding), input_name='SellerPostCodeIdentifier'), namespace_, eol_))
+            outfile.write('<%sSellerPostCodeIdentifier>%s</%sSellerPostCodeIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerPostCodeIdentifier), input_name='SellerPostCodeIdentifier')), namespace_, eol_))
         if self.CountryCode is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sCountryCode>%s</%sCountryCode>%s' % (namespace_, self.gds_format_string(quote_xml(self.CountryCode).encode(ExternalEncoding), input_name='CountryCode'), namespace_, eol_))
+            outfile.write('<%sCountryCode>%s</%sCountryCode>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.CountryCode), input_name='CountryCode')), namespace_, eol_))
         if self.CountryName is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sCountryName>%s</%sCountryName>%s' % (namespace_, self.gds_format_string(quote_xml(self.CountryName).encode(ExternalEncoding), input_name='CountryName'), namespace_, eol_))
+            outfile.write('<%sCountryName>%s</%sCountryName>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.CountryName), input_name='CountryName')), namespace_, eol_))
         if self.SellerPostOfficeBoxIdentifier is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%sSellerPostOfficeBoxIdentifier>%s</%sSellerPostOfficeBoxIdentifier>%s' % (namespace_, self.gds_format_string(quote_xml(self.SellerPostOfficeBoxIdentifier).encode(ExternalEncoding), input_name='SellerPostOfficeBoxIdentifier'), namespace_, eol_))
-    def exportLiteral(self, outfile, level, name_='SellerPostalAddressDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SellerStreetName is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerStreetName=%s,\n' % quote_python(self.SellerStreetName).encode(ExternalEncoding))
-        if self.SellerTownName is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerTownName=%s,\n' % quote_python(self.SellerTownName).encode(ExternalEncoding))
-        if self.SellerPostCodeIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerPostCodeIdentifier=%s,\n' % quote_python(self.SellerPostCodeIdentifier).encode(ExternalEncoding))
-        if self.CountryCode is not None:
-            showIndent(outfile, level)
-            outfile.write('CountryCode=%s,\n' % quote_python(self.CountryCode).encode(ExternalEncoding))
-        if self.CountryName is not None:
-            showIndent(outfile, level)
-            outfile.write('CountryName=%s,\n' % quote_python(self.CountryName).encode(ExternalEncoding))
-        if self.SellerPostOfficeBoxIdentifier is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerPostOfficeBoxIdentifier=%s,\n' % quote_python(self.SellerPostOfficeBoxIdentifier).encode(ExternalEncoding))
+            outfile.write('<%sSellerPostOfficeBoxIdentifier>%s</%sSellerPostOfficeBoxIdentifier>%s' % (namespace_, self.gds_encode(self.gds_format_string(quote_xml(self.SellerPostOfficeBoxIdentifier), input_name='SellerPostOfficeBoxIdentifier')), namespace_, eol_))
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -2523,38 +2333,44 @@ class SellerPostalAddressDetailsType(GeneratedsSuper):
             SellerStreetName_ = child_.text
             SellerStreetName_ = self.gds_validate_string(SellerStreetName_, node, 'SellerStreetName')
             self.SellerStreetName = SellerStreetName_
-            self.validate_genericStringType2_35(self.SellerStreetName)    # validate type genericStringType2_35
+            # validate type genericStringType2_35
+            self.validate_genericStringType2_35(self.SellerStreetName)
         elif nodeName_ == 'SellerTownName':
             SellerTownName_ = child_.text
             SellerTownName_ = self.gds_validate_string(SellerTownName_, node, 'SellerTownName')
             self.SellerTownName = SellerTownName_
-            self.validate_genericStringType2_35(self.SellerTownName)    # validate type genericStringType2_35
+            # validate type genericStringType2_35
+            self.validate_genericStringType2_35(self.SellerTownName)
         elif nodeName_ == 'SellerPostCodeIdentifier':
             SellerPostCodeIdentifier_ = child_.text
             SellerPostCodeIdentifier_ = self.gds_validate_string(SellerPostCodeIdentifier_, node, 'SellerPostCodeIdentifier')
             self.SellerPostCodeIdentifier = SellerPostCodeIdentifier_
-            self.validate_genericStringType1_48(self.SellerPostCodeIdentifier)    # validate type genericStringType1_48
+            # validate type genericStringType1_48
+            self.validate_genericStringType1_48(self.SellerPostCodeIdentifier)
         elif nodeName_ == 'CountryCode':
             CountryCode_ = child_.text
             CountryCode_ = self.gds_validate_string(CountryCode_, node, 'CountryCode')
             self.CountryCode = CountryCode_
-            self.validate_CountryCodeType(self.CountryCode)    # validate type CountryCodeType
+            # validate type CountryCodeType
+            self.validate_CountryCodeType(self.CountryCode)
         elif nodeName_ == 'CountryName':
             CountryName_ = child_.text
             CountryName_ = self.gds_validate_string(CountryName_, node, 'CountryName')
             self.CountryName = CountryName_
-            self.validate_genericStringType2_35(self.CountryName)    # validate type genericStringType2_35
+            # validate type genericStringType2_35
+            self.validate_genericStringType2_35(self.CountryName)
         elif nodeName_ == 'SellerPostOfficeBoxIdentifier':
             SellerPostOfficeBoxIdentifier_ = child_.text
             SellerPostOfficeBoxIdentifier_ = self.gds_validate_string(SellerPostOfficeBoxIdentifier_, node, 'SellerPostOfficeBoxIdentifier')
             self.SellerPostOfficeBoxIdentifier = SellerPostOfficeBoxIdentifier_
-            self.validate_genericStringType1_48(self.SellerPostOfficeBoxIdentifier)    # validate type genericStringType1_48
+            # validate type genericStringType1_48
+            self.validate_genericStringType1_48(self.SellerPostOfficeBoxIdentifier)
 # end class SellerPostalAddressDetailsType
 
 
 class date(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('Format', 'xs:string', 0),
+        MemberSpec_('Format', 'xs:string', 0, 1, {'use': 'optional'}),
         MemberSpec_('valueOf_', ['dateType', 'xs:integer'], 0),
     ]
     subclass = None
@@ -2564,6 +2380,11 @@ class date(GeneratedsSuper):
         self.Format = _cast(None, Format)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, date)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if date.subclass:
             return date.subclass(*args_, **kwargs_)
         else:
@@ -2575,12 +2396,15 @@ class date(GeneratedsSuper):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='date', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('date')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2593,7 +2417,7 @@ class date(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='date')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='date', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -2601,23 +2425,8 @@ class date(GeneratedsSuper):
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='date'):
         if self.Format is not None and 'Format' not in already_processed:
             already_processed.add('Format')
-            outfile.write(' Format=%s' % (self.gds_format_string(quote_attrib(self.Format).encode(ExternalEncoding), input_name='Format'), ))
+            outfile.write(' Format=%s' % (self.gds_encode(self.gds_format_string(quote_attrib(self.Format), input_name='Format')), ))
     def exportChildren(self, outfile, level, namespace_='', name_='date', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='date'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.Format is not None and 'Format' not in already_processed:
-            already_processed.add('Format')
-            showIndent(outfile, level)
-            outfile.write('Format="%s",\n' % (self.Format,))
-    def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
         already_processed = set()
@@ -2667,7 +2476,7 @@ class date(GeneratedsSuper):
 
 class TextLanguageOptional(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('LanguageCode', 'LanguageCodeType', 0),
+        MemberSpec_('LanguageCode', 'LanguageCodeType', 0, 1, {'use': 'optional'}),
         MemberSpec_('valueOf_', 'xs:string', 0),
     ]
     subclass = None
@@ -2678,6 +2487,11 @@ class TextLanguageOptional(GeneratedsSuper):
         self.valueOf_ = valueOf_
         self.extensiontype_ = extensiontype_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, TextLanguageOptional)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if TextLanguageOptional.subclass:
             return TextLanguageOptional.subclass(*args_, **kwargs_)
         else:
@@ -2691,19 +2505,27 @@ class TextLanguageOptional(GeneratedsSuper):
     def set_extensiontype_(self, extensiontype_): self.extensiontype_ = extensiontype_
     def validate_LanguageCodeType(self, value):
         # Validate type LanguageCodeType, a restriction on xs:NMTOKEN.
-        if ( isinstance( value, basestring ) and value.__len__() == 2 and value in [ 'FI', 'SV', 'EN' ]):
-            pass
-        else:
-            raise_value_error( value, 'Expected ISO 639-1' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['FI', 'SV', 'SE', 'EN']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on LanguageCodeType' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='TextLanguageOptional', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('TextLanguageOptional')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2716,7 +2538,7 @@ class TextLanguageOptional(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='TextLanguageOptional')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='TextLanguageOptional', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -2730,21 +2552,6 @@ class TextLanguageOptional(GeneratedsSuper):
             outfile.write(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
             outfile.write(' xsi:type="%s"' % self.extensiontype_)
     def exportChildren(self, outfile, level, namespace_='', name_='TextLanguageOptional', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='TextLanguageOptional'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.LanguageCode is not None and 'LanguageCode' not in already_processed:
-            already_processed.add('LanguageCode')
-            showIndent(outfile, level)
-            outfile.write('LanguageCode="%s",\n' % (self.LanguageCode,))
-    def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
         already_processed = set()
@@ -2771,7 +2578,7 @@ class TextLanguageOptional(GeneratedsSuper):
 
 class TextLanguageRequired(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('LanguageCode', 'LanguageCodeType', 0),
+        MemberSpec_('LanguageCode', 'LanguageCodeType', 0, 0, {'use': 'required'}),
         MemberSpec_('valueOf_', 'xs:string', 0),
     ]
     subclass = None
@@ -2782,6 +2589,11 @@ class TextLanguageRequired(GeneratedsSuper):
         self.valueOf_ = valueOf_
         self.extensiontype_ = extensiontype_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, TextLanguageRequired)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if TextLanguageRequired.subclass:
             return TextLanguageRequired.subclass(*args_, **kwargs_)
         else:
@@ -2795,19 +2607,27 @@ class TextLanguageRequired(GeneratedsSuper):
     def set_extensiontype_(self, extensiontype_): self.extensiontype_ = extensiontype_
     def validate_LanguageCodeType(self, value):
         # Validate type LanguageCodeType, a restriction on xs:NMTOKEN.
-        if ( isinstance( value, basestring ) and value.__len__() == 2 and value in [ 'FI', 'SV', 'EN' ]):
-            pass
-        else:
-            raise_value_error( value, 'Expected ISO 639-1' )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['FI', 'SV', 'SE', 'EN']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on LanguageCodeType' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
-            self.valueOf_
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_)
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='TextLanguageRequired', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('TextLanguageRequired')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2820,7 +2640,7 @@ class TextLanguageRequired(GeneratedsSuper):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='TextLanguageRequired')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='TextLanguageRequired', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -2834,21 +2654,6 @@ class TextLanguageRequired(GeneratedsSuper):
             outfile.write(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
             outfile.write(' xsi:type="%s"' % self.extensiontype_)
     def exportChildren(self, outfile, level, namespace_='', name_='TextLanguageRequired', fromsubclass_=False, pretty_print=True):
-        pass
-    def exportLiteral(self, outfile, level, name_='TextLanguageRequired'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.LanguageCode is not None and 'LanguageCode' not in already_processed:
-            already_processed.add('LanguageCode')
-            showIndent(outfile, level)
-            outfile.write('LanguageCode="%s",\n' % (self.LanguageCode,))
-    def exportLiteralChildren(self, outfile, level, name_):
         pass
     def build(self, node):
         already_processed = set()
@@ -2884,6 +2689,11 @@ class SellerAccountIDType1(SellerAccountIDType):
         super(SellerAccountIDType1, self).__init__(IdentificationSchemeName, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerAccountIDType1)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerAccountIDType1.subclass:
             return SellerAccountIDType1.subclass(*args_, **kwargs_)
         else:
@@ -2893,13 +2703,16 @@ class SellerAccountIDType1(SellerAccountIDType):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(SellerAccountIDType1, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerAccountIDType1', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerAccountIDType1')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -2912,7 +2725,7 @@ class SellerAccountIDType1(SellerAccountIDType):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerAccountIDType1')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerAccountIDType1', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -2921,19 +2734,6 @@ class SellerAccountIDType1(SellerAccountIDType):
         super(SellerAccountIDType1, self).exportAttributes(outfile, level, already_processed, namespace_, name_='SellerAccountIDType1')
     def exportChildren(self, outfile, level, namespace_='', name_='SellerAccountIDType1', fromsubclass_=False, pretty_print=True):
         super(SellerAccountIDType1, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerAccountIDType1'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(SellerAccountIDType1, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(SellerAccountIDType1, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -2948,7 +2748,7 @@ class SellerAccountIDType1(SellerAccountIDType):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and value.__len__() <= 35 ):
+        if ( isinstance( value, BaseStrType_ ) and value.__len__() <= 35 ):
             pass
         else:
             raise_value_error( value, 'Expected less than 35 characters' )
@@ -2992,6 +2792,11 @@ class SellerBicType2(SellerBicType):
         super(SellerBicType2, self).__init__(IdentificationSchemeName, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerBicType2)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerBicType2.subclass:
             return SellerBicType2.subclass(*args_, **kwargs_)
         else:
@@ -3001,13 +2806,16 @@ class SellerBicType2(SellerBicType):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(SellerBicType2, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerBicType2', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerBicType2')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3020,7 +2828,7 @@ class SellerBicType2(SellerBicType):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerBicType2')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerBicType2', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3029,19 +2837,6 @@ class SellerBicType2(SellerBicType):
         super(SellerBicType2, self).exportAttributes(outfile, level, already_processed, namespace_, name_='SellerBicType2')
     def exportChildren(self, outfile, level, namespace_='', name_='SellerBicType2', fromsubclass_=False, pretty_print=True):
         super(SellerBicType2, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerBicType2'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(SellerBicType2, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(SellerBicType2, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3056,7 +2851,7 @@ class SellerBicType2(SellerBicType):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 8 <= value.__len__() <= 11 ):
+        if ( isinstance( value, BaseStrType_ ) and 8 <= value.__len__() <= 11 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 8..11 characters' )
@@ -3100,6 +2895,11 @@ class NewSellerAccountIDType(SellerAccountIDType):
         super(NewSellerAccountIDType, self).__init__(IdentificationSchemeName, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, NewSellerAccountIDType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if NewSellerAccountIDType.subclass:
             return NewSellerAccountIDType.subclass(*args_, **kwargs_)
         else:
@@ -3109,13 +2909,16 @@ class NewSellerAccountIDType(SellerAccountIDType):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(NewSellerAccountIDType, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='NewSellerAccountIDType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('NewSellerAccountIDType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3128,7 +2931,7 @@ class NewSellerAccountIDType(SellerAccountIDType):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='NewSellerAccountIDType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='NewSellerAccountIDType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3137,19 +2940,6 @@ class NewSellerAccountIDType(SellerAccountIDType):
         super(NewSellerAccountIDType, self).exportAttributes(outfile, level, already_processed, namespace_, name_='NewSellerAccountIDType')
     def exportChildren(self, outfile, level, namespace_='', name_='NewSellerAccountIDType', fromsubclass_=False, pretty_print=True):
         super(NewSellerAccountIDType, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='NewSellerAccountIDType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(NewSellerAccountIDType, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(NewSellerAccountIDType, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3177,6 +2967,11 @@ class NewSellerBicType(SellerBicType):
         super(NewSellerBicType, self).__init__(IdentificationSchemeName, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, NewSellerBicType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if NewSellerBicType.subclass:
             return NewSellerBicType.subclass(*args_, **kwargs_)
         else:
@@ -3186,13 +2981,16 @@ class NewSellerBicType(SellerBicType):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(NewSellerBicType, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='NewSellerBicType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('NewSellerBicType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3205,7 +3003,7 @@ class NewSellerBicType(SellerBicType):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='NewSellerBicType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='NewSellerBicType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3214,19 +3012,6 @@ class NewSellerBicType(SellerBicType):
         super(NewSellerBicType, self).exportAttributes(outfile, level, already_processed, namespace_, name_='NewSellerBicType')
     def exportChildren(self, outfile, level, namespace_='', name_='NewSellerBicType', fromsubclass_=False, pretty_print=True):
         super(NewSellerBicType, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='NewSellerBicType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(NewSellerBicType, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(NewSellerBicType, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3254,6 +3039,11 @@ class SellerInstructionFreeTextType(TextLanguageOptional):
         super(SellerInstructionFreeTextType, self).__init__(LanguageCode, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerInstructionFreeTextType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerInstructionFreeTextType.subclass:
             return SellerInstructionFreeTextType.subclass(*args_, **kwargs_)
         else:
@@ -3263,13 +3053,16 @@ class SellerInstructionFreeTextType(TextLanguageOptional):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(SellerInstructionFreeTextType, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerInstructionFreeTextType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerInstructionFreeTextType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3282,7 +3075,7 @@ class SellerInstructionFreeTextType(TextLanguageOptional):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInstructionFreeTextType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerInstructionFreeTextType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3291,19 +3084,6 @@ class SellerInstructionFreeTextType(TextLanguageOptional):
         super(SellerInstructionFreeTextType, self).exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInstructionFreeTextType')
     def exportChildren(self, outfile, level, namespace_='', name_='SellerInstructionFreeTextType', fromsubclass_=False, pretty_print=True):
         super(SellerInstructionFreeTextType, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerInstructionFreeTextType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(SellerInstructionFreeTextType, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(SellerInstructionFreeTextType, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3318,7 +3098,7 @@ class SellerInstructionFreeTextType(TextLanguageOptional):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 1 <= value.__len__() <= 420 ):
+        if ( isinstance( value, BaseStrType_ ) and 1 <= value.__len__() <= 420 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 1..420 characters' )
@@ -3337,8 +3117,8 @@ class SellerInstructionFreeTextType(TextLanguageOptional):
 
 class SellerInvoiceTypeDetailsType(GeneratedsSuper):
     member_data_items_ = [
-        MemberSpec_('SellerInvoiceTypeText', 'SellerInvoiceTypeTextType', 0),
-        MemberSpec_('SellerInvoiceIdentifierText', 'SellerInvoiceIdentifierTextType3', 1),
+        MemberSpec_('SellerInvoiceTypeText', 'SellerInvoiceTypeTextType', 0, 0, {'name': 'SellerInvoiceTypeText', 'type': 'SellerInvoiceTypeTextType'}, None),
+        MemberSpec_('SellerInvoiceIdentifierText', 'SellerInvoiceIdentifierTextType3', 1, 0, {'name': 'SellerInvoiceIdentifierText', 'maxOccurs': '2', 'type': 'SellerInvoiceIdentifierTextType3'}, None),
     ]
     subclass = None
     superclass = None
@@ -3350,6 +3130,11 @@ class SellerInvoiceTypeDetailsType(GeneratedsSuper):
         else:
             self.SellerInvoiceIdentifierText = SellerInvoiceIdentifierText
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerInvoiceTypeDetailsType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerInvoiceTypeDetailsType.subclass:
             return SellerInvoiceTypeDetailsType.subclass(*args_, **kwargs_)
         else:
@@ -3371,6 +3156,9 @@ class SellerInvoiceTypeDetailsType(GeneratedsSuper):
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerInvoiceTypeDetailsType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerInvoiceTypeDetailsType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3399,33 +3187,6 @@ class SellerInvoiceTypeDetailsType(GeneratedsSuper):
             self.SellerInvoiceTypeText.export(outfile, level, namespace_, name_='SellerInvoiceTypeText', pretty_print=pretty_print)
         for SellerInvoiceIdentifierText_ in self.SellerInvoiceIdentifierText:
             SellerInvoiceIdentifierText_.export(outfile, level, namespace_, name_='SellerInvoiceIdentifierText', pretty_print=pretty_print)
-    def exportLiteral(self, outfile, level, name_='SellerInvoiceTypeDetailsType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.SellerInvoiceTypeText is not None:
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceTypeText=model_.SellerInvoiceTypeTextType(\n')
-            self.SellerInvoiceTypeText.exportLiteral(outfile, level, name_='SellerInvoiceTypeText')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('SellerInvoiceIdentifierText=[\n')
-        level += 1
-        for SellerInvoiceIdentifierText_ in self.SellerInvoiceIdentifierText:
-            showIndent(outfile, level)
-            outfile.write('model_.SellerInvoiceIdentifierTextType3(\n')
-            SellerInvoiceIdentifierText_.exportLiteral(outfile, level, name_='SellerInvoiceIdentifierTextType3')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -3478,6 +3239,11 @@ class SellerInvoiceTypeTextType(TextLanguageRequired):
         super(SellerInvoiceTypeTextType, self).__init__(LanguageCode, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerInvoiceTypeTextType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerInvoiceTypeTextType.subclass:
             return SellerInvoiceTypeTextType.subclass(*args_, **kwargs_)
         else:
@@ -3487,13 +3253,16 @@ class SellerInvoiceTypeTextType(TextLanguageRequired):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(SellerInvoiceTypeTextType, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerInvoiceTypeTextType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerInvoiceTypeTextType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3506,7 +3275,7 @@ class SellerInvoiceTypeTextType(TextLanguageRequired):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInvoiceTypeTextType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerInvoiceTypeTextType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3515,19 +3284,6 @@ class SellerInvoiceTypeTextType(TextLanguageRequired):
         super(SellerInvoiceTypeTextType, self).exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInvoiceTypeTextType')
     def exportChildren(self, outfile, level, namespace_='', name_='SellerInvoiceTypeTextType', fromsubclass_=False, pretty_print=True):
         super(SellerInvoiceTypeTextType, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerInvoiceTypeTextType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(SellerInvoiceTypeTextType, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(SellerInvoiceTypeTextType, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3542,7 +3298,7 @@ class SellerInvoiceTypeTextType(TextLanguageRequired):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and value.__len__() <= 35 ):
+        if ( isinstance( value, BaseStrType_ ) and value.__len__() <= 35 ):
             pass
         else:
             raise_value_error( value, 'Expected value less than 35 characters' )
@@ -3561,26 +3317,31 @@ class SellerInvoiceTypeTextType(TextLanguageRequired):
 
 class SellerInvoiceIdentifierTextType(TextLanguageRequired):
     member_data_items_ = [
-        MemberSpec_('SellerInvoiceIdentifierType', 'SellerInvoiceIdentifierTypeCode', 0),
-        MemberSpec_('SellerInvoiceIdentifierMinLength', 'xs:integer', 0),
-        MemberSpec_('SellerInvoiceIdentifierHyphens', 'xs:boolean', 0),
-        MemberSpec_('SellerInvoiceIdentifierSpaces', 'xs:boolean', 0),
-        MemberSpec_('SellerInvoiceIdentifierMaxLength', 'xs:integer', 0),
+        MemberSpec_('SellerInvoiceIdentifierType', 'SellerInvoiceIdentifierTypeCode', 0, 1, {'use': 'optional'}),
+        MemberSpec_('SellerInvoiceIdentifierMinLength', 'xs:integer', 0, 1, {'use': 'optional'}),
+        MemberSpec_('SellerInvoiceIdentifierMaxLength', 'xs:integer', 0, 1, {'use': 'optional'}),
+        MemberSpec_('SellerInvoiceIdentifierSpaces', 'xs:boolean', 0, 1, {'use': 'optional'}),
+        MemberSpec_('SellerInvoiceIdentifierHyphens', 'xs:boolean', 0, 1, {'use': 'optional'}),
         MemberSpec_('valueOf_', 'TextLanguageRequired', 0),
     ]
     subclass = None
     superclass = TextLanguageRequired
-    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierHyphens=False, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierMaxLength=35, valueOf_=None, extensiontype_=None):
+    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierMaxLength=35, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierHyphens=False, valueOf_=None, extensiontype_=None):
         self.original_tagname_ = None
         super(SellerInvoiceIdentifierTextType, self).__init__(LanguageCode, valueOf_, extensiontype_, )
         self.SellerInvoiceIdentifierType = _cast(None, SellerInvoiceIdentifierType)
         self.SellerInvoiceIdentifierMinLength = _cast(int, SellerInvoiceIdentifierMinLength)
-        self.SellerInvoiceIdentifierHyphens = _cast(bool, SellerInvoiceIdentifierHyphens)
-        self.SellerInvoiceIdentifierSpaces = _cast(bool, SellerInvoiceIdentifierSpaces)
         self.SellerInvoiceIdentifierMaxLength = _cast(int, SellerInvoiceIdentifierMaxLength)
+        self.SellerInvoiceIdentifierSpaces = _cast(bool, SellerInvoiceIdentifierSpaces)
+        self.SellerInvoiceIdentifierHyphens = _cast(bool, SellerInvoiceIdentifierHyphens)
         self.valueOf_ = valueOf_
         self.extensiontype_ = extensiontype_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerInvoiceIdentifierTextType)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerInvoiceIdentifierTextType.subclass:
             return SellerInvoiceIdentifierTextType.subclass(*args_, **kwargs_)
         else:
@@ -3590,33 +3351,40 @@ class SellerInvoiceIdentifierTextType(TextLanguageRequired):
     def set_SellerInvoiceIdentifierType(self, SellerInvoiceIdentifierType): self.SellerInvoiceIdentifierType = SellerInvoiceIdentifierType
     def get_SellerInvoiceIdentifierMinLength(self): return self.SellerInvoiceIdentifierMinLength
     def set_SellerInvoiceIdentifierMinLength(self, SellerInvoiceIdentifierMinLength): self.SellerInvoiceIdentifierMinLength = SellerInvoiceIdentifierMinLength
-    def get_SellerInvoiceIdentifierHyphens(self): return self.SellerInvoiceIdentifierHyphens
-    def set_SellerInvoiceIdentifierHyphens(self, SellerInvoiceIdentifierHyphens): self.SellerInvoiceIdentifierHyphens = SellerInvoiceIdentifierHyphens
-    def get_SellerInvoiceIdentifierSpaces(self): return self.SellerInvoiceIdentifierSpaces
-    def set_SellerInvoiceIdentifierSpaces(self, SellerInvoiceIdentifierSpaces): self.SellerInvoiceIdentifierSpaces = SellerInvoiceIdentifierSpaces
     def get_SellerInvoiceIdentifierMaxLength(self): return self.SellerInvoiceIdentifierMaxLength
     def set_SellerInvoiceIdentifierMaxLength(self, SellerInvoiceIdentifierMaxLength): self.SellerInvoiceIdentifierMaxLength = SellerInvoiceIdentifierMaxLength
+    def get_SellerInvoiceIdentifierSpaces(self): return self.SellerInvoiceIdentifierSpaces
+    def set_SellerInvoiceIdentifierSpaces(self, SellerInvoiceIdentifierSpaces): self.SellerInvoiceIdentifierSpaces = SellerInvoiceIdentifierSpaces
+    def get_SellerInvoiceIdentifierHyphens(self): return self.SellerInvoiceIdentifierHyphens
+    def set_SellerInvoiceIdentifierHyphens(self, SellerInvoiceIdentifierHyphens): self.SellerInvoiceIdentifierHyphens = SellerInvoiceIdentifierHyphens
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def get_extensiontype_(self): return self.extensiontype_
     def set_extensiontype_(self, extensiontype_): self.extensiontype_ = extensiontype_
     def validate_SellerInvoiceIdentifierTypeCode(self, value):
         # Validate type SellerInvoiceIdentifierTypeCode, a restriction on xs:NMTOKEN.
-        identifiers = [ '01', '02', '03', '04', '05', '06', '07', '08', '09','99' ]
-        if ( value in identifiers ):
-            pass
-        else:
-            raise_value_error( value, 'Expected ' + ' or '.join( identifiers ) )
-        return value
+        if value is not None and Validate_simpletypes_:
+            value = str(value)
+            enumerations = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '99']
+            enumeration_respectee = False
+            for enum in enumerations:
+                if value == enum:
+                    enumeration_respectee = True
+                    break
+            if not enumeration_respectee:
+                warnings_.warn('Value "%(value)s" does not match xsd enumeration restriction on SellerInvoiceIdentifierTypeCode' % {"value" : value.encode("utf-8")} )
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(SellerInvoiceIdentifierTextType, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerInvoiceIdentifierTextType', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerInvoiceIdentifierTextType')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3629,7 +3397,7 @@ class SellerInvoiceIdentifierTextType(TextLanguageRequired):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInvoiceIdentifierTextType')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerInvoiceIdentifierTextType', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3639,57 +3407,24 @@ class SellerInvoiceIdentifierTextType(TextLanguageRequired):
         if self.SellerInvoiceIdentifierType is not None and 'SellerInvoiceIdentifierType' not in already_processed:
             already_processed.add('SellerInvoiceIdentifierType')
             outfile.write(' SellerInvoiceIdentifierType=%s' % (quote_attrib(self.SellerInvoiceIdentifierType), ))
-        if self.SellerInvoiceIdentifierMinLength is not None and 'SellerInvoiceIdentifierMinLength' not in already_processed:
+        if self.SellerInvoiceIdentifierMinLength != 1 and 'SellerInvoiceIdentifierMinLength' not in already_processed:
             already_processed.add('SellerInvoiceIdentifierMinLength')
             outfile.write(' SellerInvoiceIdentifierMinLength="%s"' % self.gds_format_integer(self.SellerInvoiceIdentifierMinLength, input_name='SellerInvoiceIdentifierMinLength'))
-        if self.SellerInvoiceIdentifierHyphens is not None and 'SellerInvoiceIdentifierHyphens' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierHyphens')
-            outfile.write(' SellerInvoiceIdentifierHyphens="%s"' % self.gds_format_boolean(self.SellerInvoiceIdentifierHyphens, input_name='SellerInvoiceIdentifierHyphens'))
-        if self.SellerInvoiceIdentifierSpaces is not None and 'SellerInvoiceIdentifierSpaces' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierSpaces')
-            outfile.write(' SellerInvoiceIdentifierSpaces="%s"' % self.gds_format_boolean(self.SellerInvoiceIdentifierSpaces, input_name='SellerInvoiceIdentifierSpaces'))
-        if self.SellerInvoiceIdentifierMaxLength is not None and 'SellerInvoiceIdentifierMaxLength' not in already_processed:
+        if self.SellerInvoiceIdentifierMaxLength != 35 and 'SellerInvoiceIdentifierMaxLength' not in already_processed:
             already_processed.add('SellerInvoiceIdentifierMaxLength')
             outfile.write(' SellerInvoiceIdentifierMaxLength="%s"' % self.gds_format_integer(self.SellerInvoiceIdentifierMaxLength, input_name='SellerInvoiceIdentifierMaxLength'))
+        if self.SellerInvoiceIdentifierSpaces and 'SellerInvoiceIdentifierSpaces' not in already_processed:
+            already_processed.add('SellerInvoiceIdentifierSpaces')
+            outfile.write(' SellerInvoiceIdentifierSpaces="%s"' % self.gds_format_boolean(self.SellerInvoiceIdentifierSpaces, input_name='SellerInvoiceIdentifierSpaces'))
+        if self.SellerInvoiceIdentifierHyphens and 'SellerInvoiceIdentifierHyphens' not in already_processed:
+            already_processed.add('SellerInvoiceIdentifierHyphens')
+            outfile.write(' SellerInvoiceIdentifierHyphens="%s"' % self.gds_format_boolean(self.SellerInvoiceIdentifierHyphens, input_name='SellerInvoiceIdentifierHyphens'))
         if self.extensiontype_ is not None and 'xsi:type' not in already_processed:
             already_processed.add('xsi:type')
             outfile.write(' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
             outfile.write(' xsi:type="%s"' % self.extensiontype_)
     def exportChildren(self, outfile, level, namespace_='', name_='SellerInvoiceIdentifierTextType', fromsubclass_=False, pretty_print=True):
         super(SellerInvoiceIdentifierTextType, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerInvoiceIdentifierTextType'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        if self.SellerInvoiceIdentifierType is not None and 'SellerInvoiceIdentifierType' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierType')
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceIdentifierType="%s",\n' % (self.SellerInvoiceIdentifierType,))
-        if self.SellerInvoiceIdentifierMinLength is not None and 'SellerInvoiceIdentifierMinLength' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierMinLength')
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceIdentifierMinLength=%d,\n' % (self.SellerInvoiceIdentifierMinLength,))
-        if self.SellerInvoiceIdentifierHyphens is not None and 'SellerInvoiceIdentifierHyphens' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierHyphens')
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceIdentifierHyphens=%s,\n' % (self.SellerInvoiceIdentifierHyphens,))
-        if self.SellerInvoiceIdentifierSpaces is not None and 'SellerInvoiceIdentifierSpaces' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierSpaces')
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceIdentifierSpaces=%s,\n' % (self.SellerInvoiceIdentifierSpaces,))
-        if self.SellerInvoiceIdentifierMaxLength is not None and 'SellerInvoiceIdentifierMaxLength' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierMaxLength')
-            showIndent(outfile, level)
-            outfile.write('SellerInvoiceIdentifierMaxLength=%d,\n' % (self.SellerInvoiceIdentifierMaxLength,))
-        super(SellerInvoiceIdentifierTextType, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(SellerInvoiceIdentifierTextType, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3710,17 +3445,15 @@ class SellerInvoiceIdentifierTextType(TextLanguageRequired):
             already_processed.add('SellerInvoiceIdentifierMinLength')
             try:
                 self.SellerInvoiceIdentifierMinLength = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
-        value = find_attr_value_('SellerInvoiceIdentifierHyphens', node)
-        if value is not None and 'SellerInvoiceIdentifierHyphens' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierHyphens')
-            if value in ('true', '1'):
-                self.SellerInvoiceIdentifierHyphens = True
-            elif value in ('false', '0'):
-                self.SellerInvoiceIdentifierHyphens = False
-            else:
-                raise_parse_error(node, 'Bad boolean attribute')
+        value = find_attr_value_('SellerInvoiceIdentifierMaxLength', node)
+        if value is not None and 'SellerInvoiceIdentifierMaxLength' not in already_processed:
+            already_processed.add('SellerInvoiceIdentifierMaxLength')
+            try:
+                self.SellerInvoiceIdentifierMaxLength = int(value)
+            except ValueError as exp:
+                raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = find_attr_value_('SellerInvoiceIdentifierSpaces', node)
         if value is not None and 'SellerInvoiceIdentifierSpaces' not in already_processed:
             already_processed.add('SellerInvoiceIdentifierSpaces')
@@ -3730,13 +3463,15 @@ class SellerInvoiceIdentifierTextType(TextLanguageRequired):
                 self.SellerInvoiceIdentifierSpaces = False
             else:
                 raise_parse_error(node, 'Bad boolean attribute')
-        value = find_attr_value_('SellerInvoiceIdentifierMaxLength', node)
-        if value is not None and 'SellerInvoiceIdentifierMaxLength' not in already_processed:
-            already_processed.add('SellerInvoiceIdentifierMaxLength')
-            try:
-                self.SellerInvoiceIdentifierMaxLength = int(value)
-            except ValueError, exp:
-                raise_parse_error(node, 'Bad integer attribute: %s' % exp)
+        value = find_attr_value_('SellerInvoiceIdentifierHyphens', node)
+        if value is not None and 'SellerInvoiceIdentifierHyphens' not in already_processed:
+            already_processed.add('SellerInvoiceIdentifierHyphens')
+            if value in ('true', '1'):
+                self.SellerInvoiceIdentifierHyphens = True
+            elif value in ('false', '0'):
+                self.SellerInvoiceIdentifierHyphens = False
+            else:
+                raise_parse_error(node, 'Bad boolean attribute')
         value = find_attr_value_('xsi:type', node)
         if value is not None and 'xsi:type' not in already_processed:
             already_processed.add('xsi:type')
@@ -3753,11 +3488,16 @@ class SellerInvoiceIdentifierTextType3(SellerInvoiceIdentifierTextType):
     ]
     subclass = None
     superclass = SellerInvoiceIdentifierTextType
-    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierHyphens=False, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierMaxLength=35, valueOf_=None):
+    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierMaxLength=35, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierHyphens=False, valueOf_=None):
         self.original_tagname_ = None
-        super(SellerInvoiceIdentifierTextType3, self).__init__(LanguageCode, SellerInvoiceIdentifierType, SellerInvoiceIdentifierMinLength, SellerInvoiceIdentifierHyphens, SellerInvoiceIdentifierSpaces, SellerInvoiceIdentifierMaxLength, valueOf_, )
+        super(SellerInvoiceIdentifierTextType3, self).__init__(LanguageCode, SellerInvoiceIdentifierType, SellerInvoiceIdentifierMinLength, SellerInvoiceIdentifierMaxLength, SellerInvoiceIdentifierSpaces, SellerInvoiceIdentifierHyphens, valueOf_, )
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
+        if CurrentSubclassModule_ is not None:
+            subclass = getSubclassFromModule_(
+                CurrentSubclassModule_, SellerInvoiceIdentifierTextType3)
+            if subclass is not None:
+                return subclass(*args_, **kwargs_)
         if SellerInvoiceIdentifierTextType3.subclass:
             return SellerInvoiceIdentifierTextType3.subclass(*args_, **kwargs_)
         else:
@@ -3767,13 +3507,16 @@ class SellerInvoiceIdentifierTextType3(SellerInvoiceIdentifierTextType):
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def hasContent_(self):
         if (
-            self.valueOf_ or
+            (1 if type(self.valueOf_) in [int,float] else self.valueOf_) or
             super(SellerInvoiceIdentifierTextType3, self).hasContent_()
         ):
             return True
         else:
             return False
     def export(self, outfile, level, namespace_='', name_='SellerInvoiceIdentifierTextType3', namespacedef_='', pretty_print=True):
+        imported_ns_def_ = GenerateDSNamespaceDefs_.get('SellerInvoiceIdentifierTextType3')
+        if imported_ns_def_ is not None:
+            namespacedef_ = imported_ns_def_
         if pretty_print:
             eol_ = '\n'
         else:
@@ -3786,7 +3529,7 @@ class SellerInvoiceIdentifierTextType3(SellerInvoiceIdentifierTextType):
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInvoiceIdentifierTextType3')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(str(self.valueOf_).encode(ExternalEncoding))
+            outfile.write(self.convert_unicode(self.valueOf_))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SellerInvoiceIdentifierTextType3', pretty_print=pretty_print)
             outfile.write('</%s%s>%s' % (namespace_, name_, eol_))
         else:
@@ -3795,19 +3538,6 @@ class SellerInvoiceIdentifierTextType3(SellerInvoiceIdentifierTextType):
         super(SellerInvoiceIdentifierTextType3, self).exportAttributes(outfile, level, already_processed, namespace_, name_='SellerInvoiceIdentifierTextType3')
     def exportChildren(self, outfile, level, namespace_='', name_='SellerInvoiceIdentifierTextType3', fromsubclass_=False, pretty_print=True):
         super(SellerInvoiceIdentifierTextType3, self).exportChildren(outfile, level, namespace_, name_, True, pretty_print=pretty_print)
-        pass
-    def exportLiteral(self, outfile, level, name_='SellerInvoiceIdentifierTextType3'):
-        level += 1
-        already_processed = set()
-        self.exportLiteralAttributes(outfile, level, already_processed, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        super(SellerInvoiceIdentifierTextType3, self).exportLiteralAttributes(outfile, level, already_processed, name_)
-    def exportLiteralChildren(self, outfile, level, name_):
-        super(SellerInvoiceIdentifierTextType3, self).exportLiteralChildren(outfile, level, name_)
         pass
     def build(self, node):
         already_processed = set()
@@ -3822,7 +3552,7 @@ class SellerInvoiceIdentifierTextType3(SellerInvoiceIdentifierTextType):
     def buildChildren(self, child_, node, nodeName_, fromsubclass_=False):
         pass
     def validate_valueOf_(self, value):
-        if ( isinstance( value, basestring ) and 4 <= value.__len__() <= 70 ):
+        if ( isinstance( value, BaseStrType_ ) and 4 <= value.__len__() <= 70 ):
             pass
         else:
             raise_value_error( value, 'Expected value between 4..70 characters' )
@@ -3840,22 +3570,6 @@ class SellerInvoiceIdentifierTextType3(SellerInvoiceIdentifierTextType):
 
 
 GDSClassesMapping = {
-    'SellerPostalAddressDetails': SellerPostalAddressDetailsType,
-    'SellerInstructionFreeText': SellerInstructionFreeTextType,
-    'SellerInvoiceDetails': SellerInvoiceDetailsType,
-    'SellerInvoiceTypeText': SellerInvoiceTypeTextType,
-    'SellerAccountDetails': SellerAccountDetailsType,
-    'MessageDetails': MessageDetailsType,
-    'SellerBic': SellerBicType2,
-    'SellerPartyDetails': SellerPartyDetailsType,
-    'SellerInvoiceIdentifierText': SellerInvoiceIdentifierTextType3,
-    'InvoiceSenderInformationDetails': InvoiceSenderInformationDetailsType,
-    'SellerOrganisationNames': SellerOrganisationNamesType,
-    'SellerInvoiceTypeDetails': SellerInvoiceTypeDetailsType,
-    'MessageDate': date,
-    'NewSellerAccountID': NewSellerAccountIDType,
-    'SellerAccountID': SellerAccountIDType1,
-    'NewSellerBic': NewSellerBicType,
 }
 
 
@@ -3865,7 +3579,7 @@ Usage: python <Parser>.py [ -s ] <in_xml_file>
 
 
 def usage():
-    print USAGE_TEXT
+    print(USAGE_TEXT)
     sys.exit(1)
 
 
@@ -3878,7 +3592,8 @@ def get_root_tag(node):
 
 
 def parse(inFileName, silence=False):
-    doc = parsexml_(inFileName)
+    parser = None
+    doc = parsexml_(inFileName, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -3898,7 +3613,8 @@ def parse(inFileName, silence=False):
 
 
 def parseEtree(inFileName, silence=False):
-    doc = parsexml_(inFileName)
+    parser = None
+    doc = parsexml_(inFileName, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -3921,8 +3637,12 @@ def parseEtree(inFileName, silence=False):
 
 
 def parseString(inString, silence=False):
-    from StringIO import StringIO
-    doc = parsexml_(StringIO(inString))
+    if sys.version_info.major == 2:
+        from StringIO import StringIO as IOBuffer
+    else:
+        from io import BytesIO as IOBuffer
+    parser = None
+    doc = parsexml_(IOBuffer(inString), parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -3941,7 +3661,8 @@ def parseString(inString, silence=False):
 
 
 def parseLiteral(inFileName, silence=False):
-    doc = parsexml_(inFileName)
+    parser = None
+    doc = parsexml_(inFileName, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:

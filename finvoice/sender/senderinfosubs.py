@@ -1,84 +1,40 @@
 #!/usr/bin/env python
 
-###
-# Copyright 2014 Code Master Oy (http://www.codemaster.fi/)
 #
-# This file is part of py-finvoice.
+# Generated  by generateDS.py.
+# Python 3.5.2 (default, Sep 14 2017, 22:51:06)  [GCC 5.4.0 20160609]
 #
-# py-finvoice is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Command line options:
+#   ('-s', 'finvoice/sender/senderinfosubs.py')
+#   ('-o', 'finvoice/sender/senderinfo.py')
+#   ('--super', 'finvoice.sender.senderinfo')
+#   ('--external-encoding', 'iso8859-15')
+#   ('--no-dates', '')
+#   ('--no-versions', '')
+#   ('--validator-bodies', 'stubs/validator/sender/senderinfo/')
+#   ('--user-methods', 'generators.gends_user_methods_senderinfo')
 #
-# py-finvoice is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Command line arguments:
+#   xsd/FinvoiceSenderInfo.xsd
 #
-# You should have received a copy of the GNU General Public License
-# along with py-finvoice. If not, see <http://www.gnu.org/licenses/>.
-##
-
 # Command line:
-#   /usr/local/bin/generateDS.py -s "finvoice/sender/senderinfosubs.py" -o "finvoice/sender/senderinfo.py" --super="finvoice.sender.senderinfo" --external-encoding="iso8859-15" --no-dates --no-versions --validator-bodies="stubs/validator/sender/senderinfo/" --user-methods="generators.gends_user_methods_senderinfo" xsd/FinvoiceSenderInfo.xsd
+#   /home/aisopuro/.virtualenvs/py-finvoice/bin/generateDS.py -s "finvoice/sender/senderinfosubs.py" -o "finvoice/sender/senderinfo.py" --super="finvoice.sender.senderinfo" --external-encoding="iso8859-15" --no-dates --no-versions --validator-bodies="stubs/validator/sender/senderinfo/" --user-methods="generators.gends_user_methods_senderinfo" xsd/FinvoiceSenderInfo.xsd
+#
+# Current working directory (os.getcwd()):
+#   py-finvoice
+#
 
 import sys
+from lxml import etree as etree_
 
 import finvoice.sender.senderinfo as supermod
 
-etree_ = None
-Verbose_import_ = False
-(
-    XMLParser_import_none, XMLParser_import_lxml,
-    XMLParser_import_elementtree
-) = range(3)
-XMLParser_import_library = None
-try:
-    # lxml
-    from lxml import etree as etree_
-    XMLParser_import_library = XMLParser_import_lxml
-    if Verbose_import_:
-        print("running with lxml.etree")
-except ImportError:
-    try:
-        # cElementTree from Python 2.5+
-        import xml.etree.cElementTree as etree_
-        XMLParser_import_library = XMLParser_import_elementtree
-        if Verbose_import_:
-            print("running with cElementTree on Python 2.5+")
-    except ImportError:
-        try:
-            # ElementTree from Python 2.5+
-            import xml.etree.ElementTree as etree_
-            XMLParser_import_library = XMLParser_import_elementtree
-            if Verbose_import_:
-                print("running with ElementTree on Python 2.5+")
-        except ImportError:
-            try:
-                # normal cElementTree install
-                import cElementTree as etree_
-                XMLParser_import_library = XMLParser_import_elementtree
-                if Verbose_import_:
-                    print("running with cElementTree")
-            except ImportError:
-                try:
-                    # normal ElementTree install
-                    import elementtree.ElementTree as etree_
-                    XMLParser_import_library = XMLParser_import_elementtree
-                    if Verbose_import_:
-                        print("running with ElementTree")
-                except ImportError:
-                    raise ImportError(
-                        "Failed to import ElementTree from any known place")
-
-
-def parsexml_(*args, **kwargs):
-    if (XMLParser_import_library == XMLParser_import_lxml and
-            'parser' not in kwargs):
+def parsexml_(infile, parser=None, **kwargs):
+    if parser is None:
         # Use the lxml ElementTree compatible parser so that, e.g.,
         #   we ignore comments.
-        kwargs['parser'] = etree_.ETCompatXMLParser()
-    doc = etree_.parse(*args, **kwargs)
+        parser = etree_.ETCompatXMLParser()
+    doc = etree_.parse(infile, parser=parser, **kwargs)
     return doc
 
 #
@@ -233,15 +189,15 @@ supermod.SellerInvoiceTypeTextType.subclass = SellerInvoiceTypeTextTypeSub
 
 
 class SellerInvoiceIdentifierTextTypeSub(supermod.SellerInvoiceIdentifierTextType):
-    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierHyphens=False, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierMaxLength=35, valueOf_=None, extensiontype_=None):
-        super(SellerInvoiceIdentifierTextTypeSub, self).__init__(LanguageCode, SellerInvoiceIdentifierType, SellerInvoiceIdentifierMinLength, SellerInvoiceIdentifierHyphens, SellerInvoiceIdentifierSpaces, SellerInvoiceIdentifierMaxLength, valueOf_, extensiontype_, )
+    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierMaxLength=35, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierHyphens=False, valueOf_=None, extensiontype_=None):
+        super(SellerInvoiceIdentifierTextTypeSub, self).__init__(LanguageCode, SellerInvoiceIdentifierType, SellerInvoiceIdentifierMinLength, SellerInvoiceIdentifierMaxLength, SellerInvoiceIdentifierSpaces, SellerInvoiceIdentifierHyphens, valueOf_, extensiontype_, )
 supermod.SellerInvoiceIdentifierTextType.subclass = SellerInvoiceIdentifierTextTypeSub
 # end class SellerInvoiceIdentifierTextTypeSub
 
 
 class SellerInvoiceIdentifierTextType3Sub(supermod.SellerInvoiceIdentifierTextType3):
-    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierHyphens=False, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierMaxLength=35, valueOf_=None):
-        super(SellerInvoiceIdentifierTextType3Sub, self).__init__(LanguageCode, SellerInvoiceIdentifierType, SellerInvoiceIdentifierMinLength, SellerInvoiceIdentifierHyphens, SellerInvoiceIdentifierSpaces, SellerInvoiceIdentifierMaxLength, valueOf_, )
+    def __init__(self, LanguageCode=None, SellerInvoiceIdentifierType=None, SellerInvoiceIdentifierMinLength=1, SellerInvoiceIdentifierMaxLength=35, SellerInvoiceIdentifierSpaces=False, SellerInvoiceIdentifierHyphens=False, valueOf_=None):
+        super(SellerInvoiceIdentifierTextType3Sub, self).__init__(LanguageCode, SellerInvoiceIdentifierType, SellerInvoiceIdentifierMinLength, SellerInvoiceIdentifierMaxLength, SellerInvoiceIdentifierSpaces, SellerInvoiceIdentifierHyphens, valueOf_, )
 supermod.SellerInvoiceIdentifierTextType3.subclass = SellerInvoiceIdentifierTextType3Sub
 # end class SellerInvoiceIdentifierTextType3Sub
 
@@ -256,7 +212,8 @@ def get_root_tag(node):
 
 
 def parse(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -276,7 +233,8 @@ def parse(inFilename, silence=False):
 
 
 def parseEtree(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -300,7 +258,8 @@ def parseEtree(inFilename, silence=False):
 
 def parseString(inString, silence=False):
     from StringIO import StringIO
-    doc = parsexml_(StringIO(inString))
+    parser = None
+    doc = parsexml_(StringIO(inString), parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -319,7 +278,8 @@ def parseString(inString, silence=False):
 
 
 def parseLiteral(inFilename, silence=False):
-    doc = parsexml_(inFilename)
+    parser = None
+    doc = parsexml_(inFilename, parser)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
     if rootClass is None:
@@ -344,7 +304,7 @@ Usage: python ???.py <infilename>
 
 
 def usage():
-    print USAGE_TEXT
+    print(USAGE_TEXT)
     sys.exit(1)
 
 
